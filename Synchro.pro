@@ -13,6 +13,11 @@ MOC_DIR = intermediate
 UI_DIR = intermediate
 RCC_DIR = intermediate
 
+# link mpv
+QT_CONFIG -= no-pkg-config
+CONFIG += link_pkgconfig
+PKGCONFIG += mpv
+
 # Windows specific stuff
 win32:CONFIG += static
 #RC_ICONS = "dist/win/Synchro.ico"
@@ -43,7 +48,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        src/main.cpp
+        src/main.cpp \
+    src/corerenderer.cpp \
+    src/videoobject.cpp
 
 RESOURCES += src/qml.qrc
 
@@ -52,3 +59,7 @@ QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
+
+HEADERS += \
+    src/corerenderer.h \
+    src/videoobject.h
