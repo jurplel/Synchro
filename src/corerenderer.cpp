@@ -6,18 +6,6 @@
 #include <QObject>
 #include <QDebug>
 
-//Callbacks for mpv - i would like to move these to the header if possible
-//but i am unfamiliar with them
-void onMpvEvents(void *ctx)
-{
-    Q_UNUSED(ctx)
-}
-
-void onMpvRedraw(void *ctx)
-{
-    VideoObject* videoObject = reinterpret_cast<VideoObject*>(ctx);
-    emit videoObject->requestUpdate();
-}
 
 //Real beginning of the class in my mind
 
@@ -52,6 +40,7 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
         mpv_render_context_set_update_callback(mpvRenderContext, onMpvRedraw, videoObject);
     }
 
+    videoObject->setMpvRenderContext(mpvRenderContext);
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
 }
 

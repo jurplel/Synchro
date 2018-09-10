@@ -1,7 +1,7 @@
 QT += quick
 CONFIG += c++11
 
-VERSION = 0.1.0
+VERSION = 0.1 # major.minor
 
 # allows use of version variable elsewhere
 DEFINES += "VERSION=$$VERSION"
@@ -53,6 +53,8 @@ SOURCES += \
     src/videoobject.cpp
 
 RESOURCES += src/qml.qrc
+
+OTHER_FILES += src/*.qml
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

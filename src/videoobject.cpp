@@ -2,6 +2,7 @@
 #include "corerenderer.h"
 
 #include <QtQuick/QQuickWindow>
+#include <QStringList>
 
 #include <QDebug>
 
@@ -24,7 +25,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
 VideoObject::~VideoObject()
 {
-    if (mpvRenderContext) // only initialized if something got drawn
+    if (mpvRenderContext)
         mpv_render_context_free(mpvRenderContext);
 
     mpv_terminate_destroy(mpvHandler);
@@ -45,4 +46,26 @@ void VideoObject::performUpdate()
 void VideoObject::command(const QVariant &args)
 {
     mpv::qt::command(mpvHandler, args);
+}
+
+
+
+mpv_render_context *VideoObject::getMpvRenderContext() const
+{
+    return mpvRenderContext;
+}
+
+void VideoObject::setMpvRenderContext(mpv_render_context *value)
+{
+    mpvRenderContext = value;
+}
+
+mpv_handle *VideoObject::getMpvHandler() const
+{
+    return mpvHandler;
+}
+
+void VideoObject::setMpvHandler(mpv_handle *value)
+{
+    mpvHandler = value;
 }

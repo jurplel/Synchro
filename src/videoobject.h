@@ -17,6 +17,12 @@ public:
     virtual Renderer *createRenderer() const;
 
 
+    mpv_handle *getMpvHandler() const;
+    void setMpvHandler(mpv_handle *value);
+
+    mpv_render_context *getMpvRenderContext() const;
+    void setMpvRenderContext(mpv_render_context *value);
+
 public slots:
     void command(const QVariant &args);
 

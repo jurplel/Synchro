@@ -36,6 +36,17 @@ private:
 
         return reinterpret_cast<void *>(glctx->getProcAddress(QByteArray(name)));
     }
+
+    static void onMpvEvents(void *ctx)
+    {
+        Q_UNUSED(ctx)
+    }
+
+    static void onMpvRedraw(void *ctx)
+    {
+        VideoObject* videoObject = reinterpret_cast<VideoObject*>(ctx);
+        emit videoObject->requestUpdate();
+    }
 };
 
 #endif // CORERENDERER_H
