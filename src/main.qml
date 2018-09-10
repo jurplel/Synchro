@@ -21,7 +21,10 @@ Window {
                 MenuItem {
                     text: "Open file"
                     onClicked: fileDialog.open()
-                    //onClicked: videoObject.command(["loadfile", "test.avi"])
+                }
+                MenuItem {
+                    text: "Pause"
+                    onClicked: videoObject.command(["cycle", "pause"])
                 }
             }
             acceptedButtons: Qt.RightButton
@@ -32,7 +35,7 @@ Window {
 
     FileDialog {
         id: fileDialog
-        title: "Pick a file, boi"
+        title: "Pick a file"
         folder: shortcuts.home
         onAccepted: {
             videoObject.command(["loadfile", fileDialog.fileUrl.toString()])
