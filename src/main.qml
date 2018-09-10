@@ -12,7 +12,11 @@ Window {
     title: qsTr("Synchro")
 
     VideoObject {
-        id: video
+        id: videoobject
         anchors.fill: parent
+        MouseArea {
+            anchors.fill: parent
+            onClicked: videoobject.command(["loadfile", "test.avi"])
+        }
     }
 }

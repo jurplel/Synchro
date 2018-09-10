@@ -3,6 +3,9 @@
 #include <QtGui/QOpenGLFramebufferObject>
 #include <QtQuick/QQuickWindow>
 
+#include <QObject>
+#include <QDebug>
+
 //Callbacks for mpv - i would like to move these to the header if possible
 //but i am unfamiliar with them
 void onMpvEvents(void *ctx)
@@ -12,18 +15,18 @@ void onMpvEvents(void *ctx)
 
 void onMpvRedraw(void *ctx)
 {
-    Q_UNUSED(ctx)
-    //VideoObject::on_update(ctx);
+    VideoObject* videoObject = reinterpret_cast<VideoObject*>(ctx);
+    emit videoObject->requestUpdate();
 }
 
 //Real beginning of the class in my mind
 
-CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpv, mpv_render_context *newMpvGL) : QQuickFramebufferObject::Renderer()
+CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandler, mpv_render_context *newMpvRenderContext) : QQuickFramebufferObject::Renderer()
 {
     videoObject = newVideoObject;
-    mpv = newMpv;
-    mpvGL = newMpvGL;
-    mpv_set_wakeup_callback(mpv, onMpvEvents, nullptr);
+    mpvHandler = newMpvHandler;
+    mpvRenderContext = newMpvRenderContext;
+    mpv_set_wakeup_callback(mpvHandler, onMpvEvents, nullptr);
 }
 
 CoreRenderer::~CoreRenderer()
@@ -35,18 +38,18 @@ CoreRenderer::~CoreRenderer()
 // This happens on the initial frame.
 QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &size)
 {
-    if (!mpvGL)
+    if (!mpvRenderContext)
     {
         mpv_opengl_init_params gl_init_params{get_proc_address_mpv, nullptr, nullptr};
         mpv_render_param params[]{
-            {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
+            {MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
             {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
 
-        if (mpv_render_context_create(&mpvGL, mpv, params) != 0)
+        if (mpv_render_context_create(&mpvRenderContext, mpvHandler, params) != 0)
             throw std::runtime_error("failed to initialize mpv GL context");
-        mpv_render_context_set_update_callback(mpvGL, onMpvRedraw, videoObject);
+        mpv_render_context_set_update_callback(mpvRenderContext, onMpvRedraw, videoObject);
     }
 
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
@@ -77,7 +80,7 @@ void CoreRenderer::render()
     };
     // See render_gl.h on what OpenGL environment mpv expects, and
     // other API details.
-    mpv_render_context_render(mpvGL, params);
+    mpv_render_context_render(mpvRenderContext, params);
 
     videoObject->window()->resetOpenGLState();
 }

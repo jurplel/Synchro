@@ -1,26 +1,48 @@
 #include "videoobject.h"
 #include "corerenderer.h"
 
+#include <QtQuick/QQuickWindow>
+
+#include <QDebug>
+
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
-    mpv = mpv_create();
-    mpvGL = nullptr;
-    if (!mpv)
+    mpvHandler = mpv_create();
+    mpvRenderContext = nullptr;
+    if (!mpvHandler)
         throw std::runtime_error("failed to create mpv instance");
 
-    if (mpv_initialize(mpv) != 0)
+    mpv::qt::set_property(mpvHandler, "terminal", "yes");
+
+    if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
+
+    mpv::qt::set_property(mpvHandler, "hwdec", "auto");
+
+    connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 }
 
 VideoObject::~VideoObject()
 {
-    if (mpvGL) // only initialized if something got drawn
-        mpv_render_context_free(mpvGL);
+    if (mpvRenderContext) // only initialized if something got drawn
+        mpv_render_context_free(mpvRenderContext);
 
-    mpv_terminate_destroy(mpv);
+    mpv_terminate_destroy(mpvHandler);
 }
 
 QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 {
-    return new CoreRenderer(const_cast<VideoObject*>(this), mpv, mpvGL);
+    window()->setPersistentOpenGLContext(true);
+    window()->setPersistentSceneGraph(true);
+    return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler, mpvRenderContext);
+}
+
+void VideoObject::performUpdate()
+{
+    update();
+}
+
+void VideoObject::command(const QVariant &args)
+{
+    mpv::qt::command(mpvHandler, args);
 }

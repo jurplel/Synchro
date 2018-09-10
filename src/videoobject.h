@@ -16,9 +16,20 @@ public:
     virtual ~VideoObject();
     virtual Renderer *createRenderer() const;
 
+
+public slots:
+    void command(const QVariant &args);
+
+signals:
+    void requestUpdate();
+
+protected:
+    void performUpdate();
+
+
 private:
-    mpv_handle *mpv;
-    mpv_render_context *mpvGL;
+    mpv_handle *mpvHandler;
+    mpv_render_context *mpvRenderContext;
 
 };
 
