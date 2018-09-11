@@ -4,6 +4,7 @@ import QtQuick.Window 2.9
 import Synchro.Core 1.0
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
+import QtQuick.Layouts 1.1
 
 Window {
     id: window
@@ -21,9 +22,9 @@ Window {
 
     Rectangle {
         id: controls
-        visible: false
+        visible: true
         height: 40
-        color: "#e6000219"
+        color: "#b3000000"
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.left: parent.left
@@ -31,41 +32,50 @@ Window {
         border.width: 0
         anchors.bottom: parent.bottom
 
+        RowLayout {
+            id: rowLayout
+            anchors.fill: parent
+
+            Button {
+                id: playButton
+                text: "Pause"
+                onClicked: videoObject.command(["cycle", "pause"])
+            }
+
+            Slider {
+                id: volumeSlider
+                width: 100
+                Layout.preferredWidth: 100
+                value: 1.0
+                onMoved: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
+            }
+
+            Slider {
+                id: seekSlider
+                Layout.fillWidth: true
+                value: 0
+                onMoved: videoObject.setProperty("playback-time", (seekSlider.value).toString())
+            }
+
+            Button {
+                id: fullscreenButton
+                text: "Fullscreen"
+                onClicked: {
+                    if (window.visibility === 5)
+                        window.showNormal()
+                    else
+                        window.showFullScreen()
+                }
+            }
+        }
+
         Timer {
             id: autohideTimer
             interval: 350
             onTriggered: controls.visible = false
         }
 
-        Button {
-            id: playButton
-            x: 0
-            text: "Pause"
-            anchors.verticalCenter: parent.verticalCenter
-            onClicked: videoObject.command(["cycle", "pause"])
-        }
 
-        Slider {
-            id: volumeSlider
-            x: 504
-            width: 100
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            value: 1.0
-            onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
-        }
-
-        Slider {
-            id: seekSlider
-            height: 22
-            anchors.right: parent.right
-            anchors.rightMargin: 120
-            anchors.left: parent.left
-            anchors.leftMargin: 104
-            anchors.verticalCenter: parent.verticalCenter
-            value: 0
-            onMoved: videoObject.setProperty("playback-time", (seekSlider.value).toString())
-        }
     }
 
     MouseArea {
@@ -99,4 +109,11 @@ Window {
         acceptedButtons: Qt.RightButton
         onClicked: mainContextMenu.popup()
     }
+
+
+
 }
+/*##^## Designer {
+    D{i:14;anchors_height:100;anchors_width:100;anchors_x:484;anchors_y:0}
+}
+ ##^##*/
