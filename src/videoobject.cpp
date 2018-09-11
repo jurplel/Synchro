@@ -3,6 +3,7 @@
 
 #include <QtQuick/QQuickWindow>
 #include <QStringList>
+#include <QTimer>
 
 #include <QDebug>
 
@@ -21,6 +22,14 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv::qt::set_property(mpvHandler, "hwdec", "auto");
 
     connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
+
+    guiUpdateTimer = new QTimer();
+    guiUpdateTimer->setInterval(100);
+    connect(guiUpdateTimer, &QTimer::timeout, this, [this]{
+        setCurrentVideoLength(getProperty("duration").toReal());
+        setCurrentVideoPos(getProperty("playback-time").toReal());
+    });
+    guiUpdateTimer->start();
 }
 
 VideoObject::~VideoObject()
@@ -53,15 +62,9 @@ void VideoObject::setProperty(const QString name, const QVariant &v)
     mpv::qt::set_property(mpvHandler, name, v);
 }
 
-void VideoObject::getProperty(const QString name)
+QVariant VideoObject::getProperty(const QString name)
 {
-    mpv::qt::get_property(mpvHandler, name);
-}
-
-
-mpv_render_context *VideoObject::getMpvRenderContext() const
-{
-    return mpvRenderContext;
+    return mpv::qt::get_property(mpvHandler, name);
 }
 
 void VideoObject::setMpvRenderContext(mpv_render_context *value)
@@ -69,12 +72,25 @@ void VideoObject::setMpvRenderContext(mpv_render_context *value)
     mpvRenderContext = value;
 }
 
-mpv_handle *VideoObject::getMpvHandler() const
+
+qreal VideoObject::getCurrentVideoPos() const
 {
-    return mpvHandler;
+    return currentVideoPos;
 }
 
-void VideoObject::setMpvHandler(mpv_handle *value)
+void VideoObject::setCurrentVideoPos(const qreal &value)
 {
-    mpvHandler = value;
+    currentVideoPos = value;
+    emit currentVideoPosChanged();
+}
+
+qreal VideoObject::getCurrentVideoLength() const
+{
+    return currentVideoLength;
+}
+
+void VideoObject::setCurrentVideoLength(const qreal &value)
+{
+    currentVideoLength = value;
+    emit currentVideoLengthChanged();
 }

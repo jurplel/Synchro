@@ -15,6 +15,8 @@ Window {
     VideoObject {
         id: videoObject
         anchors.fill: parent
+        onCurrentVideoLengthChanged: seekSlider.to = currentVideoLength
+        onCurrentVideoPosChanged: seekSlider.value = currentVideoPos
     }
 
     Rectangle {
@@ -54,8 +56,8 @@ Window {
             anchors.left: parent.left
             anchors.leftMargin: 104
             anchors.verticalCenter: parent.verticalCenter
-            value: videoObject.getProperty("percent-pos")/100
-            onValueChanged: videoObject.setProperty("percent-pos", (seekSlider.value*100).toString())
+            value: 0
+            onMoved: videoObject.setProperty("playback-time", (seekSlider.value).toString())
         }
     }
 
