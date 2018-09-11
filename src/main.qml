@@ -2,7 +2,7 @@ import QtQuick 2.9
 import QtQuick.Window 2.9
 
 import Synchro.Core 1.0
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.4
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.1
 
@@ -16,8 +16,11 @@ Window {
     VideoObject {
         id: videoObject
         anchors.fill: parent
-        onCurrentVideoLengthChanged: seekSlider.to = currentVideoLength
-        onCurrentVideoPosChanged: seekSlider.value = currentVideoPos
+        onUpdateGui: {
+            seekSlider.to = currentVideoLength
+            seekSlider.value = currentVideoPos
+        }
+
     }
 
     Rectangle {
@@ -42,19 +45,32 @@ Window {
                 onClicked: videoObject.command(["cycle", "pause"])
             }
 
-            Slider {
-                id: volumeSlider
-                width: 100
-                Layout.preferredWidth: 100
-                value: 1.0
-                onMoved: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
-            }
 
             Slider {
                 id: seekSlider
                 Layout.fillWidth: true
                 value: 0
-                onMoved: videoObject.setProperty("playback-time", (seekSlider.value).toString())
+                onMoved: {
+                    console.log(seekSlider.pressed)
+                    videoObject.currentVideoPos = seekSlider.value
+
+                }
+            }
+
+            Slider {
+                id: volumeSlider
+                width: 100
+                Layout.preferredWidth: 100
+                value: 1.0
+                onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
+            }
+
+            Button {
+                id: settingsButton
+                text: "Settings"
+                onClicked: {
+
+                }
             }
 
             Button {
@@ -113,7 +129,3 @@ Window {
 
 
 }
-/*##^## Designer {
-    D{i:14;anchors_height:100;anchors_width:100;anchors_x:484;anchors_y:0}
-}
- ##^##*/

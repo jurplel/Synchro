@@ -11,8 +11,8 @@ class VideoObject : public QQuickFramebufferObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos NOTIFY currentVideoPosChanged)
-    Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength WRITE setCurrentVideoLength NOTIFY currentVideoLengthChanged)
+    Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos)
+    Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength)
 public:
     VideoObject();
     virtual ~VideoObject();
@@ -23,10 +23,16 @@ public:
     void setMpvRenderContext(mpv_render_context *value);
 
     qreal getCurrentVideoLength() const;
-    void setCurrentVideoLength(const qreal &value);
 
     qreal getCurrentVideoPos() const;
     void setCurrentVideoPos(const qreal &value);
+
+
+signals:
+    void requestUpdate();
+
+    void updateGui();
+
 
 public slots:
     void command(const QVariant &args);
@@ -35,12 +41,6 @@ public slots:
 
     QVariant getProperty(const QString name);
 
-
-signals:
-    void requestUpdate();
-
-    void currentVideoPosChanged();
-    void currentVideoLengthChanged();
 
 protected:
     void performUpdate();

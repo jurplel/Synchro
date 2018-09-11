@@ -26,8 +26,9 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     guiUpdateTimer = new QTimer();
     guiUpdateTimer->setInterval(100);
     connect(guiUpdateTimer, &QTimer::timeout, this, [this]{
-        setCurrentVideoLength(getProperty("duration").toReal());
-        setCurrentVideoPos(getProperty("playback-time").toReal());
+        currentVideoLength = getProperty("duration").toReal();
+        currentVideoPos = getProperty("playback-time").toReal();
+        emit updateGui();
     });
     guiUpdateTimer->start();
 }
@@ -81,16 +82,10 @@ qreal VideoObject::getCurrentVideoPos() const
 void VideoObject::setCurrentVideoPos(const qreal &value)
 {
     currentVideoPos = value;
-    emit currentVideoPosChanged();
+    setProperty("playback-time", value);
 }
 
 qreal VideoObject::getCurrentVideoLength() const
 {
     return currentVideoLength;
-}
-
-void VideoObject::setCurrentVideoLength(const qreal &value)
-{
-    currentVideoLength = value;
-    emit currentVideoLengthChanged();
 }
