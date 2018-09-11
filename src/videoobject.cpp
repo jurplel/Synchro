@@ -48,6 +48,15 @@ void VideoObject::command(const QVariant &args)
     mpv::qt::command(mpvHandler, args);
 }
 
+void VideoObject::setProperty(const QString name, const QVariant &v)
+{
+    mpv::qt::set_property(mpvHandler, name, v);
+}
+
+void VideoObject::getProperty(const QString name)
+{
+    mpv::qt::get_property(mpvHandler, name);
+}
 
 
 mpv_render_context *VideoObject::getMpvRenderContext() const

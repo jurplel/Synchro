@@ -23,11 +23,18 @@ public:
     mpv_render_context *getMpvRenderContext() const;
     void setMpvRenderContext(mpv_render_context *value);
 
+
 public slots:
     void command(const QVariant &args);
 
+    void setProperty(const QString name, const QVariant &v);
+
+    void getProperty(const QString name);
+
+
 signals:
     void requestUpdate();
+
 
 protected:
     void performUpdate();
