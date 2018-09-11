@@ -21,6 +21,7 @@ Window {
 
     Rectangle {
         id: controls
+        visible: false
         height: 40
         color: "#e6000219"
         anchors.right: parent.right
@@ -29,6 +30,12 @@ Window {
         anchors.leftMargin: 0
         border.width: 0
         anchors.bottom: parent.bottom
+
+        Timer {
+            id: autohideTimer
+            interval: 350
+            onTriggered: controls.visible = false
+        }
 
         Button {
             id: playButton
@@ -63,6 +70,11 @@ Window {
 
     MouseArea {
         anchors.fill: parent
+        hoverEnabled: true
+        onPositionChanged: {
+            controls.visible = true
+            autohideTimer.restart()
+        }
         Menu {
             id: mainContextMenu
             MenuItem {
@@ -88,8 +100,3 @@ Window {
         onClicked: mainContextMenu.popup()
     }
 }
-
-/*##^## Designer {
-    D{i:66;anchors_height:22}D{i:45;anchors_height:40;anchors_width:640}
-}
- ##^##*/
