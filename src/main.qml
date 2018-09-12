@@ -51,9 +51,7 @@ Window {
                 id: seekSlider
                 Layout.fillWidth: true
                 to: 100
-                onMoved: {
-                    videoObject.seek(value)
-                }
+                onMoved: videoObject.seek(value)
             }
 
             Slider {

@@ -4,10 +4,8 @@
 #include <QtQuick/QQuickWindow>
 #include <QStringList>
 #include <QTimer>
-#include <QMetaObject>
 
 #include <QDebug>
-#include <QMetaType>
 
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
@@ -19,7 +17,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
-    setProperty("terminal", "yes");
+    //setProperty("terminal", "yes");
     connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 
     guiUpdateTimer = new QTimer();
@@ -29,13 +27,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
         emit updateGui();
     });
     guiUpdateTimer->start();
-
-    seekThread = new QThread;
-    seekWorker = new SeekWorker;
-    seekWorker->moveToThread(seekThread);
-    seekThread->start();
-    seekThread->setPriority(QThread::LowestPriority);
-    connect(this, &VideoObject::workOnSeek, seekWorker, &SeekWorker::seek);
 }
 
 VideoObject::~VideoObject()
@@ -60,11 +51,11 @@ void VideoObject::performUpdate()
 
 void VideoObject::seek(const qreal newPos)
 {
-    emit workOnSeek(mpvHandler, newPos);
+    mpv::qt::command(mpvHandler, QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
 }
 
 void VideoObject::command(const QVariant &args)
-{
+{  
     mpv::qt::command(mpvHandler, args);
 }
 
@@ -91,7 +82,7 @@ qreal VideoObject::getCurrentVideoPos() const
 
 void VideoObject::setCurrentVideoPos(const qreal &value)
 {
-    setProperty("playback-time", value);
+    currentVideoPos = value;
 }
 
 qreal VideoObject::getCurrentVideoLength() const

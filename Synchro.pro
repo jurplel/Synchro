@@ -50,8 +50,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         src/main.cpp \
     src/corerenderer.cpp \
-    src/videoobject.cpp \
-    src/seekworker.cpp
+    src/videoobject.cpp
 
 RESOURCES += src/qml.qrc
 
@@ -65,5 +64,4 @@ QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
     src/corerenderer.h \
-    src/videoobject.h \
-    src/seekworker.h
+    src/videoobject.h

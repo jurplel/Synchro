@@ -72,4 +72,5 @@ void CoreRenderer::render()
     mpv_render_context_render(mpvRenderContext, params);
 
     videoObject->window()->resetOpenGLState();
+    update();
 }

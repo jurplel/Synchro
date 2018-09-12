@@ -3,9 +3,6 @@
 
 #include <QtQuick/QQuickFramebufferObject>
 
-#include <QThread>
-#include "seekworker.h"
-
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
 #include <mpv/qthelper.hpp>
@@ -54,9 +51,6 @@ protected:
 private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
-
-    QThread *seekThread;
-    SeekWorker *seekWorker;
 
     QTimer *guiUpdateTimer;
     qreal currentVideoPos;
