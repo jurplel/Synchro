@@ -2,7 +2,7 @@ import QtQuick 2.9
 import QtQuick.Window 2.9
 
 import Synchro.Core 1.0
-import QtQuick.Controls 2.4
+import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.1
 
@@ -17,7 +17,8 @@ Window {
         id: videoObject
         anchors.fill: parent
         onUpdateGui: {
-            seekSlider.to = currentVideoLength
+            if (seekSlider.pressed)
+                return;
             seekSlider.value = currentVideoPos
         }
 
@@ -49,11 +50,10 @@ Window {
             Slider {
                 id: seekSlider
                 Layout.fillWidth: true
-                value: 0
+                to: 100
+                stepSize: 1;
                 onMoved: {
-                    console.log(seekSlider.pressed)
-                    videoObject.currentVideoPos = seekSlider.value
-
+                    videoObject.seek(value)
                 }
             }
 
@@ -88,7 +88,7 @@ Window {
         Timer {
             id: autohideTimer
             interval: 350
-            onTriggered: controls.visible = false
+            //onTriggered: controls.visible = false
         }
 
 

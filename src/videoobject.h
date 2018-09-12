@@ -18,8 +18,6 @@ public:
     virtual ~VideoObject();
     virtual Renderer *createRenderer() const;
 
-
-
     void setMpvRenderContext(mpv_render_context *value);
 
     qreal getCurrentVideoLength() const;
@@ -35,6 +33,8 @@ signals:
 
 
 public slots:
+    void seek(const qreal newPos);
+
     void command(const QVariant &args);
 
     void setProperty(const QString name, const QVariant &v);

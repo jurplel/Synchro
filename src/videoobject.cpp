@@ -14,20 +14,18 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     if (!mpvHandler)
         throw std::runtime_error("failed to create mpv instance");
 
-    mpv::qt::set_property(mpvHandler, "terminal", "yes");
-
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
-    mpv::qt::set_property(mpvHandler, "hwdec", "auto");
+    setProperty("terminal", "yes");
+    setProperty("hwdec", "auto");
 
     connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 
     guiUpdateTimer = new QTimer();
     guiUpdateTimer->setInterval(100);
     connect(guiUpdateTimer, &QTimer::timeout, this, [this]{
-        currentVideoLength = getProperty("duration").toReal();
-        currentVideoPos = getProperty("playback-time").toReal();
+        currentVideoPos = getProperty("percent-pos").toReal();
         emit updateGui();
     });
     guiUpdateTimer->start();
@@ -51,6 +49,11 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 void VideoObject::performUpdate()
 {
     update();
+}
+
+void VideoObject::seek(const qreal newPos)
+{
+    command(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
 }
 
 void VideoObject::command(const QVariant &args)
@@ -81,7 +84,6 @@ qreal VideoObject::getCurrentVideoPos() const
 
 void VideoObject::setCurrentVideoPos(const qreal &value)
 {
-    currentVideoPos = value;
     setProperty("playback-time", value);
 }
 
