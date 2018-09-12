@@ -3,6 +3,9 @@
 
 #include <QtQuick/QQuickFramebufferObject>
 
+#include <QThread>
+#include "seekworker.h"
+
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
 #include <mpv/qthelper.hpp>
@@ -13,6 +16,8 @@ class VideoObject : public QQuickFramebufferObject
 
     Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos)
     Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength)
+
+
 public:
     VideoObject();
     virtual ~VideoObject();
@@ -30,7 +35,7 @@ signals:
     void requestUpdate();
 
     void updateGui();
-
+    void workOnSeek(void *handler, const qreal newPos);
 
 public slots:
     void seek(const qreal newPos);
@@ -50,7 +55,10 @@ private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
 
-    QTimer* guiUpdateTimer;
+    QThread *seekThread;
+    SeekWorker *seekWorker;
+
+    QTimer *guiUpdateTimer;
     qreal currentVideoPos;
     qreal currentVideoLength;
 };

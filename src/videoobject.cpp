@@ -4,8 +4,10 @@
 #include <QtQuick/QQuickWindow>
 #include <QStringList>
 #include <QTimer>
+#include <QMetaObject>
 
 #include <QDebug>
+#include <QMetaType>
 
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
@@ -18,8 +20,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
         throw std::runtime_error("failed to initalize mpv instance");
 
     setProperty("terminal", "yes");
-    setProperty("hwdec", "auto");
-
     connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 
     guiUpdateTimer = new QTimer();
@@ -29,6 +29,13 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
         emit updateGui();
     });
     guiUpdateTimer->start();
+
+    seekThread = new QThread;
+    seekWorker = new SeekWorker;
+    seekWorker->moveToThread(seekThread);
+    seekThread->start();
+    seekThread->setPriority(QThread::LowestPriority);
+    connect(this, &VideoObject::workOnSeek, seekWorker, &SeekWorker::seek);
 }
 
 VideoObject::~VideoObject()
@@ -53,7 +60,7 @@ void VideoObject::performUpdate()
 
 void VideoObject::seek(const qreal newPos)
 {
-    command(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+    emit workOnSeek(mpvHandler, newPos);
 }
 
 void VideoObject::command(const QVariant &args)

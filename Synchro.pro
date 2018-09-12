@@ -1,5 +1,5 @@
 QT += quick
-CONFIG += c++11
+CONFIG += c++14
 
 VERSION = 0.1 # major.minor
 
@@ -50,7 +50,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         src/main.cpp \
     src/corerenderer.cpp \
-    src/videoobject.cpp
+    src/videoobject.cpp \
+    src/seekworker.cpp
 
 RESOURCES += src/qml.qrc
 
@@ -64,4 +65,5 @@ QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
     src/corerenderer.h \
-    src/videoobject.h
+    src/videoobject.h \
+    src/seekworker.h

@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "videoobject.h"
+#include "seekworker.h"
 
 int main(int argc, char *argv[])
 {

@@ -51,7 +51,6 @@ Window {
                 id: seekSlider
                 Layout.fillWidth: true
                 to: 100
-                stepSize: 1;
                 onMoved: {
                     videoObject.seek(value)
                 }
