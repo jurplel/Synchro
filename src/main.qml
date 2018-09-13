@@ -13,6 +13,13 @@ Window {
     height: 480
     color: "#00010f"
     title: "Synchro"
+
+
+    onWidthChanged: videoObject.resized()
+
+    onHeightChanged: videoObject.resized()
+
+
     VideoObject {
         id: videoObject
         anchors.fill: parent
@@ -122,7 +129,5 @@ Window {
         acceptedButtons: Qt.RightButton
         onClicked: mainContextMenu.popup()
     }
-
-
 
 }

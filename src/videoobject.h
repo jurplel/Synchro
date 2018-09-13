@@ -27,12 +27,10 @@ public:
     qreal getCurrentVideoPos() const;
     void setCurrentVideoPos(const qreal &value);
 
+    bool *getIsResizing();
 
 signals:
-    void requestUpdate();
-
     void updateGui();
-    void workOnSeek(void *handler, const qreal newPos);
 
 public slots:
     void seek(const qreal newPos);
@@ -43,10 +41,7 @@ public slots:
 
     QVariant getProperty(const QString name);
 
-
-protected:
-    void performUpdate();
-
+    void resized();
 
 private:
     mpv_handle *mpvHandler;
@@ -55,6 +50,9 @@ private:
     QTimer *guiUpdateTimer;
     qreal currentVideoPos;
     qreal currentVideoLength;
+
+    QTimer *resizingTimer;
+    bool isResizing;
 };
 
 #endif // VIDEOOBJECT_H

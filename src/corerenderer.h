@@ -27,6 +27,8 @@ private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
 
+    bool *isResizing;
+
     static void *get_proc_address_mpv(void *ctx, const char *name)
     {
         Q_UNUSED(ctx)
@@ -40,12 +42,6 @@ private:
     static void onMpvEvents(void *ctx)
     {
         Q_UNUSED(ctx)
-    }
-
-    static void onMpvRedraw(void *ctx)
-    {
-        VideoObject* videoObject = reinterpret_cast<VideoObject*>(ctx);
-        emit videoObject->requestUpdate();
     }
 };
 

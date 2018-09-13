@@ -7,14 +7,13 @@
 #include <QDebug>
 
 
-//Real beginning of the class in my mind
-
 CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandler, mpv_render_context *newMpvRenderContext) : QQuickFramebufferObject::Renderer()
 {
     videoObject = newVideoObject;
     mpvHandler = newMpvHandler;
     mpvRenderContext = newMpvRenderContext;
     mpv_set_wakeup_callback(mpvHandler, onMpvEvents, nullptr);
+    isResizing = videoObject->getIsResizing();
 }
 
 CoreRenderer::~CoreRenderer()
@@ -37,7 +36,6 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
 
         if (mpv_render_context_create(&mpvRenderContext, mpvHandler, params) != 0)
             throw std::runtime_error("failed to initialize mpv GL context");
-        mpv_render_context_set_update_callback(mpvRenderContext, onMpvRedraw, videoObject);
     }
 
     videoObject->setMpvRenderContext(mpvRenderContext);
@@ -46,8 +44,6 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
 
 void CoreRenderer::render()
 {
-    videoObject->window()->resetOpenGLState();
-
     QOpenGLFramebufferObject *fbo = framebufferObject();
     mpv_opengl_fbo mpfbo;
     mpfbo.fbo = static_cast<int>(fbo->handle());
@@ -71,6 +67,6 @@ void CoreRenderer::render()
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
 
-    videoObject->window()->resetOpenGLState();
-    update();
+    if (!*isResizing)
+        update();
 }

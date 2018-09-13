@@ -9,6 +9,7 @@
 
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
+    isResizing = false;
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
     if (!mpvHandler)
@@ -17,8 +18,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
-    //setProperty("terminal", "yes");
-    connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
+    setProperty("terminal", "yes");
 
     guiUpdateTimer = new QTimer();
     guiUpdateTimer->setInterval(100);
@@ -27,6 +27,14 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
         emit updateGui();
     });
     guiUpdateTimer->start();
+
+    resizingTimer = new QTimer();
+    resizingTimer->setInterval(100);
+    resizingTimer->setSingleShot(true);
+    connect(resizingTimer, &QTimer::timeout, this, [this]{
+        isResizing = false;
+        update();
+    });
 }
 
 VideoObject::~VideoObject()
@@ -42,11 +50,6 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
     window()->setPersistentOpenGLContext(true);
     window()->setPersistentSceneGraph(true);
     return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler, mpvRenderContext);
-}
-
-void VideoObject::performUpdate()
-{
-    update();
 }
 
 void VideoObject::seek(const qreal newPos)
@@ -74,6 +77,11 @@ void VideoObject::setMpvRenderContext(mpv_render_context *value)
     mpvRenderContext = value;
 }
 
+void VideoObject::resized()
+{
+    isResizing = true;
+    resizingTimer->start();
+}
 
 qreal VideoObject::getCurrentVideoPos() const
 {
@@ -88,4 +96,9 @@ void VideoObject::setCurrentVideoPos(const qreal &value)
 qreal VideoObject::getCurrentVideoLength() const
 {
     return currentVideoLength;
+}
+
+bool *VideoObject::getIsResizing()
+{
+    return &isResizing;
 }
