@@ -14,11 +14,9 @@ Window {
     color: "#00010f"
     title: "Synchro"
 
-
     onWidthChanged: videoObject.resized()
 
     onHeightChanged: videoObject.resized()
-
 
     VideoObject {
         id: videoObject
@@ -91,14 +89,18 @@ Window {
 
         Timer {
             id: autohideTimer
-            interval: 350
-            //onTriggered: controls.visible = false
+            interval: 500
+            onTriggered: {
+                if (!mouseArea.containsMouse || mouseArea.mouseY < window.height-40)
+                    controls.visible = false
+            }
         }
 
 
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
         onPositionChanged: {
