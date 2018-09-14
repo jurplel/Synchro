@@ -27,7 +27,7 @@ Window {
                 return;
             seekSlider.value = currentVideoPos
         }
-        onPausedChanged: paused ? playPauseIcon.state = "" : playPauseIcon.state = "paused"
+        onPausedChanged: paused ? playPauseIcon.state = "" : playPauseIcon.state = "playing"
 
     }
 
@@ -135,6 +135,12 @@ Window {
             ]
 
             Rectangle {
+                anchors.fill: parent
+                color: "#33000000"
+                border.width: 0
+            }
+
+            Rectangle {
                 id: oscControls
                 color: "#00000000"
                 anchors.topMargin: 11
@@ -159,7 +165,7 @@ Window {
                         source: "qrc:/resources/music_play_button.png"
                         states: [
                             State {
-                                name: "paused"
+                                name: "playing"
                                 PropertyChanges {
                                     target: playPauseIcon
                                     source: "qrc:/resources/music_pause_button.png"
