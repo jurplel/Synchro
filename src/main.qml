@@ -36,8 +36,7 @@ Window {
         onTriggered: {
             if (!mouseArea.containsMouse || mouseArea.mouseY < window.height-controls.height-8)
             {
-                controls.visible = false
-                seekSlider.visible = false
+                controls.state = "hidden"
             }
         }
     }
@@ -47,8 +46,7 @@ Window {
         anchors.fill: parent
         hoverEnabled: true
         onPositionChanged: {
-            controls.visible = true
-            seekSlider.visible = true
+            controls.state = ""
             autohideTimer.restart()
         }
         Menu {
@@ -83,6 +81,7 @@ Window {
             anchors.bottom: parent.bottom
             Layout.fillWidth: true
             to: 100
+            opacity: controls.opacity
             onMoved: videoObject.seek(value)
         }
 
@@ -109,6 +108,30 @@ Window {
                 source: effectSource
                 radius: 64
             }
+
+            states: [
+                State {
+                    name: "hidden"
+                    PropertyChanges {
+                        target: controls
+                        opacity: 0
+                    }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    reversible: true
+                    from: ""
+                    to: "hidden"
+                    NumberAnimation {
+                        target: controls
+                        properties: "opacity"
+                        duration: 165
+                        easing.type: Easing.InOutQuad
+                    }
+                }
+            ]
 
             Rectangle {
                 id: oscControls
