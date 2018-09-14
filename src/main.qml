@@ -1,11 +1,12 @@
-import QtQuick 2.9
+﻿import QtQuick 2.9
 import QtQuick.Window 2.9
-
-import Synchro.Core 1.0
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.1
+import QtGraphicalEffects 1.0
 
+import Synchro.Core 1.0
+import "synchroqml"
 Window {
     id: window
     visible: true
@@ -29,74 +30,16 @@ Window {
 
     }
 
-    Rectangle {
-        id: controls
-        visible: true
-        height: 40
-        color: "#b3000000"
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-        anchors.left: parent.left
-        anchors.leftMargin: 0
-        border.width: 0
-        anchors.bottom: parent.bottom
-
-        RowLayout {
-            id: rowLayout
-            anchors.fill: parent
-
-            Button {
-                id: playButton
-                text: "Pause"
-                onClicked: videoObject.command(["cycle", "pause"])
-            }
-
-
-            Slider {
-                id: seekSlider
-                Layout.fillWidth: true
-                to: 100
-                onMoved: videoObject.seek(value)
-            }
-
-            Slider {
-                id: volumeSlider
-                width: 100
-                Layout.preferredWidth: 100
-                value: 1.0
-                onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
-            }
-
-            Button {
-                id: settingsButton
-                text: "Settings"
-                onClicked: {
-
-                }
-            }
-
-            Button {
-                id: fullscreenButton
-                text: "Fullscreen"
-                onClicked: {
-                    if (window.visibility === 5)
-                        window.showNormal()
-                    else
-                        window.showFullScreen()
-                }
+    Timer {
+        id: autohideTimer
+        interval: 500
+        onTriggered: {
+            if (!mouseArea.containsMouse || mouseArea.mouseY < window.height-controls.height-8)
+            {
+                controls.visible = false
+                seekSlider.visible = false
             }
         }
-
-        Timer {
-            id: autohideTimer
-            interval: 500
-            onTriggered: {
-                if (!mouseArea.containsMouse || mouseArea.mouseY < window.height-40)
-                    controls.visible = false
-            }
-        }
-
-
     }
 
     MouseArea {
@@ -105,6 +48,7 @@ Window {
         hoverEnabled: true
         onPositionChanged: {
             controls.visible = true
+            seekSlider.visible = true
             autohideTimer.restart()
         }
         Menu {
@@ -130,6 +74,99 @@ Window {
         }
         acceptedButtons: Qt.RightButton
         onClicked: mainContextMenu.popup()
-    }
 
+        Seekbar {
+            id: seekSlider
+            anchors.bottomMargin: controls.height
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            Layout.fillWidth: true
+            to: 100
+            onMoved: videoObject.seek(value)
+        }
+
+        Rectangle {
+            id: controls
+            height: 50
+            color: "#000000"
+            anchors.right: parent.right
+            anchors.left: parent.left
+            border.width: 0
+            anchors.bottom: parent.bottom
+
+            ShaderEffectSource {
+                id: effectSource
+
+                sourceItem: videoObject
+                width: parent.width
+                height: parent.height
+                sourceRect: Qt.rect(controls.x,controls.y, width, height)
+            }
+
+            FastBlur{
+                anchors.fill: effectSource
+                source: effectSource
+                radius: 64
+            }
+
+            Rectangle {
+                id: oscControls
+                color: "#00000000"
+                anchors.topMargin: 11
+                anchors.bottomMargin: 11
+                anchors.rightMargin: 0
+                border.width: 0
+                anchors.fill: parent
+
+                AbstractButton {
+                    width: 32
+                    height: 32
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Image {
+                        width: parent.height
+                        height: parent.width
+                        sourceSize.width: 64
+                        sourceSize.height: 64
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/resources/music_play_button.png"
+                    }
+                    onPressed: videoObject.command(["cycle", "pause"])
+                }
+
+                //                Slider {
+                //                    id: volumeSlider
+                //                    width: 100
+                //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                //                    Layout.preferredWidth: 100
+                //                    value: 1.0
+                //                    onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
+                //                }
+
+                //                Button {
+                //                    id: settingsButton
+                //                    text: "Settings"
+                //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                //                    onClicked: {
+
+                //                    }
+                //                }
+
+                //                Button {
+                //                    id: fullscreenButton
+                //                    text: "Fullscreen"
+                //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                //                    onClicked: {
+                //                        if (window.visibility === 5)
+                //                            window.showNormal()
+                //                        else
+                //                            window.showFullScreen()
+                //                    }
+                //                }
+            }
+
+        }
+    }
 }

@@ -52,7 +52,8 @@ SOURCES += \
     src/corerenderer.cpp \
     src/videoobject.cpp
 
-RESOURCES += src/qml.qrc
+RESOURCES += src/qml.qrc \
+    resources/resources.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
