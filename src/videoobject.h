@@ -13,6 +13,7 @@ class VideoObject : public QQuickFramebufferObject
 
     Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos)
     Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength)
+    Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
 
 
 public:
@@ -29,11 +30,18 @@ public:
 
     bool *getIsResizing();
 
+    bool getPaused() const;
+    void setPaused(bool value);
+
 signals:
     void updateGui();
 
+    void pausedChanged();
+
 public slots:
     void seek(const qreal newPos);
+
+    void pause();
 
     void command(const QVariant &args);
 
@@ -53,6 +61,8 @@ private:
 
     QTimer *resizingTimer;
     bool isResizing;
+
+    bool paused;
 };
 
 #endif // VIDEOOBJECT_H

@@ -10,15 +10,19 @@
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
     isResizing = false;
+    paused = true;
+
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
+
     if (!mpvHandler)
         throw std::runtime_error("failed to create mpv instance");
 
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
-    setProperty("terminal", "yes");
+    setProperty("terminal", true);
+    setProperty("pause", true);
 
     guiUpdateTimer = new QTimer();
     guiUpdateTimer->setInterval(100);
@@ -57,6 +61,13 @@ void VideoObject::seek(const qreal newPos)
     mpv::qt::command(mpvHandler, QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
 }
 
+void VideoObject::pause()
+{
+    bool pauseStatus = getProperty("pause").toBool();
+    setProperty("pause", !pauseStatus);
+    setPaused(!pauseStatus);
+}
+
 void VideoObject::command(const QVariant &args)
 {  
     mpv::qt::command(mpvHandler, args);
@@ -81,6 +92,17 @@ void VideoObject::resized()
 {
     isResizing = true;
     resizingTimer->start();
+}
+
+bool VideoObject::getPaused() const
+{
+    return paused;
+}
+
+void VideoObject::setPaused(bool value)
+{
+    paused = value;
+    emit pausedChanged();
 }
 
 qreal VideoObject::getCurrentVideoPos() const

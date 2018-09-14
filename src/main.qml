@@ -27,6 +27,7 @@ Window {
                 return;
             seekSlider.value = currentVideoPos
         }
+        onPausedChanged: paused ? playPauseIcon.state = "paused" : playPauseIcon.state = ""
 
     }
 
@@ -149,14 +150,29 @@ Window {
                     anchors.horizontalCenter: parent.horizontalCenter
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Image {
+                        id: playPauseIcon
                         width: parent.height
                         height: parent.width
                         sourceSize.width: 64
                         sourceSize.height: 64
                         fillMode: Image.PreserveAspectFit
                         source: "qrc:/resources/music_play_button.png"
+                        states: [
+                            State {
+                                name: "paused"
+                                PropertyChanges {
+                                    target: playPauseIcon
+                                    source: "qrc:/resources/music_pause_button.png"
+                                }
+                            }
+                        ]
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.NoButton
+                            cursorShape: Qt.PointingHandCursor
+                        }
                     }
-                    onPressed: videoObject.command(["cycle", "pause"])
+                    onPressed: videoObject.pause()
                 }
 
                 //                Slider {
