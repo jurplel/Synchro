@@ -27,7 +27,7 @@ Window {
                 return;
             seekSlider.value = currentVideoPos
         }
-        onPausedChanged: paused ? playPauseIcon.state = "paused" : playPauseIcon.state = ""
+        onPausedChanged: paused ? playPauseIcon.state = "" : playPauseIcon.state = "paused"
 
     }
 
@@ -35,7 +35,7 @@ Window {
         id: autohideTimer
         interval: 500
         onTriggered: {
-            if (!mouseArea.containsMouse || mouseArea.mouseY < window.height-controls.height-8)
+            if ((!mouseArea.containsMouse || mouseArea.mouseY < window.height-controls.height-8) && !videoObject.paused)
             {
                 controls.state = "hidden"
             }
