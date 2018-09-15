@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>synchroqml/Seekbar.qml</file>
+        <file>synchroqml/OnScreenController.qml</file>
     </qresource>
 </RCC>

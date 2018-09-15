@@ -4,5 +4,8 @@
         <file>music_play_button.svg</file>
         <file>music_play_button.png</file>
         <file>music_pause_button.png</file>
+        <file>music_pause_button2.png</file>
+        <file>pause-play.mng</file>
+        <file>play-pause.mng</file>
     </qresource>
 </RCC>
