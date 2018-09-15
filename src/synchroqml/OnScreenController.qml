@@ -1,4 +1,4 @@
-import QtQuick 2.11
+import QtQuick 2.9
 import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
@@ -109,7 +109,6 @@ Rectangle {
                     playing: false
                     onCurrentFrameChanged: if (currentFrame == 30) playing = false
                     onStateChanged: playing = true
-                    onPausedChanged: if (paused == true) {speed = 1} else {speed = 4.0}
                     states: [
                         State {
                             name: "playing"
