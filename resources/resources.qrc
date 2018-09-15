@@ -1,10 +1,7 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>music_pause_button.svg</file>
-        <file>music_play_button.svg</file>
-        <file>music_play_button.png</file>
-        <file>music_pause_button.png</file>
-        <file>music_pause_button2.png</file>
+        <file>play.png</file>
+        <file>pause.png</file>
         <file>pause-play.mng</file>
         <file>play-pause.mng</file>
     </qresource>
