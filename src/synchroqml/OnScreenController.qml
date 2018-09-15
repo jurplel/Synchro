@@ -109,6 +109,7 @@ Rectangle {
                     playing: false
                     onCurrentFrameChanged: if (currentFrame == 30) playing = false
                     onStateChanged: playing = true
+                    onPausedChanged: if (paused == true) {speed = 1} else {speed = 4.0}
                     states: [
                         State {
                             name: "playing"
