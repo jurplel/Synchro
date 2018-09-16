@@ -49,6 +49,8 @@ public slots:
 
     QVariant getProperty(const QString name);
 
+    void setOption(const QString name, const QVariant &v);
+
     void resized();
 
 private:

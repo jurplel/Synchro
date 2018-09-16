@@ -36,14 +36,15 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
 
         if (mpv_render_context_create(&mpvRenderContext, mpvHandler, params) != 0)
             throw std::runtime_error("failed to initialize mpv GL context");
-    }
-
-    videoObject->setMpvRenderContext(mpvRenderContext);
+        videoObject->setMpvRenderContext(mpvRenderContext);
+    } 
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
 }
 
 void CoreRenderer::render()
 {
+    videoObject->window()->resetOpenGLState();
+
     QOpenGLFramebufferObject *fbo = framebufferObject();
     mpv_opengl_fbo mpfbo;
     mpfbo.fbo = static_cast<int>(fbo->handle());
@@ -67,6 +68,7 @@ void CoreRenderer::render()
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
 
+    videoObject->window()->resetOpenGLState();
     if (!*isResizing)
         update();
 }

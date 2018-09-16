@@ -24,6 +24,9 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("terminal", true);
     setProperty("pause", true);
 
+    setOption("display-fps", 60);
+    setOption("video-sync", "display-resample");
+
     guiUpdateTimer = new QTimer();
     guiUpdateTimer->setInterval(100);
     connect(guiUpdateTimer, &QTimer::timeout, this, [this]{
@@ -81,6 +84,11 @@ void VideoObject::setProperty(const QString name, const QVariant &v)
 QVariant VideoObject::getProperty(const QString name)
 {
     return mpv::qt::get_property(mpvHandler, name);
+}
+
+void VideoObject::setOption(const QString name, const QVariant &v)
+{
+    mpv::qt::set_option_variant(mpvHandler, name, v);
 }
 
 void VideoObject::setMpvRenderContext(mpv_render_context *value)
