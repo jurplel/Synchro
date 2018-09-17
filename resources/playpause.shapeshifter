@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "layers": {
+    "vectorLayer": {
+      "id": "195598",
+      "name": "playpause",
+      "type": "vector",
+      "canvasColor": "#000000",
+      "width": 64,
+      "height": 64,
+      "children": [
+        {
+          "id": "195595",
+          "name": "pause",
+          "type": "path",
+          "pathData": "M 25 23 L 25 41 M 38 23 L 38 41",
+          "fillAlpha": 0,
+          "strokeColor": "#ffffff",
+          "strokeWidth": 2,
+          "strokeLinecap": "round",
+          "strokeLinejoin": "bevel"
+        },
+        {
+          "id": "205171",
+          "name": "play",
+          "type": "path",
+          "pathData": "M 27 21 L 41 32 L 27 43 Z",
+          "fillAlpha": 0,
+          "strokeColor": "#ffffff",
+          "strokeWidth": 2,
+          "strokeLinecap": "round"
+        },
+        {
+          "id": "205189",
+          "name": "circ",
+          "type": "path",
+          "pathData": "M 53.92 10.081 C 66.027 22.186 66.027 41.813 53.92 53.919 C 41.814 66.027 22.186 66.027 10.081 53.919 C -2.026 41.814 -2.026 22.187 10.081 10.081 C 22.186 -2.027 41.813 -2.027 53.92 10.081 Z",
+          "fillAlpha": 0,
+          "strokeColor": "#ffffff",
+          "strokeWidth": 2,
+          "strokeLinejoin": "bevel"
+        }
+      ]
+    },
+    "hiddenLayerIds": []
+  },
+  "timeline": {
+    "animation": {
+      "id": "195443",
+      "name": "anim",
+      "duration": 500,
+      "blocks": [
+        {
+          "id": "228574",
+          "layerId": "195595",
+          "propertyName": "pathData",
+          "startTime": 0,
+          "endTime": 500,
+          "interpolator": "FAST_OUT_SLOW_IN",
+          "type": "path",
+          "fromValue": "M 38 23 L 38 31.943 M 38 31.943 L 38 41 M 25 41 L 25 23",
+          "toValue": "M 27 21 L 41 32 M 41 32 L 27 43 M 27 43 L 27 21"
+        },
+        {
+          "id": "250962",
+          "layerId": "205171",
+          "propertyName": "pathData",
+          "startTime": 0,
+          "endTime": 500,
+          "interpolator": "FAST_OUT_SLOW_IN",
+          "type": "path",
+          "fromValue": "M 27 21 L 41 32 M 41 32 L 27 43 M 27 43 L 27 21",
+          "toValue": "M 38 23 L 38 31.943 M 38 31.943 L 38 41 M 25 41 L 25 23"
+        }
+      ]
+    }
+  }
+}

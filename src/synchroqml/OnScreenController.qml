@@ -1,8 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
-import QtQuick.Dialogs 1.0
-import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
 Rectangle {
@@ -33,7 +31,7 @@ Rectangle {
 
     Rectangle {
         id: controls
-        height: 50
+        height: 48
         color: "#000000"
         anchors.right: parent.right
         anchors.left: parent.left
@@ -88,18 +86,16 @@ Rectangle {
         Rectangle {
             id: oscControls
             color: "#00000000"
-            anchors.topMargin: 10
-            anchors.bottomMargin: 10
+            height: controls.height-12
             anchors.rightMargin: 0
             border.width: 0
             anchors.fill: parent
 
             AbstractButton {
-                width: 34
-                height: 34
+                width: 36
+                height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 AnimatedImage {
                     id: playPauseIcon
                     width: parent.height
@@ -128,14 +124,45 @@ Rectangle {
                 onPressed: videoObject.pause()
             }
 
-    //        //                Slider {
-    //        //                    id: volumeSlider
-    //        //                    width: 100
-    //        //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-    //        //                    Layout.preferredWidth: 100
-    //        //                    value: 1.0
-    //        //                    onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
-    //        //                }
+//            AbstractButton {
+//                width: 34
+//                height: 34
+//                anchors.verticalCenter: parent.verticalCenter
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                AnimatedImage {
+//                    id: fullScreenIcon
+//                    width: parent.height
+//                    height: parent.width
+//                    source: "qrc:/resources/pause-play.mng"
+//                    currentFrame: 30
+//                    playing: false
+//                    onCurrentFrameChanged: if (currentFrame == 30) playing = false
+//                    onStateChanged: playing = true
+//                    states: [
+//                        State {
+//                            name: "playing"
+//                            PropertyChanges {
+//                                target: volumeIcon
+//                                source: "qrc:/resources/play-pause.mng"
+//                            }
+//                        }
+//                    ]
+
+//                    MouseArea {
+//                        anchors.fill: parent
+//                        acceptedButtons: Qt.NoButton
+//                        cursorShape: Qt.PointingHandCursor
+//                    }
+//                }
+//                onPressed: videoObject.pause()
+//            }
+
+//            Slider {
+//                id: volumeSlider
+//                width: 100
+//                value: 1.0
+//                onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
+//            }
 
     //        //                Button {
     //        //                    id: settingsButton

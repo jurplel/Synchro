@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>play.png</file>
-        <file>pause.png</file>
         <file>pause-play.mng</file>
         <file>play-pause.mng</file>
     </qresource>
