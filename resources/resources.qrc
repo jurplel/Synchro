@@ -2,5 +2,6 @@
     <qresource prefix="/resources">
         <file>pause-play.mng</file>
         <file>play-pause.mng</file>
+        <file>play-pause.png</file>
     </qresource>
 </RCC>

@@ -96,22 +96,31 @@ Rectangle {
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                AnimatedImage {
+                AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height
                     height: parent.width
-                    source: "qrc:/resources/pause-play.mng"
-                    currentFrame: 30
-                    playing: false
-                    onCurrentFrameChanged: if (currentFrame == 30) playing = false
-                    onStateChanged: playing = true
+                    source: "qrc:/resources/play-pause.png"
+                    frameWidth: 36
+                    frameHeight: 36
+                    frameCount: 16
+                    frameSync: true
+                    running: false
+                    currentFrame: 15
+                    reverse: true
+                    onCurrentFrameChanged: if (currentFrame ==15) running = false
+                    onStateChanged: {
+                        reverse = !reverse
+                        if (currentFrame == 15)
+                            currentFrame = 0
+                        else
+                            currentFrame = 15-currentFrame
+                        running = true
+                    }
+
                     states: [
                         State {
                             name: "playing"
-                            PropertyChanges {
-                                target: playPauseIcon
-                                source: "qrc:/resources/play-pause.mng"
-                            }
                         }
                     ]
 
@@ -123,39 +132,6 @@ Rectangle {
                 }
                 onPressed: videoObject.pause()
             }
-
-//            AbstractButton {
-//                width: 34
-//                height: 34
-//                anchors.verticalCenter: parent.verticalCenter
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                AnimatedImage {
-//                    id: fullScreenIcon
-//                    width: parent.height
-//                    height: parent.width
-//                    source: "qrc:/resources/pause-play.mng"
-//                    currentFrame: 30
-//                    playing: false
-//                    onCurrentFrameChanged: if (currentFrame == 30) playing = false
-//                    onStateChanged: playing = true
-//                    states: [
-//                        State {
-//                            name: "playing"
-//                            PropertyChanges {
-//                                target: volumeIcon
-//                                source: "qrc:/resources/play-pause.mng"
-//                            }
-//                        }
-//                    ]
-
-//                    MouseArea {
-//                        anchors.fill: parent
-//                        acceptedButtons: Qt.NoButton
-//                        cursorShape: Qt.PointingHandCursor
-//                    }
-//                }
-//                onPressed: videoObject.pause()
-//            }
 
 //            Slider {
 //                id: volumeSlider
