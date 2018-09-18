@@ -1,4 +1,4 @@
-QT += quick
+QT += quick quickcontrols2
 CONFIG += c++14
 
 VERSION = 0.1 # major.minor

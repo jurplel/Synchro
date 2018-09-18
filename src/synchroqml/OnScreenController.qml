@@ -1,5 +1,4 @@
 import QtQuick 2.9
-import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 
@@ -92,10 +91,12 @@ Rectangle {
             anchors.fill: parent
 
             AbstractButton {
+                id: playPauseButton
                 width: 36
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
+                onPressed: videoObject.pause()
                 AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height
@@ -130,14 +131,91 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                     }
                 }
-                onPressed: videoObject.pause()
             }
 
+            Label {
+                text: "0:00/0:00"
+                anchors.leftMargin: 10
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Image {
+                width: 32
+                height: 32
+                id: icon1
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: -40
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/music_beginning_button.svg"
+            }
+
+            ColorOverlay
+            {
+                anchors.fill: icon1
+                source: icon1
+                color: "#FFFFFF"
+            }
+
+            Image {
+                width: 32
+                height: 32
+                id: icon2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: 40
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/music_end_button.svg"
+            }
+
+            ColorOverlay
+            {
+                anchors.fill: icon2
+                source: icon2
+                color: "#FFFFFF"
+            }
+
+            Image {
+                width: 22
+                height: 22
+                id: volumeIcon
+                anchors.rightMargin: 46
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/music_volume_up.svg"
+            }
+
+            ColorOverlay
+            {
+                anchors.fill: volumeIcon
+                source: volumeIcon
+                color: "#FFFFFF"
+            }
+
+            Image {
+                width: 22
+                height: 22
+                id: icon3
+                anchors.rightMargin: 10
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/arrows_expand.svg"
+            }
+
+            ColorOverlay
+            {
+                anchors.fill: icon3
+                source: icon3
+                color: "#FFFFFF"
+            }
 //            Slider {
 //                id: volumeSlider
 //                width: 100
-//                value: 1.0
-//                onValueChanged: videoObject.setProperty("volume", (volumeSlider.value*100).toString())
+//                anchors.verticalCenter: parent.verticalCenter
+//                anchors.right: parent.right
+//                value: 100
+//                from: 0
+//                to: 100
+//                onValueChanged: videoObject.setProperty("volume", volumeSlider.value)
 //            }
 
     //        //                Button {

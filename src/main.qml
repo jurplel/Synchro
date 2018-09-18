@@ -2,8 +2,6 @@
 import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
-import QtQuick.Layouts 1.1
-import QtGraphicalEffects 1.0
 
 import Synchro.Core 1.0
 import "synchroqml"
@@ -12,7 +10,7 @@ Window {
     visible: true
     width: 640
     height: 480
-    color: "#00010f"
+    color: "#000"
     title: "Synchro"
 
     onWidthChanged: videoObject.resized()

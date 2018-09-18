@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 
 #include "videoobject.h"
 
@@ -15,6 +16,9 @@ int main(int argc, char *argv[])
     std::setlocale(LC_NUMERIC, "C");
 
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
+
+    QQuickStyle::setStyle("synchroqml");
+    QQuickStyle::setFallbackStyle("Fusion");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
