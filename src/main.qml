@@ -32,17 +32,23 @@ Window {
         id: autohideTimer
         interval: 500
         onTriggered: {
-            if ((!mouseArea.containsMouse || mouseArea.mouseY < window.height-osc.height) && !videoObject.paused)
-            {
+            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < window.height-56) && !videoObject.paused)
                 osc.state = "hidden"
-            }
         }
     }
 
     MouseArea {
-        id: mouseArea
+        id: primaryMouseArea
         anchors.fill: parent
+        onDoubleClicked: if (window.visibility === 5) {window.showNormal()} else {window.showFullScreen()}
+    }
+
+    MouseArea {
+        id: secondaryMouseArea
         hoverEnabled: true
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        onClicked: mainContextMenu.popup()
         onPositionChanged: {
             osc.state = ""
             autohideTimer.restart()
@@ -74,7 +80,5 @@ Window {
                 onClicked: videoObject.pause()
             }
         }
-        acceptedButtons: Qt.RightButton
-        onClicked: mainContextMenu.popup()
     }
 }

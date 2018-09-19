@@ -1,91 +1,183 @@
-import QtQuick 2.9
+﻿import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 
 Rectangle {
     property alias value:seekSlider.value
-    property alias state:controls.state
+    property alias state:oscControls.state
     property var videoObject
     property bool paused: true
 
     id: container
-    height: controls.height+seekSlider.height
-    anchors.right: parent.right
-    anchors.left: parent.left
+    anchors.fill: parent
     border.width: 0
     color: "#00000000"
-    anchors.bottom: parent.bottom
-    onPausedChanged: paused ? playPauseIcon.state = "" : playPauseIcon.state = "playing"
+    onPausedChanged: {
+    if (paused)
+        playPauseIcon.state = ""
+    else
+        playPauseIcon.state = "playing"
+    }
+
+    Timer {
+        id: volumeAutohideTimer
+        interval: 500
+        onTriggered: {
+            if (!volumeIconMouseArea.containsMouse && !volumeMouseArea.containsMouse)
+                oscVolume.state = ""
+        }
+    }
+
+    Rectangle {
+        id: oscVolume
+        width: 42
+        height: 135
+        radius: 2
+        color: "#00000000"
+        anchors.rightMargin: -width
+        anchors.right: parent.right
+        anchors.bottomMargin: oscControls.height
+        anchors.bottom: parent.bottom
+
+        ShaderEffectSource {
+            id: effectSource0
+            sourceItem: videoObject
+            width: parent.width
+            height: parent.height
+            sourceRect: Qt.rect(container.width-parent.width-(-radius),container.height-parent.height-parent.anchors.bottomMargin, width, height)
+        }
+
+        FastBlur {
+            anchors.fill: effectSource0
+            source: effectSource0
+            radius: 64
+        }
+
+        states: State {
+            name: "revealed"
+            PropertyChanges {
+                target: oscVolume
+                anchors.rightMargin: 0
+            }
+            PropertyChanges {
+                target: seekSlider
+                anchors.rightMargin: oscVolume.width-oscVolume.radius
+            }
+        }
+
+        transitions: Transition {
+            reversible: true
+            to: "revealed"
+            NumberAnimation {
+                target: oscVolume
+                properties: "anchors.rightMargin"
+                duration: 165
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: seekSlider
+                properties: "anchors.rightMargin"
+                duration: 165
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "#000000"
+            opacity: 0.66
+            border.width: 0
+            radius: parent.radius
+        }
+
+        Slider {
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.margins: 16
+            orientation: Qt.Vertical
+
+            MouseArea {
+                id: volumeMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                hoverEnabled: true
+                onContainsMouseChanged: {
+                    oscVolume.state = "revealed"
+                    volumeAutohideTimer.restart()
+                }
+            }
+        }
+    }
 
     Seekbar {
         id: seekSlider
-        anchors.bottomMargin: controls.height
+        anchors.bottomMargin: oscControls.height
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         to: 100
-        opacity: controls.opacity
+        opacity: oscControls.opacity
         onMoved: videoObject.seek(value)
+        z: -1
     }
 
     Rectangle {
-        id: controls
+        id: oscControls
         height: 48
-        color: "#000000"
         anchors.right: parent.right
         anchors.left: parent.left
         border.width: 0
         anchors.bottom: parent.bottom
+        color: "#00000000"
 
         ShaderEffectSource {
-            id: effectSource
+            id: effectSource1
 
             sourceItem: videoObject
             width: parent.width
             height: parent.height
-            sourceRect: Qt.rect(container.x,container.y+seekSlider.height, width, height)
+            sourceRect: Qt.rect(container.width-parent.width,container.height-parent.height, width, height)
         }
 
-        FastBlur{
-            anchors.fill: effectSource
-            source: effectSource
+        FastBlur {
+            anchors.fill: effectSource1
+            source: effectSource1
             radius: 64
         }
 
-        states: [
-            State {
-                name: "hidden"
-                PropertyChanges {
-                    target: controls
-                    opacity: 0
-                }
+        states: State {
+            name: "hidden"
+            PropertyChanges {
+                target: oscControls
+                opacity: 0
+                enabled: false
             }
-        ]
+        }
 
-        transitions: [
-            Transition {
-                reversible: true
-                from: ""
-                to: "hidden"
-                NumberAnimation {
-                    target: controls
-                    properties: "opacity"
-                    duration: 165
-                    easing.type: Easing.InOutQuad
-                }
+        transitions: Transition {
+            reversible: true
+            NumberAnimation {
+                target: oscControls
+                properties: "opacity"
+                duration: 165
+                easing.type: Easing.InOutQuad
             }
-        ]
+        }
 
         Rectangle {
             anchors.fill: parent
-            color: "#33000000"
+            color: "#000000"
+            opacity: 0.66
             border.width: 0
         }
 
         Rectangle {
-            id: oscControls
+            id: controlsWrapper
             color: "#00000000"
-            height: controls.height-12
+            height: oscControls.height-12
             anchors.rightMargin: 0
             border.width: 0
             anchors.fill: parent
@@ -109,7 +201,7 @@ Rectangle {
                     running: false
                     currentFrame: 15
                     reverse: true
-                    onCurrentFrameChanged: if (currentFrame ==15) running = false
+                    onCurrentFrameChanged: if (currentFrame == 15) running = false
                     onStateChanged: {
                         reverse = !reverse
                         if (currentFrame == 15)
@@ -119,11 +211,9 @@ Rectangle {
                         running = true
                     }
 
-                    states: [
-                        State {
+                    states: State {
                             name: "playing"
                         }
-                    ]
 
                     MouseArea {
                         anchors.fill: parent
@@ -141,8 +231,8 @@ Rectangle {
             }
 
             Image {
-                width: 32
-                height: 32
+                width: 34
+                height: 34
                 id: icon1
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: -40
@@ -150,16 +240,15 @@ Rectangle {
                 source: "qrc:/resources/music_beginning_button.svg"
             }
 
-            ColorOverlay
-            {
+            ColorOverlay {
                 anchors.fill: icon1
                 source: icon1
                 color: "#FFFFFF"
             }
 
             Image {
-                width: 32
-                height: 32
+                width: 34
+                height: 34
                 id: icon2
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: 40
@@ -167,78 +256,49 @@ Rectangle {
                 source: "qrc:/resources/music_end_button.svg"
             }
 
-            ColorOverlay
-            {
+            ColorOverlay {
+                id: colorOverlay
                 anchors.fill: icon2
                 source: icon2
                 color: "#FFFFFF"
             }
 
-            Image {
+            AbstractButton {
+                id: volumeButton
                 width: 22
                 height: 22
-                id: volumeIcon
-                anchors.rightMargin: 46
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/resources/music_volume_up.svg"
-            }
-
-            ColorOverlay
-            {
-                anchors.fill: volumeIcon
-                source: volumeIcon
-                color: "#FFFFFF"
-            }
-
-            Image {
-                width: 22
-                height: 22
-                id: icon3
                 anchors.rightMargin: 10
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/resources/arrows_expand.svg"
+                Image {
+                    id: volumeIcon
+                    width: parent.width
+                    height: parent.height
+                    source: "qrc:/resources/music_volume_up.svg"
+                }
+
+                ColorOverlay {
+                    anchors.fill: volumeIcon
+                    source: volumeIcon
+                    color: "#FFFFFF"
+                }
+                MouseArea {
+                    id: volumeIconMouseArea
+                    anchors.fill: parent
+                    anchors.margins: -(36-parent.width)
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onContainsMouseChanged: {
+                        oscVolume.state = "revealed"
+                        volumeAutohideTimer.restart()
+                    }
+                }
             }
-
-            ColorOverlay
-            {
-                anchors.fill: icon3
-                source: icon3
-                color: "#FFFFFF"
-            }
-//            Slider {
-//                id: volumeSlider
-//                width: 100
-//                anchors.verticalCenter: parent.verticalCenter
-//                anchors.right: parent.right
-//                value: 100
-//                from: 0
-//                to: 100
-//                onValueChanged: videoObject.setProperty("volume", volumeSlider.value)
-//            }
-
-    //        //                Button {
-    //        //                    id: settingsButton
-    //        //                    text: "Settings"
-    //        //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-    //        //                    onClicked: {
-
-    //        //                    }
-    //        //                }
-
-    //        //                Button {
-    //        //                    id: fullscreenButton
-    //        //                    text: "Fullscreen"
-    //        //                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-    //        //                    onClicked: {
-    //        //                        if (window.visibility === 5)
-    //        //                            window.showNormal()
-    //        //                        else
-    //        //                            window.showFullScreen()
-    //        //                    }
-    //        //                }
         }
-
     }
 }
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
