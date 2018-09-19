@@ -4,7 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.0
 
 import Synchro.Core 1.0
-import "synchroqml"
+import "synchrocomponents"
 Window {
     id: window
     visible: true

@@ -2,13 +2,9 @@
     <qresource prefix="/resources">
         <file>play-pause.png</file>
         <file>music_volume_up.svg</file>
-        <file>arrows_expand.svg</file>
-        <file>arrows_stretch_diagonal1.svg</file>
         <file>music_beginning_button.svg</file>
         <file>music_end_button.svg</file>
-        <file>music_fastforward_button.svg</file>
         <file>music_mute.svg</file>
-        <file>music_rewind_button.svg</file>
         <file>music_volume_down.svg</file>
     </qresource>
 </RCC>

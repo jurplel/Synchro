@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
 
-    QQuickStyle::setStyle("synchroqml");
+//    QQuickStyle::setStyle("synchrostyle");
     QQuickStyle::setFallbackStyle("Fusion");
 
     QQmlApplicationEngine engine;
