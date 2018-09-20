@@ -4,7 +4,6 @@ import QtGraphicalEffects 1.0
 import "../synchrostyle"
 
 Rectangle {
-    property alias value:seekSlider.value
     property alias state:oscControls.state
     property var videoObject
 
@@ -22,6 +21,8 @@ Rectangle {
         else
             playPauseIcon.state = "playing"
         }
+
+        onCurrentVolumeChanged: volumeSlider.value = videoObject.currentVolume
 
         onCurrentVideoPosChanged: seekSlider.value = videoObject.currentVideoPos
     }
@@ -259,10 +260,10 @@ Rectangle {
             anchors.fill: parent
             anchors.margins: 8
             orientation: Qt.Vertical
-            value: videoObject.currentVolume
             to: 100
+            value: 100
             onValueChanged: {
-                changeIcon();
+                changeIcon()
                 oscVolume.state = "revealed"
                 volumeAutohideTimer.restart()
             }
