@@ -27,6 +27,7 @@ Window {
         }
         onPausedChanged: osc.paused = paused
         onMutedChanged: osc.muted = muted
+        onCurrentVolumeChanged: osc.currentVolume = currentVolume
     }
 
     Timer {
@@ -42,6 +43,12 @@ Window {
         id: primaryMouseArea
         anchors.fill: parent
         onDoubleClicked: if (window.visibility === 5) {window.showNormal()} else {window.showFullScreen()}
+        onWheel: {
+            if (wheel.angleDelta.y > 0)
+                videoObject.volume(videoObject.currentVolume+10)
+            else
+                videoObject.volume(videoObject.currentVolume-10)
+        }
     }
 
     MouseArea {

@@ -9,6 +9,7 @@ Rectangle {
     property var videoObject
     property bool paused: true
     property bool muted: false
+    property alias currentVolume:volumeSlider.value
 
     id: container
     anchors.fill: parent
@@ -18,7 +19,7 @@ Rectangle {
     if (muted)
         volumeIcon.state = "mute"
     else
-        volumeSlider.onValueChanged()
+        volumeSlider.onMoved()
     }
 
     onPausedChanged: {
@@ -89,8 +90,11 @@ Rectangle {
             orientation: Qt.Vertical
             value: 100
             to: 100
-            onValueChanged: {
-                videoObject.setProperty("volume", value)
+            onValueChanged: changeIcon()
+            onMoved: videoObject.volume(value)
+
+            function changeIcon()
+            {
                 if (value > 50)
                     volumeIcon.state = ""
                 else if (value < 1)

@@ -12,6 +12,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     isResizing = false;
     paused = true;
     muted = false;
+    currentVolume = 100;
 
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
@@ -79,6 +80,15 @@ void VideoObject::mute()
     setMuted(!muteStatus);
 }
 
+void VideoObject::volume(const qreal newVolume)
+{
+    if (newVolume < 0 || newVolume > 100)
+        return;
+    setProperty("volume", newVolume);
+    setCurrentVolume(newVolume);
+}
+
+
 void VideoObject::command(const QVariant &args)
 {  
     mpv::qt::command(mpvHandler, args);
@@ -108,6 +118,17 @@ void VideoObject::resized()
 {
     isResizing = true;
     resizingTimer->start();
+}
+
+qreal VideoObject::getCurrentVolume() const
+{
+    return currentVolume;
+}
+
+void VideoObject::setCurrentVolume(const qreal &value)
+{
+    currentVolume = value;
+    emit currentVolumeChanged();
 }
 
 bool VideoObject::getMuted() const

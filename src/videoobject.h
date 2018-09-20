@@ -15,6 +15,7 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength)
     Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
+    Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
 
 
 public:
@@ -37,11 +38,15 @@ public:
     bool getMuted() const;
     void setMuted(bool value);
 
+    qreal getCurrentVolume() const;
+    void setCurrentVolume(const qreal &value);
+
 signals:
     void updateGui();
 
     void pausedChanged();
     void mutedChanged();
+    void currentVolumeChanged();
 
 public slots:
     void seek(const qreal newPos);
@@ -49,6 +54,8 @@ public slots:
     void pause();
 
     void mute();
+
+    void volume(const qreal newVolume);
 
     void command(const QVariant &args);
 
@@ -71,6 +78,7 @@ private:
     QTimer *resizingTimer;
     bool isResizing;
 
+    qreal currentVolume;
     bool paused;
     bool muted;
 };
