@@ -70,7 +70,7 @@ Window {
                     folder: shortcuts.home
                     onAccepted: {
                         videoObject.command(["loadfile", fileDialog.fileUrl.toString()])
-                        osc.value = 0.0
+                        videoObject.currentVideoPos = 0
                         fileDialog.close()
                     }
                 }
