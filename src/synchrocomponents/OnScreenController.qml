@@ -8,11 +8,19 @@ Rectangle {
     property alias state:oscControls.state
     property var videoObject
     property bool paused: true
+    property bool muted: false
 
     id: container
     anchors.fill: parent
     border.width: 0
     color: "#00000000"
+    onMutedChanged: {
+    if (muted)
+        volumeIcon.state = "mute"
+    else
+        volumeSlider.onValueChanged()
+    }
+
     onPausedChanged: {
     if (paused)
         playPauseIcon.state = ""
@@ -75,12 +83,21 @@ Rectangle {
         }
 
         Slider {
+            id: volumeSlider
             anchors.fill: parent
             anchors.margins: 8
             orientation: Qt.Vertical
             value: 100
             to: 100
-            onValueChanged: videoObject.setProperty("volume", value)
+            onValueChanged: {
+                videoObject.setProperty("volume", value)
+                if (value > 50)
+                    volumeIcon.state = ""
+                else if (value < 1)
+                    volumeIcon.state = "mute"
+                else
+                    volumeIcon.state = "low"
+            }
         }
         MouseArea {
             id: volumeMouseArea
@@ -205,12 +222,6 @@ Rectangle {
                 source: "qrc:/resources/music_beginning_button.svg"
             }
 
-            ColorOverlay {
-                anchors.fill: icon1
-                source: icon1
-                color: "#FFFFFF"
-            }
-
             Image {
                 width: 34
                 height: 34
@@ -221,13 +232,6 @@ Rectangle {
                 source: "qrc:/resources/music_end_button.svg"
             }
 
-            ColorOverlay {
-                id: colorOverlay
-                anchors.fill: icon2
-                source: icon2
-                color: "#FFFFFF"
-            }
-
             AbstractButton {
                 id: volumeButton
                 width: 22
@@ -235,18 +239,30 @@ Rectangle {
                 anchors.rightMargin: 10
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                onPressed: videoObject.command(["cycle", "mute"])
+                onPressed: videoObject.mute()
+
                 Image {
                     id: volumeIcon
                     width: parent.width
                     height: parent.height
                     source: "qrc:/resources/music_volume_up.svg"
-                }
 
-                ColorOverlay {
-                    anchors.fill: volumeIcon
-                    source: volumeIcon
-                    color: "#FFFFFF"
+                    states: [
+                        State {
+                            name: "low"
+                            PropertyChanges {
+                                target: volumeIcon
+                                source: "qrc:/resources/music_volume_down.svg"
+                            }
+                        },
+                        State {
+                            name: "mute"
+                            PropertyChanges {
+                                target: volumeIcon
+                                source: "qrc:/resources/music_mute.svg"
+                            }
+                        }
+                    ]
                 }
 
                 MouseArea {

@@ -11,6 +11,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 {
     isResizing = false;
     paused = true;
+    muted = false;
 
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
@@ -71,6 +72,13 @@ void VideoObject::pause()
     setPaused(!pauseStatus);
 }
 
+void VideoObject::mute()
+{
+    bool muteStatus = getProperty("mute").toBool();
+    setProperty("mute", !muteStatus);
+    setMuted(!muteStatus);
+}
+
 void VideoObject::command(const QVariant &args)
 {  
     mpv::qt::command(mpvHandler, args);
@@ -100,6 +108,17 @@ void VideoObject::resized()
 {
     isResizing = true;
     resizingTimer->start();
+}
+
+bool VideoObject::getMuted() const
+{
+    return muted;
+}
+
+void VideoObject::setMuted(bool value)
+{
+    muted = value;
+    emit mutedChanged();
 }
 
 bool VideoObject::getPaused() const

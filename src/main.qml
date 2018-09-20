@@ -26,6 +26,7 @@ Window {
             osc.value = currentVideoPos
         }
         onPausedChanged: osc.paused = paused
+        onMutedChanged: osc.muted = muted
     }
 
     Timer {
