@@ -29,13 +29,10 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setOption("display-fps", 60);
     setOption("video-sync", "display-resample");
 
-    guiUpdateTimer = new QTimer();
-    guiUpdateTimer->setInterval(100);
-    connect(guiUpdateTimer, &QTimer::timeout, this, [this]{
-        currentVideoPos = getProperty("percent-pos").toReal();
-        emit updateGui();
-    });
-    guiUpdateTimer->start();
+    currentVideoPosTimer = new QTimer();
+    currentVideoPosTimer->setInterval(100);
+    connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{ setCurrentVideoPos(getProperty("percent-pos").toReal()); });
+    currentVideoPosTimer->start();
 
     resizingTimer = new QTimer();
     resizingTimer->setInterval(100);
@@ -80,15 +77,6 @@ void VideoObject::mute()
     setMuted(!muteStatus);
 }
 
-void VideoObject::volume(const qreal newVolume)
-{
-    if (newVolume < 0 || newVolume > 100)
-        return;
-    setProperty("volume", newVolume);
-    setCurrentVolume(newVolume);
-}
-
-
 void VideoObject::command(const QVariant &args)
 {  
     mpv::qt::command(mpvHandler, args);
@@ -127,6 +115,9 @@ qreal VideoObject::getCurrentVolume() const
 
 void VideoObject::setCurrentVolume(const qreal &value)
 {
+    if (value < 0 || value > 100)
+        return;
+    setProperty("volume", value);
     currentVolume = value;
     emit currentVolumeChanged();
 }
@@ -161,11 +152,7 @@ qreal VideoObject::getCurrentVideoPos() const
 void VideoObject::setCurrentVideoPos(const qreal &value)
 {
     currentVideoPos = value;
-}
-
-qreal VideoObject::getCurrentVideoLength() const
-{
-    return currentVideoLength;
+    emit currentVideoPosChanged();
 }
 
 bool *VideoObject::getIsResizing()

@@ -20,14 +20,6 @@ Window {
     VideoObject {
         id: videoObject
         anchors.fill: parent
-        onUpdateGui: {
-            if (osc.pressed)
-                return;
-            osc.value = currentVideoPos
-        }
-        onPausedChanged: osc.paused = paused
-        onMutedChanged: osc.muted = muted
-        onCurrentVolumeChanged: osc.currentVolume = currentVolume
     }
 
     Timer {

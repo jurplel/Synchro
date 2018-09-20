@@ -37,7 +37,7 @@ Slider {
     MouseArea {
         id: seekbarMouseArea
         enabled: parent.enabled
-        acceptedButtons: Qt.NoButton 
+        acceptedButtons: Qt.NoButton
         cursorShape: Qt.PointingHandCursor
         anchors.fill: parent
         hoverEnabled: true

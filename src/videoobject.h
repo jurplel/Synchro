@@ -11,8 +11,7 @@ class VideoObject : public QQuickFramebufferObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos)
-    Q_PROPERTY(qreal currentVideoLength READ getCurrentVideoLength)
+    Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos NOTIFY currentVideoPosChanged)
     Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
@@ -24,8 +23,6 @@ public:
     virtual Renderer *createRenderer() const;
 
     void setMpvRenderContext(mpv_render_context *value);
-
-    qreal getCurrentVideoLength() const;
 
     qreal getCurrentVideoPos() const;
     void setCurrentVideoPos(const qreal &value);
@@ -47,6 +44,7 @@ signals:
     void pausedChanged();
     void mutedChanged();
     void currentVolumeChanged();
+    void currentVideoPosChanged();
 
 public slots:
     void seek(const qreal newPos);
@@ -54,8 +52,6 @@ public slots:
     void pause();
 
     void mute();
-
-    void volume(const qreal newVolume);
 
     void command(const QVariant &args);
 
@@ -71,13 +67,12 @@ private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
 
-    QTimer *guiUpdateTimer;
-    qreal currentVideoPos;
-    qreal currentVideoLength;
-
     QTimer *resizingTimer;
     bool isResizing;
 
+    QTimer *currentVideoPosTimer;
+
+    qreal currentVideoPos;
     qreal currentVolume;
     bool paused;
     bool muted;

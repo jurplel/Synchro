@@ -72,5 +72,5 @@ T.Slider {
         }
     }
 
-    MouseArea { enabled: parent.enabled; anchors.fill: parent; acceptedButtons: Qt.NoButton; cursorShape: Qt.PointingHandCursor }
+    MouseArea { enabled: false; anchors.fill: parent; acceptedButtons: Qt.NoButton; cursorShape: Qt.PointingHandCursor}
 }
