@@ -235,6 +235,7 @@ Rectangle {
                 anchors.rightMargin: 10
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+                onPressed: videoObject.command(["cycle", "mute"])
                 Image {
                     id: volumeIcon
                     width: parent.width
@@ -247,10 +248,10 @@ Rectangle {
                     source: volumeIcon
                     color: "#FFFFFF"
                 }
+
                 MouseArea {
                     id: volumeIconMouseArea
                     anchors.fill: parent
-                    anchors.margins: -(36-parent.width)
                     acceptedButtons: Qt.NoButton
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
