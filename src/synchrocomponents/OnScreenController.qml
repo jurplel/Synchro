@@ -1,6 +1,7 @@
 ﻿import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
+import "../synchrostyle"
 
 Rectangle {
     property alias value:seekSlider.value
@@ -32,7 +33,6 @@ Rectangle {
         id: oscVolume
         width: 42
         height: 135
-        radius: 2
         color: "#00000000"
         anchors.rightMargin: -width
         anchors.right: parent.right
@@ -51,6 +51,14 @@ Rectangle {
             anchors.fill: effectSource0
             source: effectSource0
             radius: 64
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "#000000"
+            opacity: 0.66
+            border.width: 0
+            radius: parent.radius
         }
 
         states: State {
@@ -83,31 +91,22 @@ Rectangle {
             }
         }
 
-        Rectangle {
-            anchors.fill: parent
-            color: "#000000"
-            opacity: 0.66
-            border.width: 0
-            radius: parent.radius
-        }
-
         Slider {
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.margins: 16
+            anchors.fill: parent
+            anchors.margins: 8
             orientation: Qt.Vertical
-
-            MouseArea {
-                id: volumeMouseArea
-                anchors.fill: parent
-                acceptedButtons: Qt.NoButton
-                hoverEnabled: true
-                onContainsMouseChanged: {
-                    oscVolume.state = "revealed"
-                    volumeAutohideTimer.restart()
-                }
+            value: 100
+            to: 100
+            onValueChanged: videoObject.setProperty("volume", value)
+        }
+        MouseArea {
+            id: volumeMouseArea
+            anchors.fill: parent
+            acceptedButtons: Qt.NoButton
+            hoverEnabled: true
+            onContainsMouseChanged: {
+                oscVolume.state = "revealed"
+                volumeAutohideTimer.restart()
             }
         }
     }

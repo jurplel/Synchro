@@ -4,5 +4,7 @@
         <file>synchrocomponents/Seekbar.qml</file>
         <file>synchrocomponents/OnScreenController.qml</file>
         <file>synchrostyle/Slider.qml</file>
+        <file>synchrostyle/Style.qml</file>
+        <file>synchrostyle/qmldir</file>
     </qresource>
 </RCC>
