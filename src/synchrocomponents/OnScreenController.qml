@@ -19,7 +19,7 @@ Rectangle {
     if (muted)
         volumeIcon.state = "mute"
     else
-        volumeSlider.onMoved()
+        volumeSlider.changeIcon()
     }
 
     onPausedChanged: {
@@ -90,7 +90,11 @@ Rectangle {
             orientation: Qt.Vertical
             value: 100
             to: 100
-            onValueChanged: changeIcon()
+            onValueChanged: {
+                changeIcon();
+                oscVolume.state = "revealed"
+                volumeAutohideTimer.restart()
+            }
             onMoved: videoObject.volume(value)
 
             function changeIcon()
