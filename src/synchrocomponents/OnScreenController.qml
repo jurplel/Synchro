@@ -39,26 +39,9 @@ Rectangle {
         anchors.bottomMargin: oscControls.height
         anchors.bottom: parent.bottom
 
-        ShaderEffectSource {
-            id: effectSource0
+        SynchroBackground {
             sourceItem: videoObject
-            width: parent.width
-            height: parent.height
             sourceRect: Qt.rect(container.width-parent.width-(-radius),container.height-parent.height-parent.anchors.bottomMargin, width, height)
-        }
-
-        FastBlur {
-            anchors.fill: effectSource0
-            source: effectSource0
-            radius: 64
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#000000"
-            opacity: 0.66
-            border.width: 0
-            radius: parent.radius
         }
 
         states: State {
@@ -132,19 +115,9 @@ Rectangle {
         anchors.bottom: parent.bottom
         color: "#00000000"
 
-        ShaderEffectSource {
-            id: effectSource1
-
+        SynchroBackground {
             sourceItem: videoObject
-            width: parent.width
-            height: parent.height
             sourceRect: Qt.rect(container.width-parent.width,container.height-parent.height, width, height)
-        }
-
-        FastBlur {
-            anchors.fill: effectSource1
-            source: effectSource1
-            radius: 64
         }
 
         states: State {
@@ -164,13 +137,6 @@ Rectangle {
                 duration: 165
                 easing.type: Easing.InOutQuad
             }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#000000"
-            opacity: 0.66
-            border.width: 0
         }
 
         Rectangle {

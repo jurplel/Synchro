@@ -5,6 +5,7 @@ import QtQuick.Dialogs 1.0
 
 import Synchro.Core 1.0
 import "synchrocomponents"
+
 Window {
     id: window
     visible: true
@@ -14,7 +15,6 @@ Window {
     title: "Synchro"
 
     onWidthChanged: videoObject.resized()
-
     onHeightChanged: videoObject.resized()
 
     VideoObject {

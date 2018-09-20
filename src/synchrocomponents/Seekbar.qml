@@ -1,11 +1,13 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.impl 2.2
+import "../synchrostyle"
 
 Slider {
     id: control
     padding: 0
     topPadding: 8
+    radius: 0
 
     background.implicitWidth: control.horizontal ? 200 : 2
     background.implicitHeight: control.horizontal ? 2 : 200

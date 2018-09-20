@@ -6,5 +6,6 @@
         <file>synchrostyle/Slider.qml</file>
         <file>synchrostyle/Style.qml</file>
         <file>synchrostyle/qmldir</file>
+        <file>synchrocomponents/SynchroBackground.qml</file>
     </qresource>
 </RCC>
