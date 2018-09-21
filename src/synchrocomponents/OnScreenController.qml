@@ -22,7 +22,7 @@ Rectangle {
             playPauseIcon.state = "playing"
         }
 
-        onCurrentVolumeChanged: volumeSlider.value = videoObject.currentVolume
+        onCurrentVolumeChanged: volumeSlider.storedValue = videoObject.currentVolume
 
         onCurrentVideoPosChanged: seekSlider.value = videoObject.currentVideoPos
     }
@@ -91,7 +91,7 @@ Rectangle {
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                onPressed: videoObject.pause()
+                onPressed: videoObject.paused = !videoObject.paused
                 AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height
@@ -160,7 +160,7 @@ Rectangle {
                 anchors.rightMargin: 10
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                onPressed: videoObject.mute()
+                onPressed: videoObject.muted = !videoObject.muted
 
                 Image {
                     id: volumeIcon
@@ -256,18 +256,19 @@ Rectangle {
         }
 
         Slider {
+            property real storedValue: 100
             id: volumeSlider
             anchors.fill: parent
             anchors.margins: 8
             orientation: Qt.Vertical
             to: 100
-            value: 100
+            value: videoObject.muted ? 0 : storedValue
             onValueChanged: {
                 changeIcon()
                 oscVolume.state = "revealed"
                 volumeAutohideTimer.restart()
             }
-            onMoved: videoObject.currentVolume = value
+            onMoved: { videoObject.currentVolume = value}
 
             function changeIcon()
             {

@@ -49,10 +49,6 @@ signals:
 public slots:
     void seek(const qreal newPos);
 
-    void pause();
-
-    void mute();
-
     void command(const QVariant &args);
 
     void setProperty(const QString name, const QVariant &v);

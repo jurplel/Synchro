@@ -6,5 +6,6 @@
         <file>music_end_button.svg</file>
         <file>music_mute.svg</file>
         <file>music_volume_down.svg</file>
+        <file>basic_folder.svg</file>
     </qresource>
 </RCC>

@@ -9,10 +9,12 @@
 
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
+    //initialize variables
     isResizing = false;
     paused = true;
     muted = false;
     currentVolume = 100;
+    currentVideoPos = 0;
 
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
@@ -28,6 +30,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
     setOption("display-fps", 60);
     setOption("video-sync", "display-resample");
+
+    //update variables with mpv values for safety
+    paused = getProperty("pause").toBool();
+    muted = getProperty("mute").toBool();
+    currentVolume = getProperty("volume").toReal();
 
     currentVideoPosTimer = new QTimer();
     currentVideoPosTimer->setInterval(100);
@@ -61,20 +68,6 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 void VideoObject::seek(const qreal newPos)
 {
     mpv::qt::command(mpvHandler, QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
-}
-
-void VideoObject::pause()
-{
-    bool pauseStatus = getProperty("pause").toBool();
-    setProperty("pause", !pauseStatus);
-    setPaused(!pauseStatus);
-}
-
-void VideoObject::mute()
-{
-    bool muteStatus = getProperty("mute").toBool();
-    setProperty("mute", !muteStatus);
-    setMuted(!muteStatus);
 }
 
 void VideoObject::command(const QVariant &args)
@@ -117,6 +110,7 @@ void VideoObject::setCurrentVolume(const qreal &value)
 {
     if (value < 0 || value > 100)
         return;
+    setMuted(false);
     setProperty("volume", value);
     currentVolume = value;
     emit currentVolumeChanged();
@@ -129,6 +123,7 @@ bool VideoObject::getMuted() const
 
 void VideoObject::setMuted(bool value)
 {
+    setProperty("mute", value);
     muted = value;
     emit mutedChanged();
 }
@@ -140,6 +135,7 @@ bool VideoObject::getPaused() const
 
 void VideoObject::setPaused(bool value)
 {
+    setProperty("pause", value);
     paused = value;
     emit pausedChanged();
 }

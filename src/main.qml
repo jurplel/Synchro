@@ -1,7 +1,8 @@
 ﻿import QtQuick 2.9
 import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
-import QtQuick.Dialogs 1.0
+import Qt.labs.platform 1.0 as Platform
+
 
 import Synchro.Core 1.0
 import "synchrocomponents"
@@ -59,26 +60,36 @@ Window {
             videoObject: videoObject
         }
 
-        Menu {
-            id: mainContextMenu
-            MenuItem {
-                text: "Open file"
-                onClicked: fileDialog.open()
-                FileDialog {
-                    id: fileDialog
-                    title: "Pick a file"
-                    folder: shortcuts.home
-                    onAccepted: {
-                        videoObject.command(["loadfile", fileDialog.fileUrl.toString()])
-                        videoObject.currentVideoPos = 0
-                        fileDialog.close()
-                    }
+        Platform.MenuBar {
+            Platform.Menu {
+                title: "File"
+                Platform.MenuItem {
+                    text: "Open..."
+                    iconName: "document-open"
+                    onTriggered: fileDialog.open()
                 }
             }
+        }
+
+        Menu {
+
+            id: mainContextMenu
             MenuItem {
-                text: "Pause"
-                onClicked: videoObject.pause()
+                text: "Open..."
+                icon.source: "qrc:/resources/basic_folder.svg"
+                onTriggered: fileDialog.open()
             }
+        }
+
+        Platform.FileDialog {
+            id: fileDialog
+            folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
+                onAccepted: {
+                    videoObject.command(["loadfile", fileDialog.file.toString()])
+                    videoObject.paused = false
+                    videoObject.currentVideoPos = 0
+                    fileDialog.close()
+                }
         }
     }
 }
