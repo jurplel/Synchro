@@ -14,9 +14,18 @@ UI_DIR = intermediate
 RCC_DIR = intermediate
 
 # link mpv
-QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig
-PKGCONFIG += mpv
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += mpv
+}
+macx {
+    # Enable pkg-config (pkg-config is disabled by default in the Qt package for mac)
+    QT_CONFIG -= no-pkg-config
+    # pkg-config location if your brew installation is standard
+    PKG_CONFIG = /usr/local/bin/pkg-config
+}
+
+
 
 # Windows specific stuff
 win32:CONFIG += static

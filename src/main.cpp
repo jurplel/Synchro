@@ -1,3 +1,5 @@
+#include <locale.h>
+
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
@@ -13,7 +15,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Synchro");
     app.setApplicationVersion(QString::number(VERSION));
     // libmpv requires LC_NUMERIC to be set to "C"
-    std::setlocale(LC_NUMERIC, "C");
+    setlocale(LC_NUMERIC, "C");
 
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
 
