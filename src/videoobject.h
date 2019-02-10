@@ -21,16 +21,12 @@ public:
     VideoObject();
     virtual ~VideoObject();
 
-    void performUpdate();
-
     virtual Renderer *createRenderer() const;
 
     void setMpvRenderContext(mpv_render_context *value);
 
     qreal getCurrentVideoPos() const;
     void setCurrentVideoPos(const qreal &value);
-
-    bool *getIsResizing();
 
     bool getPaused() const;
     void setPaused(bool value);
@@ -42,8 +38,6 @@ public:
     void setCurrentVolume(const qreal &value);
 
 signals:
-    void requestUpdate();
-
     void pausedChanged();
     void mutedChanged();
     void currentVolumeChanged();
@@ -60,14 +54,9 @@ public slots:
 
     void setOption(const QString name, const QVariant &v);
 
-    void resized();
-
 private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
-
-    QTimer *resizingTimer;
-    bool isResizing;
 
     QTimer *currentVideoPosTimer;
 
@@ -75,6 +64,11 @@ private:
     qreal currentVolume;
     bool paused;
     bool muted;
+
+    static void onMpvEvents(void *ctx)
+    {
+        Q_UNUSED(ctx);
+    }
 };
 
 #endif // VIDEOOBJECT_H

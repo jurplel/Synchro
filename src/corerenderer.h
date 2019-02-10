@@ -41,12 +41,9 @@ private:
 
     static void onRedraw(void *videoObject)
     {
-        reinterpret_cast<VideoObject*>(videoObject)->emit requestUpdate();
-    }
-
-    static void onMpvEvents(void *ctx)
-    {
-        Q_UNUSED(ctx)
+        Q_UNUSED(videoObject);
+//        auto vidObj = reinterpret_cast<VideoObject*>(videoObject);
+//        QMetaObject::invokeMethod(vidObj, "update", Qt::QueuedConnection);
     }
 };
 

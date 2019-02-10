@@ -45,6 +45,7 @@ Rectangle {
         to: 100
         opacity: oscControls.opacity
         onMoved: videoObject.seek(value)
+
         z: -1
     }
 

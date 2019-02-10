@@ -15,9 +15,6 @@ Window {
     color: "#000"
     title: "Synchro"
 
-    onWidthChanged: videoObject.resized()
-    onHeightChanged: videoObject.resized()
-
     VideoObject {
         id: videoObject
         anchors.fill: parent

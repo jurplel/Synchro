@@ -10,7 +10,6 @@
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
     //initialize variables
-    isResizing = false;
     paused = true;
     muted = false;
     currentVolume = 100;
@@ -25,13 +24,13 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
+//    mpv_set_wakeup_callback(mpvHandler, onMpvEvents, this);
+
     setProperty("terminal", true);
     setProperty("pause", true);
 //    setProperty("hwdec", "auto");
 
     setOption("video-timing-offset", "0");
-
-    connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 
     //update variables with mpv values for safety
     paused = getProperty("pause").toBool();
@@ -42,14 +41,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     currentVideoPosTimer->setInterval(100);
     connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{ setCurrentVideoPos(getProperty("percent-pos").toReal()); });
     currentVideoPosTimer->start();
-
-    resizingTimer = new QTimer();
-    resizingTimer->setInterval(100);
-    resizingTimer->setSingleShot(true);
-    connect(resizingTimer, &QTimer::timeout, this, [this]{
-        isResizing = false;
-        update();
-    });
 }
 
 VideoObject::~VideoObject()
@@ -58,11 +49,6 @@ VideoObject::~VideoObject()
         mpv_render_context_free(mpvRenderContext);
 
     mpv_terminate_destroy(mpvHandler);
-}
-
-void VideoObject::performUpdate()
-{
-    update();
 }
 
 QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
@@ -101,13 +87,6 @@ void VideoObject::setMpvRenderContext(mpv_render_context *value)
 {
     mpvRenderContext = value;
 }
-
-void VideoObject::resized()
-{
-    isResizing = true;
-    resizingTimer->start();
-}
-
 qreal VideoObject::getCurrentVolume() const
 {
     return currentVolume;
@@ -156,9 +135,4 @@ void VideoObject::setCurrentVideoPos(const qreal &value)
 {
     currentVideoPos = value;
     emit currentVideoPosChanged();
-}
-
-bool *VideoObject::getIsResizing()
-{
-    return &isResizing;
 }
