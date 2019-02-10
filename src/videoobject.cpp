@@ -27,9 +27,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
     setProperty("terminal", true);
     setProperty("pause", true);
+//    setProperty("hwdec", "auto");
 
-    setOption("display-fps", 60);
-    setOption("video-sync", "display-resample");
+    setOption("video-timing-offset", "0");
+
+    connect(this, &VideoObject::requestUpdate, this, &VideoObject::performUpdate);
 
     //update variables with mpv values for safety
     paused = getProperty("pause").toBool();
@@ -58,6 +60,11 @@ VideoObject::~VideoObject()
     mpv_terminate_destroy(mpvHandler);
 }
 
+void VideoObject::performUpdate()
+{
+    update();
+}
+
 QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 {
     window()->setPersistentOpenGLContext(true);
@@ -67,11 +74,11 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 
 void VideoObject::seek(const qreal newPos)
 {
-    mpv::qt::command(mpvHandler, QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+    command(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
 }
 
 void VideoObject::command(const QVariant &args)
-{  
+{
     mpv::qt::command(mpvHandler, args);
 }
 

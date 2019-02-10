@@ -20,6 +20,9 @@ class VideoObject : public QQuickFramebufferObject
 public:
     VideoObject();
     virtual ~VideoObject();
+
+    void performUpdate();
+
     virtual Renderer *createRenderer() const;
 
     void setMpvRenderContext(mpv_render_context *value);
@@ -39,7 +42,7 @@ public:
     void setCurrentVolume(const qreal &value);
 
 signals:
-    void updateGui();
+    void requestUpdate();
 
     void pausedChanged();
     void mutedChanged();

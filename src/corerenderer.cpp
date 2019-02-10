@@ -13,7 +13,6 @@ CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandle
     mpvHandler = newMpvHandler;
     mpvRenderContext = newMpvRenderContext;
     mpv_set_wakeup_callback(mpvHandler, onMpvEvents, nullptr);
-    isResizing = videoObject->getIsResizing();
 }
 
 CoreRenderer::~CoreRenderer()
@@ -36,9 +35,12 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
 
         if (mpv_render_context_create(&mpvRenderContext, mpvHandler, params) != 0)
             throw std::runtime_error("failed to initialize mpv GL context");
+
+        mpv_render_context_set_update_callback(mpvRenderContext, onRedraw, videoObject);
         videoObject->setMpvRenderContext(mpvRenderContext);
     } 
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
+
 }
 
 void CoreRenderer::render()
@@ -64,11 +66,11 @@ void CoreRenderer::render()
         {MPV_RENDER_PARAM_FLIP_Y, &flipY},
         {MPV_RENDER_PARAM_INVALID, nullptr}
     };
+    mpv_render_context_report_swap(mpvRenderContext);
     // See render_gl.h on what OpenGL environment mpv expects, and
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
+    update();
 
     videoObject->window()->resetOpenGLState();
-    if (!*isResizing)
-        update();
 }

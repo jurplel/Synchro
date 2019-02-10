@@ -39,6 +39,11 @@ private:
         return reinterpret_cast<void *>(glctx->getProcAddress(QByteArray(name)));
     }
 
+    static void onRedraw(void *videoObject)
+    {
+        reinterpret_cast<VideoObject*>(videoObject)->emit requestUpdate();
+    }
+
     static void onMpvEvents(void *ctx)
     {
         Q_UNUSED(ctx)
