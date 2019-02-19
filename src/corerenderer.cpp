@@ -12,6 +12,8 @@ CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandle
     videoObject = newVideoObject;
     mpvHandler = newMpvHandler;
     mpvRenderContext = newMpvRenderContext;
+
+    paused = true;
 }
 
 CoreRenderer::~CoreRenderer()
@@ -37,7 +39,7 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
 
 //        mpv_render_context_set_update_callback(mpvRenderContext, onRedraw, videoObject);
         videoObject->setMpvRenderContext(mpvRenderContext);
-    } 
+    }
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
 
 }
@@ -66,8 +68,14 @@ void CoreRenderer::render()
     // See render_gl.h on what OpenGL environment mpv expects, and
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
-    //run update every frame for maximum drawing performance
+
     update();
 
     videoObject->window()->resetOpenGLState();
+}
+
+void CoreRenderer::synchronize(QQuickFramebufferObject *item)
+{
+    auto vidObj = reinterpret_cast<VideoObject*>(item);
+    paused = vidObj->getPaused();
 }

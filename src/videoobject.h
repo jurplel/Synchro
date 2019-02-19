@@ -52,8 +52,6 @@ public slots:
 
     QVariant getProperty(const QString name);
 
-    void setOption(const QString name, const QVariant &v);
-
 private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
@@ -65,9 +63,9 @@ private:
     bool paused;
     bool muted;
 
-    static void onMpvEvents(void *ctx)
+    static void onMpvEvents(void *videoObject)
     {
-        Q_UNUSED(ctx);
+        Q_UNUSED(videoObject);
     }
 };
 

@@ -14,20 +14,21 @@ class CoreRenderer : public QQuickFramebufferObject::Renderer
 
 public:
     CoreRenderer(VideoObject *newVideoObject, mpv_handle *mpvHandler, mpv_render_context *mpvRenderContext);
-    ~CoreRenderer();
+    ~CoreRenderer() override;
 
-    QOpenGLFramebufferObject* createFramebufferObject(const QSize &size);
+    QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) override;
 
-    void render();
+    void render() override;
 
-    void redraw(void *ctx);
+    void synchronize(QQuickFramebufferObject *item) override;
 
 private:
     VideoObject* videoObject;
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
 
-    bool *isResizing;
+    bool paused;
+
 
     static void *get_proc_address_mpv(void *ctx, const char *name)
     {
@@ -41,9 +42,9 @@ private:
 
     static void onRedraw(void *videoObject)
     {
-        Q_UNUSED(videoObject);
-//        auto vidObj = reinterpret_cast<VideoObject*>(videoObject);
-//        QMetaObject::invokeMethod(vidObj, "update", Qt::QueuedConnection);
+        auto vidObj = reinterpret_cast<VideoObject*>(videoObject);
+
+        QMetaObject::invokeMethod(vidObj, "update", Qt::QueuedConnection);
     }
 };
 

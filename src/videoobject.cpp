@@ -28,9 +28,10 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
     setProperty("terminal", true);
     setProperty("pause", true);
-//    setProperty("hwdec", "auto");
 
-    setOption("video-timing-offset", "0");
+    setProperty("video-timing-offset", 0);
+    setProperty("video-sync", "display-resample");
+    setProperty("interpolation", "yes");
 
     //update variables with mpv values for safety
     paused = getProperty("pause").toBool();
@@ -76,11 +77,6 @@ void VideoObject::setProperty(const QString name, const QVariant &v)
 QVariant VideoObject::getProperty(const QString name)
 {
     return mpv::qt::get_property(mpvHandler, name);
-}
-
-void VideoObject::setOption(const QString name, const QVariant &v)
-{
-    mpv::qt::set_option_variant(mpvHandler, name, v);
 }
 
 void VideoObject::setMpvRenderContext(mpv_render_context *value)
