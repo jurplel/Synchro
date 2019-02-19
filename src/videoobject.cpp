@@ -12,6 +12,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     //initialize variables
     paused = true;
     muted = false;
+    seeking = false;
     currentVolume = 100;
     currentVideoPos = 0;
 
@@ -42,6 +43,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     currentVideoPosTimer->setInterval(100);
     connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{ setCurrentVideoPos(getProperty("percent-pos").toReal()); });
     currentVideoPosTimer->start();
+
+    seekTimer = new QTimer();
+    seekTimer->setInterval(50);
+    connect(seekTimer, &QTimer::timeout, this, [this]{seeking = false;});
+    seekTimer->setSingleShot(true);
 }
 
 VideoObject::~VideoObject()
@@ -62,6 +68,8 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 void VideoObject::seek(const qreal newPos)
 {
     command(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+    seeking = true;
+    seekTimer->start();
 }
 
 void VideoObject::command(const QVariant &args)
@@ -131,4 +139,14 @@ void VideoObject::setCurrentVideoPos(const qreal &value)
 {
     currentVideoPos = value;
     emit currentVideoPosChanged();
+}
+
+bool VideoObject::getSeeking() const
+{
+    return seeking;
+}
+
+void VideoObject::setSeeking(bool value)
+{
+    seeking = value;
 }

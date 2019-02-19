@@ -37,6 +37,9 @@ public:
     qreal getCurrentVolume() const;
     void setCurrentVolume(const qreal &value);
 
+    bool getSeeking() const;
+    void setSeeking(bool value);
+
 signals:
     void pausedChanged();
     void mutedChanged();
@@ -57,6 +60,9 @@ private:
     mpv_render_context *mpvRenderContext;
 
     QTimer *currentVideoPosTimer;
+
+    QTimer *seekTimer;
+    bool seeking;
 
     qreal currentVideoPos;
     qreal currentVolume;

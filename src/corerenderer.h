@@ -28,6 +28,7 @@ private:
     mpv_render_context *mpvRenderContext;
 
     bool paused;
+    bool seeking;
 
 
     static void *get_proc_address_mpv(void *ctx, const char *name)
