@@ -30,8 +30,8 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("pause", true);
 
     setProperty("video-timing-offset", 0);
-    setProperty("video-sync", "display-resample");
-    setProperty("interpolation", "yes");
+//    setProperty("video-sync", "display-resample");
+//    setProperty("interpolation", "yes");
 
     //update variables with mpv values for safety
     paused = getProperty("pause").toBool();

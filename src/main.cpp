@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
 
     //disable vsync for perfect resizing
-    QSurfaceFormat fmt;
-    fmt.setSwapInterval(0);
-    QSurfaceFormat::setDefaultFormat(fmt);
+//    QSurfaceFormat fmt;
+//    fmt.setSwapInterval(0);
+//    QSurfaceFormat::setDefaultFormat(fmt);
 
     QQuickStyle::setStyle("synchrostyle");
     QQuickStyle::setFallbackStyle("Fusion");

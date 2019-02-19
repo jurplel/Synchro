@@ -101,17 +101,15 @@ Rectangle {
                     frameWidth: 36
                     frameHeight: 36
                     frameCount: 16
-                    frameSync: true
+                    frameDuration: 16
                     running: false
                     currentFrame: 15
                     reverse: true
                     onCurrentFrameChanged: if (currentFrame == 15) running = false
                     onStateChanged: {
+                        running = false
                         reverse = !reverse
-                        if (currentFrame == 15)
-                            currentFrame = 0
-                        else
-                            currentFrame = 15-currentFrame
+                        currentFrame = 15-currentFrame
                         running = true
                     }
 
