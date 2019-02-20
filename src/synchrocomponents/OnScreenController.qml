@@ -38,15 +38,17 @@ Rectangle {
 
     Seekbar {
         id: seekSlider
+        transformOrigin: Item.Bottom
         anchors.bottomMargin: oscControls.height
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         to: 100
         opacity: oscControls.opacity
-        onMoved: videoObject.seek(value)
-
-        z: -1
+        onMoved: videoObject.seek(position*100)
+        live: false
+        implicitWidth: 99999999
+        z: 1
     }
 
     Item {
@@ -58,7 +60,7 @@ Rectangle {
 
         SynchroBackground {
             sourceItem: videoObject
-            sourceRect: Qt.rect(container.width-parent.width,container.height-parent.height, width, height)
+            sourceRect: Qt.rect(container.width-parent.width, container.height-parent.height, width, height)
         }
 
         states: State {
@@ -281,6 +283,10 @@ Rectangle {
         }
     }
 }
+
+
+
+
 /*##^## Designer {
     D{i:0;autoSize:true;height:480;width:640}
 }

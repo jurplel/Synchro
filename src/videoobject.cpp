@@ -41,7 +41,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
     currentVideoPosTimer = new QTimer();
     currentVideoPosTimer->setInterval(100);
-    connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{ setCurrentVideoPos(getProperty("percent-pos").toReal()); });
+    connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{
+        setCurrentVideoPos(getProperty("percent-pos").toReal());
+//        qDebug() << getProperty("demuxer-via-network");
+//        qDebug() << getProperty("demuxer-cache-state");
+    });
     currentVideoPosTimer->start();
 
     seekTimer = new QTimer();

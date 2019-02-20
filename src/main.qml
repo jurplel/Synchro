@@ -24,7 +24,7 @@ Window {
         id: autohideTimer
         interval: 500
         onTriggered: {
-            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < window.height-56) && !videoObject.paused)
+            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < window.height-57) && !videoObject.paused)
                 osc.state = "hidden"
         }
     }

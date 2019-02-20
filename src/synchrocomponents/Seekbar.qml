@@ -12,13 +12,17 @@ Slider {
     background.implicitWidth: control.horizontal ? 200 : 2
     background.implicitHeight: control.horizontal ? 2 : 200
 
+    background.transform: Scale {
+        id: seekbarTransformScale
+        origin.y: background.height
+    }
+
     states: State {
         name: "hovered"
         when: seekbarMouseArea.containsMouse
         PropertyChanges {
-            target: background
-            implicitWidth: control.horizontal ? 200 : 8
-            implicitHeight: control.horizontal ? 8 : 200
+            target: seekbarTransformScale
+            yScale: 2.5
         }
     }
 
@@ -27,8 +31,8 @@ Slider {
         from: ""
         to: "hovered"
         NumberAnimation {
-            target: background
-            properties: "implicitHeight,implicitWidth"
+            target: seekbarTransformScale
+            properties: "yScale"
             duration: 75
             easing.type: Easing.InOutQuad
         }

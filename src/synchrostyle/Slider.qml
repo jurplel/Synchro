@@ -64,8 +64,8 @@ T.Slider {
 
         Rectangle {
             y: control.horizontal ? 0 : control.visualPosition * parent.height
-            width: control.horizontal ? control.position * parent.width : 6
-            height: control.horizontal ? 6 : control.position * parent.height
+            width: control.horizontal ? control.position * parent.width : parent.width
+            height: control.horizontal ? parent.height : control.position * parent.height
 
             radius: parent.radius
             color: Style.accentColor

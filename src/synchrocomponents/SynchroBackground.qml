@@ -9,6 +9,7 @@ Item {
     property alias radius:tint.radius
 
 
+
     ShaderEffectSource {
         id: effectSource
         width: parent.width
@@ -16,6 +17,7 @@ Item {
     }
 
     FastBlur {
+        id: blur
         anchors.fill: effectSource
         source: effectSource
         radius: 64
