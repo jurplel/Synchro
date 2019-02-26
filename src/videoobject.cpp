@@ -102,11 +102,15 @@ qreal VideoObject::getCurrentVolume() const
 
 void VideoObject::setCurrentVolume(const qreal &value)
 {
-    if (value < 0 || value > 100)
-        return;
+    qreal newValue = value;
+    if (newValue < 0)
+        newValue = 0;
+    else if (newValue > 100)
+        newValue = 100;
+
     setMuted(false);
-    setProperty("volume", value);
-    currentVolume = value;
+    setProperty("volume", newValue);
+    currentVolume = newValue;
     emit currentVolumeChanged();
 }
 

@@ -7,6 +7,7 @@ Slider {
     id: control
     padding: 0
     topPadding: 8
+    bottomPadding: 4
     radius: 0
 
     background.implicitWidth: control.horizontal ? 200 : 2

@@ -39,7 +39,7 @@ Rectangle {
     Seekbar {
         id: seekSlider
         transformOrigin: Item.Bottom
-        anchors.bottomMargin: oscControls.height
+        anchors.bottomMargin: oscControls.height-bottomPadding
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
