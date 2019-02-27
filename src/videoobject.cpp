@@ -110,7 +110,10 @@ void VideoObject::handleMpvEvent(mpv_event *event)
 
 void VideoObject::seek(const qreal newPos)
 {
-    command(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+
+    mpv::qt::node_builder node(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+    mpv_command_node_async(mpvHandler, 0, node.node());
+
     seeking = true;
     seekTimer->start();
 }
