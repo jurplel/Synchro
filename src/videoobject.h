@@ -11,7 +11,9 @@ class VideoObject : public QQuickFramebufferObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal currentVideoPos READ getCurrentVideoPos WRITE setCurrentVideoPos NOTIFY currentVideoPosChanged)
+    Q_PROPERTY(qreal percentPos READ getPercentPos WRITE setPercentPos NOTIFY percentPosChanged)
+    Q_PROPERTY(QString timePosString READ getTimePosString WRITE setTimePosString NOTIFY timePosStringChanged)
+    Q_PROPERTY(QString durationString READ getDurationString WRITE setDurationString NOTIFY durationStringChanged)
     Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
@@ -25,8 +27,10 @@ public:
 
     void setMpvRenderContext(mpv_render_context *value);
 
-    qreal getCurrentVideoPos() const;
-    void setCurrentVideoPos(const qreal &value);
+    void handleMpvEvent(mpv_event *event);
+
+    qreal getPercentPos() const;
+    void setPercentPos(const qreal &value);
 
     bool getPaused() const;
     void setPaused(bool value);
@@ -37,16 +41,27 @@ public:
     qreal getCurrentVolume() const;
     void setCurrentVolume(const qreal &value);
 
+    QString getTimePosString() const;
+    void setTimePosString(const QString &value);
+
+    QString getDurationString() const;
+    void setDurationString(const QString &value);
+
     bool getSeeking() const;
     void setSeeking(bool value);
+
 
 signals:
     void pausedChanged();
     void mutedChanged();
     void currentVolumeChanged();
-    void currentVideoPosChanged();
+    void percentPosChanged();
+    void timePosStringChanged();
+    void durationStringChanged();
 
 public slots:
+    void onMpvEvents();
+
     void seek(const qreal newPos);
 
     void command(const QVariant &args);
@@ -55,24 +70,21 @@ public slots:
 
     QVariant getProperty(const QString name);
 
+    void loadFile(const QString &fileName);
+
 private:
     mpv_handle *mpvHandler;
     mpv_render_context *mpvRenderContext;
 
-    QTimer *currentVideoPosTimer;
-
     QTimer *seekTimer;
     bool seeking;
 
-    qreal currentVideoPos;
+    qreal percentPos;
+    QString timePosString;
+    QString durationString;
     qreal currentVolume;
     bool paused;
     bool muted;
-
-    static void onMpvEvents(void *videoObject)
-    {
-        Q_UNUSED(videoObject);
-    }
 };
 
 #endif // VIDEOOBJECT_H

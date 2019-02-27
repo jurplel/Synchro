@@ -24,7 +24,11 @@ Rectangle {
 
         onCurrentVolumeChanged: volumeSlider.storedValue = videoObject.currentVolume
 
-        onCurrentVideoPosChanged: seekSlider.value = videoObject.currentVideoPos
+        onPercentPosChanged: seekSlider.value = videoObject.percentPos
+
+        onTimePosStringChanged: videoTimeLabel.timePosString = videoObject.timePosString
+
+        onDurationStringChanged: videoTimeLabel.durationString = videoObject.durationString
     }
 
     Timer {
@@ -128,7 +132,11 @@ Rectangle {
             }
 
             Label {
-                text: "0:00/0:00"
+                id: videoTimeLabel
+                property string timePosString;
+                property string durationString;
+
+                text: timePosString + "/" + durationString
                 anchors.leftMargin: 10
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter

@@ -82,9 +82,7 @@ Window {
             id: fileDialog
             folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
                 onAccepted: {
-                    videoObject.command(["loadfile", fileDialog.file.toString()])
-                    videoObject.paused = false
-                    videoObject.currentVideoPos = 0
+                    videoObject.loadFile(fileDialog.file.toString());
                     fileDialog.close()
                 }
         }

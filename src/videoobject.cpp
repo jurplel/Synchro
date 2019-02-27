@@ -1,4 +1,4 @@
-#include "videoobject.h"
+﻿#include "videoobject.h"
 #include "corerenderer.h"
 
 #include <QtQuick/QQuickWindow>
@@ -7,6 +7,12 @@
 
 #include <QDebug>
 
+static void wakeup(void *videoObject)
+{
+    auto vidObj = reinterpret_cast<VideoObject*>(videoObject);
+    QMetaObject::invokeMethod(vidObj, "onMpvEvents", Qt::QueuedConnection);
+}
+
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
     //initialize variables
@@ -14,7 +20,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     muted = false;
     seeking = false;
     currentVolume = 100;
-    currentVideoPos = 0;
+    percentPos = 0;
 
     mpvHandler = mpv_create();
     mpvRenderContext = nullptr;
@@ -25,7 +31,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     if (mpv_initialize(mpvHandler) != 0)
         throw std::runtime_error("failed to initalize mpv instance");
 
-//    mpv_set_wakeup_callback(mpvHandler, onMpvEvents, this);
+    mpv_set_wakeup_callback(mpvHandler, wakeup, this);
+
+    mpv_observe_property(mpvHandler, 0, "percent-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpvHandler, 0, "time-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
 
     setProperty("terminal", true);
     setProperty("pause", true);
@@ -38,15 +48,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     paused = getProperty("pause").toBool();
     muted = getProperty("mute").toBool();
     currentVolume = getProperty("volume").toReal();
-
-    currentVideoPosTimer = new QTimer();
-    currentVideoPosTimer->setInterval(100);
-    connect(currentVideoPosTimer, &QTimer::timeout, this, [this]{
-        setCurrentVideoPos(getProperty("percent-pos").toReal());
-//        qDebug() << getProperty("demuxer-via-network");
-//        qDebug() << getProperty("demuxer-cache-state");
-    });
-    currentVideoPosTimer->start();
 
     seekTimer = new QTimer();
     seekTimer->setInterval(50);
@@ -67,6 +68,44 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
     window()->setPersistentOpenGLContext(true);
     window()->setPersistentSceneGraph(true);
     return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler, mpvRenderContext);
+}
+
+void VideoObject::onMpvEvents()
+{
+    // Process all events, until the event queue is empty.
+    while (mpvHandler)
+    {
+        mpv_event *event = mpv_wait_event(mpvHandler, 0);
+
+        if (event->event_id == MPV_EVENT_NONE)
+            break;
+
+        handleMpvEvent(event);
+    }
+}
+
+void VideoObject::handleMpvEvent(mpv_event *event)
+{
+    switch (event->event_id)
+    {
+    case MPV_EVENT_PROPERTY_CHANGE:
+    {
+        auto *prop = reinterpret_cast<mpv_event_property*>(event->data);
+
+        if (strcmp(prop->name, "percent-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+            setPercentPos(*reinterpret_cast<double*>(prop->data));
+
+        if (strcmp(prop->name, "time-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+            setTimePosString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "time-pos")));
+
+        if (strcmp(prop->name, "duration") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+            setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
+
+        break;
+    }
+    default:
+        break;
+}
 }
 
 void VideoObject::seek(const qreal newPos)
@@ -95,6 +134,16 @@ void VideoObject::setMpvRenderContext(mpv_render_context *value)
 {
     mpvRenderContext = value;
 }
+
+void VideoObject::loadFile(const QString &fileName)
+{
+    command(QStringList() << "loadfile" << fileName);
+    setPaused(false);
+    setPercentPos(0);
+    qDebug() << mpv_get_property_osd_string(mpvHandler, "duration");
+//    setDuration(QTime::fromMSecsSinceStartOfDay());
+}
+
 qreal VideoObject::getCurrentVolume() const
 {
     return currentVolume;
@@ -138,15 +187,37 @@ void VideoObject::setPaused(bool value)
     emit pausedChanged();
 }
 
-qreal VideoObject::getCurrentVideoPos() const
+qreal VideoObject::getPercentPos() const
 {
-    return currentVideoPos;
+    return percentPos;
 }
 
-void VideoObject::setCurrentVideoPos(const qreal &value)
+void VideoObject::setPercentPos(const qreal &value)
 {
-    currentVideoPos = value;
-    emit currentVideoPosChanged();
+    percentPos = value;
+    emit percentPosChanged();
+}
+
+QString VideoObject::getTimePosString() const
+{
+    return timePosString;
+}
+
+void VideoObject::setTimePosString(const QString &value)
+{
+    timePosString = value;
+    emit timePosStringChanged();
+}
+
+QString VideoObject::getDurationString() const
+{
+    return durationString;
+}
+
+void VideoObject::setDurationString(const QString &value)
+{
+    durationString = value;
+    emit durationStringChanged();
 }
 
 bool VideoObject::getSeeking() const
