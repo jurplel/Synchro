@@ -23,7 +23,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     percentPos = 0;
 
     mpvHandler = mpv_create();
-    mpvRenderContext = nullptr;
 
     if (!mpvHandler)
         throw std::runtime_error("failed to create mpv instance");
@@ -57,9 +56,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
 
 VideoObject::~VideoObject()
 {
-    if (mpvRenderContext)
-        mpv_render_context_free(mpvRenderContext);
-
     mpv_terminate_destroy(mpvHandler);
 }
 
@@ -67,7 +63,7 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
 {
     window()->setPersistentOpenGLContext(true);
     window()->setPersistentSceneGraph(true);
-    return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler, mpvRenderContext);
+    return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler);
 }
 
 void VideoObject::onMpvEvents()
@@ -131,11 +127,6 @@ void VideoObject::setProperty(const QString name, const QVariant &v)
 QVariant VideoObject::getProperty(const QString name)
 {
     return mpv::qt::get_property(mpvHandler, name);
-}
-
-void VideoObject::setMpvRenderContext(mpv_render_context *value)
-{
-    mpvRenderContext = value;
 }
 
 void VideoObject::loadFile(const QString &fileName)

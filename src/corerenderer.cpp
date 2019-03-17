@@ -7,18 +7,18 @@
 #include <QDebug>
 
 
-CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandler, mpv_render_context *newMpvRenderContext) : QQuickFramebufferObject::Renderer()
+CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandler) : QQuickFramebufferObject::Renderer()
 {
     videoObject = newVideoObject;
     mpvHandler = newMpvHandler;
-    mpvRenderContext = newMpvRenderContext;
 
     paused = true;
 }
 
 CoreRenderer::~CoreRenderer()
 {
-
+    if (mpvRenderContext)
+        mpv_render_context_free(mpvRenderContext);
 }
 
 // This function is called when a new FBO is needed.
@@ -38,7 +38,6 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
             throw std::runtime_error("failed to initialize mpv GL context");
 
         mpv_render_context_set_update_callback(mpvRenderContext, onRedraw, videoObject);
-        videoObject->setMpvRenderContext(mpvRenderContext);
     }
     return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
 

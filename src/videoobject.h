@@ -25,8 +25,6 @@ public:
 
     virtual Renderer *createRenderer() const;
 
-    void setMpvRenderContext(mpv_render_context *value);
-
     void handleMpvEvent(mpv_event *event);
 
     qreal getPercentPos() const;
@@ -74,7 +72,6 @@ public slots:
 
 private:
     mpv_handle *mpvHandler;
-    mpv_render_context *mpvRenderContext;
 
     QTimer *seekTimer;
     bool seeking;

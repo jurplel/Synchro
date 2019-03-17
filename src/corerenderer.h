@@ -9,7 +9,7 @@ class CoreRenderer : public QQuickFramebufferObject::Renderer
 {
 
 public:
-    CoreRenderer(VideoObject *newVideoObject, mpv_handle *mpvHandler, mpv_render_context *mpvRenderContext);
+    CoreRenderer(VideoObject *newVideoObject, mpv_handle *mpvHandler);
     ~CoreRenderer() override;
 
     QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) override;
