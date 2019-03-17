@@ -81,10 +81,10 @@ Window {
         Platform.FileDialog {
             id: fileDialog
             folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
-                onAccepted: {
-                    videoObject.loadFile(fileDialog.file.toString());
-                    fileDialog.close()
-                }
+            onAccepted: {
+                videoObject.loadFile(fileDialog.file.toString());
+                fileDialog.close()
+            }
         }
     }
 }

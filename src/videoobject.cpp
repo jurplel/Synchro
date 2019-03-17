@@ -136,13 +136,6 @@ void VideoObject::loadFile(const QString &fileName)
     command(QStringList() << "loadfile" << fileName);
     setPaused(false);
     setPercentPos(0);
-    qDebug() << mpv_get_property_osd_string(mpvHandler, "duration");
-//    setDuration(QTime::fromMSecsSinceStartOfDay());
-}
-
-qreal VideoObject::getCurrentVolume() const
-{
-    return currentVolume;
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)
@@ -157,71 +150,4 @@ void VideoObject::setCurrentVolume(const qreal &value)
     setProperty("volume", newValue);
     currentVolume = newValue;
     emit currentVolumeChanged();
-}
-
-bool VideoObject::getMuted() const
-{
-    return muted;
-}
-
-void VideoObject::setMuted(bool value)
-{
-    setProperty("mute", value);
-    muted = value;
-    emit mutedChanged();
-}
-
-bool VideoObject::getPaused() const
-{
-    return paused;
-}
-
-void VideoObject::setPaused(bool value)
-{
-    setProperty("pause", value);
-    paused = value;
-    emit pausedChanged();
-}
-
-qreal VideoObject::getPercentPos() const
-{
-    return percentPos;
-}
-
-void VideoObject::setPercentPos(const qreal &value)
-{
-    percentPos = value;
-    emit percentPosChanged();
-}
-
-QString VideoObject::getTimePosString() const
-{
-    return timePosString;
-}
-
-void VideoObject::setTimePosString(const QString &value)
-{
-    timePosString = value;
-    emit timePosStringChanged();
-}
-
-QString VideoObject::getDurationString() const
-{
-    return durationString;
-}
-
-void VideoObject::setDurationString(const QString &value)
-{
-    durationString = value;
-    emit durationStringChanged();
-}
-
-bool VideoObject::getSeeking() const
-{
-    return seeking;
-}
-
-void VideoObject::setSeeking(bool value)
-{
-    seeking = value;
 }

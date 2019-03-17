@@ -27,26 +27,26 @@ public:
 
     void handleMpvEvent(mpv_event *event);
 
-    qreal getPercentPos() const;
-    void setPercentPos(const qreal &value);
+    qreal getPercentPos() const { return percentPos; }
+    void setPercentPos(const qreal &value) { percentPos = value; emit percentPosChanged(); }
 
-    bool getPaused() const;
-    void setPaused(bool value);
+    bool getPaused() const { return paused; }
+    void setPaused(bool value) { setProperty("pause", value); paused = value; emit pausedChanged(); }
 
-    bool getMuted() const;
-    void setMuted(bool value);
+    bool getMuted() const { return muted; }
+    void setMuted(bool value) { setProperty("mute", value); muted = value; emit mutedChanged(); }
 
-    qreal getCurrentVolume() const;
+    qreal getCurrentVolume() const { return currentVolume; }
     void setCurrentVolume(const qreal &value);
 
-    QString getTimePosString() const;
-    void setTimePosString(const QString &value);
+    QString getTimePosString() const { return timePosString; }
+    void setTimePosString(const QString &value) { timePosString = value; emit timePosStringChanged(); }
 
-    QString getDurationString() const;
-    void setDurationString(const QString &value);
+    QString getDurationString() const { return durationString; }
+    void setDurationString(const QString &value) { durationString = value; emit durationStringChanged(); }
 
-    bool getSeeking() const;
-    void setSeeking(bool value);
+    bool getSeeking() const { return seeking; }
+    void setSeeking(bool value) { seeking = value; }
 
 
 signals:
