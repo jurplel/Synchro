@@ -39,6 +39,8 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("terminal", true);
     setProperty("pause", true);
 
+    setProperty("audio-client-name", "Synchro");
+
     setProperty("video-timing-offset", 0);
 //    setProperty("video-sync", "display-resample");
 //    setProperty("interpolation", "yes");
