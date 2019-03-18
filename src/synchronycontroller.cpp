@@ -8,7 +8,7 @@ SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
     connect(socket, &QTcpSocket::connected, []{ qInfo() << "Connection successfully established"; });
     connect(socket, &QTcpSocket::readyRead, this, &SynchronyController::readNewData);
 
-    connectToServer("35.227.80.175", 32019);
+//    connectToServer("35.227.80.175", 32019);
 }
 
 void SynchronyController::connectToServer(QString ip, quint16 port)

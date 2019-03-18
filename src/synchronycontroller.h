@@ -10,13 +10,12 @@ class SynchronyController : public QObject
 public:
     explicit SynchronyController(QObject *parent = nullptr);
 
-    void connectToServer(QString ip, quint16 port);
-
     void readNewData();
 
 signals:
 
 public slots:
+    void connectToServer(QString ip, quint16 port);
 
 private:
     QTcpSocket *socket;

@@ -80,13 +80,43 @@ Window {
                 icon.source: "qrc:/resources/basic_folder.svg"
                 onTriggered: fileDialog.open()
             }
+            MenuItem {
+                text: connectDialog.title
+                icon.source: "qrc:/resources/basic_server.svg"
+                onTriggered: connectDialog.open()
+            }
         }
 
         Platform.FileDialog {
             id: fileDialog
             folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
             onAccepted: {
-                videoObject.loadFile(fileDialog.file.toString());
+                videoObject.loadFile(fileDialog.file.toString())
+                fileDialog.close()
+            }
+        }
+        Dialog {
+            id: connectDialog
+            title: "Connect to server..."
+
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            width: 300
+            height: 100
+            modal: true
+            standardButtons: Dialog.Ok | Dialog.Cancel
+            TextField {
+                id: ipField
+            }
+            SpinBox {
+                id: portField
+                x: ipField.width + 10
+                width: 70
+                to: 65535
+                editable: true
+            }
+            onAccepted: {
+                synchronyController.connectToServer(ipField.text, portField.value)
                 fileDialog.close()
             }
         }
