@@ -26,19 +26,23 @@ void SynchronyController::dataRecieved()
 
     quint16 incomingData;
     quint8 numericCommand;
-    in >> incomingData >> numericCommand;
+    QVariant additionalData;
+    in >> incomingData >> numericCommand >> additionalData;
 
     if (!in.commitTransaction())
         return;
 
     auto command = static_cast<Command>(numericCommand);
 
-    qDebug() << "Recieved new data:" << command;
+    qDebug() << "Recieved new command:" << command;
 
-    recieveCommand(command);
+    if (!additionalData.isNull() && additionalData.isValid())
+        recieveCommand(command, additionalData);
+    else
+        recieveCommand(command);
 }
 
-void SynchronyController::sendCommand(Command command)
+void SynchronyController::sendCommand(Command command, QVariant data)
 {
     qDebug() << socket->openMode();
     QByteArray dataBlock;
@@ -50,6 +54,10 @@ void SynchronyController::sendCommand(Command command)
         dataBlockStream << quint8(command);
         break;
     }
+    case Command::Seek: {
+        dataBlockStream << quint8(command) << data.toDouble();
+        break;
+    }
     }
 
     dataBlockStream.device()->seek(0);
@@ -58,11 +66,15 @@ void SynchronyController::sendCommand(Command command)
     qDebug() << "send em" << socket->write(dataBlock);
 }
 
-void SynchronyController::recieveCommand(Command command)
+void SynchronyController::recieveCommand(Command command, QVariant data)
 {
     switch(command) {
     case Command::Pause: {
         emit pause();
+        break;
+    }
+    case Command::Seek: {
+        emit seek(data.toDouble());
         break;
     }
     }

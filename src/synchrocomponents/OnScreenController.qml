@@ -11,6 +11,10 @@ Rectangle {
     anchors.fill: parent
     border.width: 0
     color: "#00000000"
+
+    signal pauseTriggered()
+    signal seekTriggered(double percentPos)
+
     Connections {
         target: videoObject
         onMutedChanged: volumeSlider.changeIcon()
@@ -49,7 +53,10 @@ Rectangle {
         anchors.bottom: parent.bottom
         to: 100
         opacity: oscControls.opacity
-        onMoved: videoObject.seek(position*100)
+        onMoved: {
+            videoObject.seek(position*100)
+            seekTriggered(videoObject.percentPos)
+        }
         live: false
         implicitWidth: 99999999
         z: 1
@@ -98,7 +105,10 @@ Rectangle {
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                onPressed: videoObject.paused = !videoObject.paused
+                onPressed: {
+                    videoObject.paused = !videoObject.paused
+                    container.pauseTriggered()
+                }
                 AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height

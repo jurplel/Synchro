@@ -27,11 +27,13 @@ Window {
     Connections {
         target: synchronyController
         onPause: videoObject.paused = !videoObject.paused
+        onSeek: videoObject.seek(percentPos)
     }
 
     Connections {
-        target: videoObject
-        onPausedChanged: synchronyController.sendCommand(SynchronyController.Pause);
+        target: osc
+        onPauseTriggered: synchronyController.sendCommand(SynchronyController.Pause)
+        onSeekTriggered: synchronyController.sendCommand(SynchronyController.Seek, percentPos)
     }
 
     Timer {

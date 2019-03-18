@@ -11,7 +11,8 @@ class SynchronyController : public QObject
 public:
     enum class Command : quint8
     {
-       Pause
+       Pause,
+       Seek
     };
     Q_ENUM(Command)
 
@@ -19,16 +20,17 @@ public:
 
     void dataRecieved();
 
-    void recieveCommand(Command command);
+    void recieveCommand(Command command, QVariant data = QVariant());
 
 signals:
     void pause();
 
+    void seek(double percentPos);
 
 public slots:
     void connectToServer(QString ip, quint16 port);
 
-    void sendCommand(Command command);
+    void sendCommand(Command command, QVariant data = QVariant());
 
 private:
     QTcpSocket *socket;
