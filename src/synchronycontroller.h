@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QDataStream>
 
 class SynchronyController : public QObject
 {
@@ -16,7 +17,7 @@ public:
 
     explicit SynchronyController(QObject *parent = nullptr);
 
-    void readNewData();
+    void dataRecieved();
 
     void recieveCommand(Command command);
 
@@ -31,7 +32,7 @@ public slots:
 
 private:
     QTcpSocket *socket;
-    quint16 incomingSize;
+    QDataStream in;
 };
 
 #endif // SYNCHRONYCONTROLLER_H
