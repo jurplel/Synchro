@@ -19,6 +19,7 @@ public slots:
 
 private:
     QTcpSocket *socket;
+    quint16 incomingSize;
 };
 
 #endif // SYNCHRONYCONTROLLER_H
