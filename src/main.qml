@@ -24,6 +24,16 @@ Window {
         id: synchronyController
     }
 
+    Connections {
+        target: synchronyController
+        onPause: videoObject.paused = !videoObject.paused
+    }
+
+    Connections {
+        target: videoObject
+        onPausedChanged: synchronyController.sendCommand(SynchronyController.Pause);
+    }
+
     Timer {
         id: autohideTimer
         interval: 500

@@ -27,11 +27,49 @@ void SynchronyController::readNewData()
         QDataStream dataStream(data);
         dataStream >> incomingSize;
     }
-    qInfo() << incomingSize;
-    qInfo() << socket->bytesAvailable();
+    qDebug() << incomingSize;
+    qDebug() << socket->bytesAvailable();
     if (socket->bytesAvailable() != incomingSize)
         return;
 
-    qInfo() << "Recieved new data:" << socket->read(incomingSize);
     incomingSize = 0;
+
+    QByteArray data = socket->read(incomingSize);
+    QDataStream dataStream(data);
+
+    quint8 numericCommand;
+    dataStream >> numericCommand;
+    auto command = static_cast<Command>(numericCommand);
+
+    qDebug() << "Recieved new data:" << command;
+
+    recieveCommand(command);
+}
+
+void SynchronyController::sendCommand(Command command)
+{
+    QByteArray dataBlock;
+    QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
+    dataBlockStream << quint16(0);
+
+    switch(command) {
+    case Command::Pause: {
+        dataBlockStream << quint8(command);
+        break;
+    }
+    }
+
+    dataBlockStream.device()->seek(0);
+    dataBlockStream << quint16(dataBlock.size() - static_cast<int>(sizeof(quint16)));
+    socket->write(dataBlock);
+}
+
+void SynchronyController::recieveCommand(Command command)
+{
+    switch(command) {
+    case Command::Pause: {
+        emit pause();
+        break;
+    }
+    }
 }
