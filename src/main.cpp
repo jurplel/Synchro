@@ -6,6 +6,7 @@
 #include <QSurfaceFormat>
 
 #include "videoobject.h"
+#include "synchronycontroller.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC, "C");
 
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
+    qmlRegisterType<SynchronyController>("Synchro.Core", 1, 0, "SynchronyController");
 
     //disable vsync for perfect resizing
     QSurfaceFormat fmt;

@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 widgets
+QT += quick quickcontrols2 widgets network
 CONFIG += c++14
 
 VERSION = 0.1 # major.minor
@@ -59,7 +59,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         src/main.cpp \
     src/corerenderer.cpp \
-    src/videoobject.cpp
+    src/videoobject.cpp \
+    src/synchronycontroller.cpp
 
 RESOURCES += src/qml.qrc \
     resources/resources.qrc
@@ -72,4 +73,5 @@ QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
     src/corerenderer.h \
-    src/videoobject.h
+    src/videoobject.h \
+    src/synchronycontroller.h

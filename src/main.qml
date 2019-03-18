@@ -20,6 +20,10 @@ Window {
         anchors.fill: parent
     }
 
+    SynchronyController {
+        id: synchronyController
+    }
+
     Timer {
         id: autohideTimer
         interval: 500
