@@ -25,9 +25,16 @@ void SynchronyController::dataRecieved()
     in.startTransaction();
 
     quint16 incomingData;
+    quint8 extraFieldCount;
     quint8 numericCommand;
     QVariant additionalData;
-    in >> incomingData >> numericCommand >> additionalData;
+    in >> incomingData >> extraFieldCount >> numericCommand;
+
+    for (int i = extraFieldCount; i > 0; i--)
+    {
+
+    }
+
 
     if (!in.commitTransaction())
         return;
@@ -48,14 +55,13 @@ void SynchronyController::sendCommand(Command command, QVariant data)
     QByteArray dataBlock;
     QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
     dataBlockStream << quint16(0);
-
     switch(command) {
     case Command::Pause: {
-        dataBlockStream << quint8(command);
+        dataBlockStream << quint8(0) << quint8(command);
         break;
     }
     case Command::Seek: {
-        dataBlockStream << quint8(command) << data.toDouble();
+        dataBlockStream << quint8(1) << quint8(command) << data;
         break;
     }
     }
