@@ -1,16 +1,22 @@
 #include "synchronycontroller.h"
-#include <QTcpSocket>
 #include <QDebug>
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 {
-    auto socket = new QTcpSocket(this);
-    socket->connectToHost("127.0.0.1", 32019);
-    socket->waitForConnected();
-    if (socket->state() == QAbstractSocket::ConnectedState)
-    {
-        qInfo() << "connected, waiting for handshake";
-        socket->waitForReadyRead();
-        qInfo() << "Message recieved: " << QString(socket->read(99999));
-    }
+    socket = new QTcpSocket(this);
+
+    connect(socket, &QTcpSocket::connected, []{ qInfo() << "Connection successfully established"; });
+    connect(socket, &QTcpSocket::readyRead, this, &SynchronyController::readNewData);
+
+    connectToServer("35.227.80.175", 32019);
+}
+
+void SynchronyController::connectToServer(QString ip, quint16 port)
+{
+    socket->connectToHost(ip, port);
+}
+
+void SynchronyController::readNewData()
+{
+    qInfo() << "Recieved new data: " << QString(socket->read(99999));
 }
