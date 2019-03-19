@@ -7,7 +7,9 @@ import Qt.labs.platform 1.0 as Platform
 import Synchro.Core 1.0
 import "synchrocomponents"
 
+
 Window {
+
     id: window
     visible: true
     width: 640
@@ -32,13 +34,28 @@ Window {
 
     Connections {
         target: osc
-        onPauseTriggered: synchronyController.sendCommand(SynchronyController.Pause)
-        onSeekTriggered: synchronyController.sendCommand(SynchronyController.Seek, percentPos)
+        onPauseTriggered: {
+            synchronyController.sendCommand(SynchronyController.Pause)
+        }
+        onSeekTriggered: {
+            synchronyController.sendCommand(SynchronyController.Seek, percentPos)
+        }
+    }
+
+    Connections {
+        target: videoObject
+        onPausedChanged: restartAutohideTimer()
+    }
+
+    function restartAutohideTimer() {
+        osc.state = ""
+        autohideTimer.restart()
     }
 
     Timer {
         id: autohideTimer
         interval: 500
+
         onTriggered: {
             if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < window.height-57) && !videoObject.paused)
                 osc.state = "hidden"
@@ -63,10 +80,7 @@ Window {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         onClicked: mainContextMenu.popup()
-        onPositionChanged: {
-            osc.state = ""
-            autohideTimer.restart()
-        }
+        onPositionChanged: restartAutohideTimer()
 
         OnScreenController {
             id: osc

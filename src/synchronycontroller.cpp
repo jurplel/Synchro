@@ -32,7 +32,7 @@ void SynchronyController::dataRecieved()
 
     for (int i = extraFieldCount; i > 0; i--)
     {
-
+        in >> additionalData;
     }
 
 
@@ -41,12 +41,15 @@ void SynchronyController::dataRecieved()
 
     auto command = static_cast<Command>(numericCommand);
 
-    qDebug() << "Recieved new command:" << command;
+    qDebug() << "Recieved new command:" << command << additionalData;
 
     if (!additionalData.isNull() && additionalData.isValid())
         recieveCommand(command, additionalData);
     else
         recieveCommand(command);
+
+    if (!in.atEnd())
+        dataRecieved();
 }
 
 void SynchronyController::sendCommand(Command command, QVariant data)

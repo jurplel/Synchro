@@ -54,8 +54,9 @@ Rectangle {
         to: 100
         opacity: oscControls.opacity
         onMoved: {
-            videoObject.seek(position*100)
-            seekTriggered(videoObject.percentPos)
+            var newPos = position*100
+            videoObject.seek(newPos)
+            seekTriggered(newPos)
         }
         live: false
         implicitWidth: 99999999
