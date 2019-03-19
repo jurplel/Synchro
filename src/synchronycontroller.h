@@ -23,7 +23,7 @@ public:
     void recieveCommand(Command command, QVariant data = QVariant());
 
 signals:
-    void pause();
+    void pause(double percentPos);
 
     void seek(double percentPos);
 

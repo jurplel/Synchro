@@ -60,7 +60,7 @@ void SynchronyController::sendCommand(Command command, QVariant data)
     dataBlockStream << quint16(0);
     switch(command) {
     case Command::Pause: {
-        dataBlockStream << quint8(0) << quint8(command);
+        dataBlockStream << quint8(1) << quint8(command) << data;
         break;
     }
     case Command::Seek: {
@@ -72,14 +72,14 @@ void SynchronyController::sendCommand(Command command, QVariant data)
     dataBlockStream.device()->seek(0);
     dataBlockStream << quint16(dataBlock.size() - static_cast<int>(sizeof(quint16)));
 
-    qDebug() << "send em" << socket->write(dataBlock);
+    qDebug() << "send em" << socket->write(dataBlock) << "bytes";
 }
 
 void SynchronyController::recieveCommand(Command command, QVariant data)
 {
     switch(command) {
     case Command::Pause: {
-        emit pause();
+        emit pause(data.toDouble());
         break;
     }
     case Command::Seek: {
