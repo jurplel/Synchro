@@ -106,10 +106,16 @@ void VideoObject::handleMpvEvent(mpv_event *event)
 }
 }
 
-void VideoObject::seek(const qreal newPos)
+void VideoObject::seek(const qreal newPos, bool useKeyframes)
 {
+    QStringList command = QStringList() << "seek" << QString::number(newPos);
+    //keyframes are used when dragging, and exact used when clicking
+    if (useKeyframes)
+        command << "absolute-percent+keyframes";
+    else
+        command << "absolute-percent+exact";
 
-    mpv::qt::node_builder node(QStringList() << "seek" << QString::number(newPos) << "absolute-percent+keyframes");
+    mpv::qt::node_builder node(command);
     mpv_command_node_async(mpvHandler, 0, node.node());
 
     seeking = true;

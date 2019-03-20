@@ -60,7 +60,7 @@ signals:
 public slots:
     void onMpvEvents();
 
-    void seek(const qreal newPos);
+    void seek(const qreal newPos, bool useKeyframes);
 
     void command(const QVariant &args);
 

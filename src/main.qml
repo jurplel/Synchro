@@ -36,16 +36,6 @@ Window {
     }
 
     Connections {
-        target: osc
-        onPauseTriggered: {
-            synchronyController.sendCommand(SynchronyController.Pause, videoObject.percentPos)
-        }
-        onSeekTriggered: {
-            synchronyController.sendCommand(SynchronyController.Seek, percentPos)
-        }
-    }
-
-    Connections {
         target: videoObject
         onPausedChanged: restartAutohideTimer()
     }
