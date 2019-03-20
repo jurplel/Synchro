@@ -44,6 +44,40 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: shadow
+        anchors.bottomMargin: oscControls.height+1
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        height: 5
+        opacity: oscControls.opacity-0.7
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: "black" }
+        }
+
+        states: State {
+            name: "seekbarexpanded"
+            when: seekSlider.state != ""
+            PropertyChanges {
+                target: shadow
+                anchors.bottomMargin: oscControls.height+3
+            }
+        }
+
+        transitions: Transition {
+            reversible: true
+            from: ""
+            to: "seekbarexpanded"
+            NumberAnimation {
+                target: shadow
+                properties: "anchors.bottomMargin"
+                duration: 75
+                easing.type: Easing.InOutQuad
+            }
+        }
+    }
     Seekbar {
         id: seekSlider
         transformOrigin: Item.Bottom
