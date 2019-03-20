@@ -29,7 +29,7 @@ Window {
     Connections {
         target: synchronyController
         onPause: {
-            videoObject.paused = !videoObject.paused
+            videoObject.paused = paused
             videoObject.seek(percentPos, false)
         }
         onSeek: {

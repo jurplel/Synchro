@@ -17,8 +17,7 @@ Slider {
     background.implicitWidth: control.horizontal ? 200 : 2
     background.implicitHeight: control.horizontal ? 2 : 200
 
-    signal clickSeek()
-    signal draggedSeek()
+    signal seek(bool dragged)
 
     background.transform: Scale {
         id: seekbarTransformScale
@@ -50,10 +49,7 @@ Slider {
         function moveSeekbar(dragged)
         {
             control.value = (mouseX/background.width)*100
-            if (dragged)
-                draggedSeek()
-            else
-                clickSeek()
+            seek(dragged)
         }
 
         id: seekbarMouseArea

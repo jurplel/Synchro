@@ -54,13 +54,9 @@ Rectangle {
         opacity: oscControls.opacity
         implicitWidth: 99999999
         z: 1
-        onClickSeek: {
-            videoObject.seek(value, false)
-            synchronyController.sendCommand(SynchronyController.Seek, [value, false])
-        }
-        onDraggedSeek: {
-            videoObject.seek(value, true)
-            synchronyController.sendCommand(SynchronyController.Seek, [value, true])
+        onSeek: {
+            videoObject.seek(value, dragged)
+            synchronyController.sendCommand(SynchronyController.Seek, [value, dragged])
         }
     }
 
@@ -108,8 +104,9 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 onPressed: {
-                    videoObject.paused = !videoObject.paused
-                    synchronyController.sendCommand(SynchronyController.Pause, [videoObject.percentPos])
+                    var newPausedState = !videoObject.paused
+                    videoObject.paused = newPausedState
+                    synchronyController.sendCommand(SynchronyController.Pause, [newPausedState, videoObject.percentPos])
                 }
                 AnimatedSprite {
                     id: playPauseIcon

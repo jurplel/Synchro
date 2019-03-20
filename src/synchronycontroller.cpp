@@ -73,8 +73,8 @@ void SynchronyController::recieveCommand(Command command, QVariantList arguments
 {
     switch(command) {
     case Command::Pause: {
-        if (arguments.length() > 0)
-            emit pause(arguments[0].toDouble());
+        if (arguments.length() > 1)
+            emit pause(arguments[0].toBool(), arguments[1].toDouble());
         break;
     }
     case Command::Seek: {

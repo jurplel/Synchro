@@ -23,7 +23,7 @@ public:
     void recieveCommand(Command command, QVariantList arguments = QVariantList());
 
 signals:
-    void pause(double percentPos);
+    void pause(bool paused, double percentPos);
 
     void seek(double percentPos, bool useKeyframes);
 
