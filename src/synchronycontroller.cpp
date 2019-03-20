@@ -27,32 +27,29 @@ void SynchronyController::dataRecieved()
     quint16 incomingData;
     quint8 extraFieldCount;
     quint8 numericCommand;
-    QVariant additionalData;
+    QVariantList additionalData;
     in >> incomingData >> extraFieldCount >> numericCommand;
 
-    for (int i = extraFieldCount; i > 0; i--)
+    if (extraFieldCount > 0)
     {
         in >> additionalData;
     }
 
-
     if (!in.commitTransaction())
         return;
+
 
     auto command = static_cast<Command>(numericCommand);
 
     qDebug() << "Recieved new command:" << command << additionalData;
 
-    if (!additionalData.isNull() && additionalData.isValid())
-        recieveCommand(command, additionalData);
-    else
-        recieveCommand(command);
+    recieveCommand(command, additionalData);
 
     if (!in.atEnd())
         dataRecieved();
 }
 
-void SynchronyController::sendCommand(Command command, QVariant data)
+void SynchronyController::sendCommand(Command command, QVariantList data)
 {
     QByteArray dataBlock;
     QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
@@ -63,7 +60,7 @@ void SynchronyController::sendCommand(Command command, QVariant data)
         break;
     }
     case Command::Seek: {
-        dataBlockStream << quint8(1) << quint8(command) << data;
+        dataBlockStream << quint8(2) << quint8(command) << data;
         break;
     }
     }
@@ -74,15 +71,17 @@ void SynchronyController::sendCommand(Command command, QVariant data)
     qDebug() << "send em" << socket->write(dataBlock) << "bytes";
 }
 
-void SynchronyController::recieveCommand(Command command, QVariant data)
+void SynchronyController::recieveCommand(Command command, QVariantList data)
 {
     switch(command) {
     case Command::Pause: {
-        emit pause(data.toDouble());
+        if (data.length() > 0)
+            emit pause(data[0].toDouble());
         break;
     }
     case Command::Seek: {
-        emit seek(data.toDouble());
+        if (data.length() > 1)
+            emit seek(data[0].toDouble(), data[1].toBool());
         break;
     }
     }

@@ -20,17 +20,17 @@ public:
 
     void dataRecieved();
 
-    void recieveCommand(Command command, QVariant data = QVariant());
+    void recieveCommand(Command command, QVariantList data = QVariantList());
 
 signals:
     void pause(double percentPos);
 
-    void seek(double percentPos);
+    void seek(double percentPos, bool useKeyframes);
 
 public slots:
     void connectToServer(QString ip, quint16 port);
 
-    void sendCommand(Command command, QVariant data = QVariant());
+    void sendCommand(Command command, QVariantList data = QVariantList());
 
 private:
     QTcpSocket *socket;

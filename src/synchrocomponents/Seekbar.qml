@@ -3,6 +3,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.impl 2.2
 import "../synchrostyle"
 
+import Synchro.Core 1.0
+
 Slider {
     id: control
     padding: 0
@@ -49,13 +51,9 @@ Slider {
         {
             control.value = (mouseX/background.width)*100
             if (dragged)
-            {
                 draggedSeek()
-            }
             else
-            {
                 clickSeek()
-            }
         }
 
         id: seekbarMouseArea

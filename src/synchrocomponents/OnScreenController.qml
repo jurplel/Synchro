@@ -3,9 +3,12 @@ import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 import "../synchrostyle"
 
+import Synchro.Core 1.0
+
 Rectangle {
     property alias state:oscControls.state
     property var videoObject
+    property var synchronyController
 
     id: container
     anchors.fill: parent
@@ -53,11 +56,11 @@ Rectangle {
         z: 1
         onClickSeek: {
             videoObject.seek(value, false)
-            synchronyController.sendCommand(synchronyController.Seek, value)
+            synchronyController.sendCommand(SynchronyController.Seek, [value, false])
         }
         onDraggedSeek: {
             videoObject.seek(value, true)
-            synchronyController.sendCommand(synchronyController.Seek, value)
+            synchronyController.sendCommand(SynchronyController.Seek, [value, true])
         }
     }
 
@@ -106,7 +109,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onPressed: {
                     videoObject.paused = !videoObject.paused
-                    synchronyController.sendCommand(SynchronyController.Pause, videoObject.percentPos)
+                    synchronyController.sendCommand(SynchronyController.Pause, [videoObject.percentPos])
                 }
                 AnimatedSprite {
                     id: playPauseIcon

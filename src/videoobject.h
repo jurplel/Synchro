@@ -28,7 +28,7 @@ public:
     void handleMpvEvent(mpv_event *event);
 
     qreal getPercentPos() const { return percentPos; }
-    void setPercentPos(const qreal &value) { percentPos = value; emit percentPosChanged(); }
+    void setPercentPos(const qreal &value) { setProperty("percentPos", value); percentPos = value; emit percentPosChanged(); }
 
     bool getPaused() const { return paused; }
     void setPaused(bool value) { setProperty("pause", value); paused = value; emit pausedChanged(); }

@@ -30,9 +30,9 @@ Window {
         target: synchronyController
         onPause: {
             videoObject.paused = !videoObject.paused
-            videoObject.percentPos = percentPos
+            videoObject.seek(percentPos, false)
         }
-        onSeek: videoObject.seek(percentPos)
+        onSeek: videoObject.seek(percentPos, useKeyframes)
     }
 
     Connections {
@@ -78,6 +78,7 @@ Window {
         OnScreenController {
             id: osc
             videoObject: videoObject
+            synchronyController: synchronyController
         }
 
         Platform.MenuBar {
