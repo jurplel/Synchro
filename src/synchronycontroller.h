@@ -20,7 +20,7 @@ public:
 
     void dataRecieved();
 
-    void recieveCommand(Command command, QVariantList data = QVariantList());
+    void recieveCommand(Command command, QVariantList arguments = QVariantList());
 
 signals:
     void pause(double percentPos);
@@ -30,7 +30,7 @@ signals:
 public slots:
     void connectToServer(QString ip, quint16 port);
 
-    void sendCommand(Command command, QVariantList data = QVariantList());
+    void sendCommand(Command command, QVariantList arguments = QVariantList());
 
 private:
     QTcpSocket *socket;

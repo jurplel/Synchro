@@ -25,15 +25,13 @@ void SynchronyController::dataRecieved()
     in.startTransaction();
 
     quint16 incomingData;
-    quint8 extraFieldCount;
+    bool hasArguments;
     quint8 numericCommand;
-    QVariantList additionalData;
-    in >> incomingData >> extraFieldCount >> numericCommand;
+    QVariantList arguments;
+    in >> incomingData >> hasArguments >> numericCommand;
 
-    if (extraFieldCount > 0)
-    {
-        in >> additionalData;
-    }
+    if (hasArguments)
+        in >> arguments;
 
     if (!in.commitTransaction())
         return;
@@ -41,26 +39,26 @@ void SynchronyController::dataRecieved()
 
     auto command = static_cast<Command>(numericCommand);
 
-    qDebug() << "Recieved new command:" << command << additionalData;
+    qDebug() << "Recieved new command:" << command << arguments;
 
-    recieveCommand(command, additionalData);
+    recieveCommand(command, arguments);
 
     if (!in.atEnd())
         dataRecieved();
 }
 
-void SynchronyController::sendCommand(Command command, QVariantList data)
+void SynchronyController::sendCommand(Command command, QVariantList arguments)
 {
     QByteArray dataBlock;
     QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
     dataBlockStream << quint16(0);
     switch(command) {
     case Command::Pause: {
-        dataBlockStream << quint8(1) << quint8(command) << data;
+        dataBlockStream << true << quint8(command) << arguments;
         break;
     }
     case Command::Seek: {
-        dataBlockStream << quint8(2) << quint8(command) << data;
+        dataBlockStream << true << quint8(command) << arguments;
         break;
     }
     }
@@ -71,17 +69,17 @@ void SynchronyController::sendCommand(Command command, QVariantList data)
     qDebug() << "send em" << socket->write(dataBlock) << "bytes";
 }
 
-void SynchronyController::recieveCommand(Command command, QVariantList data)
+void SynchronyController::recieveCommand(Command command, QVariantList arguments)
 {
     switch(command) {
     case Command::Pause: {
-        if (data.length() > 0)
-            emit pause(data[0].toDouble());
+        if (arguments.length() > 0)
+            emit pause(arguments[0].toDouble());
         break;
     }
     case Command::Seek: {
-        if (data.length() > 1)
-            emit seek(data[0].toDouble(), data[1].toBool());
+        if (arguments.length() > 1)
+            emit seek(arguments[0].toDouble(), arguments[1].toBool());
         break;
     }
     }

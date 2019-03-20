@@ -32,7 +32,10 @@ Window {
             videoObject.paused = !videoObject.paused
             videoObject.seek(percentPos, false)
         }
-        onSeek: videoObject.seek(percentPos, useKeyframes)
+        onSeek: {
+            videoObject.seek(percentPos, useKeyframes)
+            restartAutohideTimer()
+        }
     }
 
     Connections {
