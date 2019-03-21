@@ -9,6 +9,7 @@ Item {
     property alias sourceItem:effectSource.sourceItem
     property alias radius:tint.radius
     property alias tintOpacity:tint.opacity
+    property alias border:tint.border
 
 
 
@@ -30,6 +31,6 @@ Item {
         anchors.fill: parent
         color: "#000000"
         opacity: 0.66
-        border.width: 0
+
     }
 }

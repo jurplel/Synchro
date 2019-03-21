@@ -29,13 +29,13 @@ T.Menu {
     }
 
     background: Rectangle {
-        implicitWidth: 200
-        implicitHeight: 40
-        border.color: Style.middleColor
-
         SynchroBackground {
             sourceItem: videoObject
             sourceRect: Qt.rect(control.x, control.y, control.width, control.height)
+            border.color: Style.middleColor
+            border.width: 1
         }
+        implicitWidth: 200
+        implicitHeight: 40
     }
 }

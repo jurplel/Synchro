@@ -94,7 +94,7 @@ Item {
 
         SynchroBackground {
             sourceItem: videoObject
-            sourceRect: Qt.rect(container.width-parent.width, container.height-parent.height, width, height)
+            sourceRect: Qt.rect(parent.x, parent.y, parent.width, parent.height)
         }
 
         states: State {

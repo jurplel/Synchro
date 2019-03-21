@@ -21,7 +21,7 @@ Item {
     SynchroBackground {
         id: oscVolumeBg
         sourceItem: videoObject
-        sourceRect: Qt.rect(container.width-oscVolume.width,container.height-oscVolume.height-oscVolume.anchors.bottomMargin, width, height)
+        sourceRect: Qt.rect(parent.x, parent.y, parent.width, parent.height)
         tintOpacity: 0
         radius: 4
 
