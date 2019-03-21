@@ -1,12 +1,14 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
+import "../synchrostyle"
 
 Item {
     anchors.fill: parent
     property alias sourceRect:effectSource.sourceRect
     property alias sourceItem:effectSource.sourceItem
     property alias radius:tint.radius
+    property alias tintOpacity:tint.opacity
 
 
 
@@ -14,6 +16,7 @@ Item {
         id: effectSource
         width: parent.width
         height: parent.height
+        anchors.margins: -64
     }
 
     FastBlur {

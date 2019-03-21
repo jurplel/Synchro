@@ -7,5 +7,6 @@
         <file>synchrostyle/Style.qml</file>
         <file>synchrostyle/qmldir</file>
         <file>synchrocomponents/SynchroBackground.qml</file>
+        <file>synchrocomponents/VolumeOsc.qml</file>
     </qresource>
 </RCC>

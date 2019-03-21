@@ -5,19 +5,18 @@ import "../synchrostyle"
 
 import Synchro.Core 1.0
 
-Rectangle {
+Item {
     property alias state:oscControls.state
     property var videoObject
     property var synchronyController
 
     id: container
     anchors.fill: parent
-    border.width: 0
-    color: "#00000000"
+
 
     Connections {
         target: videoObject
-        onMutedChanged: volumeSlider.changeIcon()
+        onMutedChanged: volumeOsc.changeIcon()
 
         onPausedChanged: {
         if (videoObject.paused)
@@ -26,22 +25,13 @@ Rectangle {
             playPauseIcon.state = "playing"
         }
 
-        onCurrentVolumeChanged: volumeSlider.storedValue = videoObject.currentVolume
+        onCurrentVolumeChanged: volumeOsc.storedValue = videoObject.currentVolume
 
         onPercentPosChanged: seekSlider.value = videoObject.percentPos
 
         onTimePosStringChanged: videoTimeLabel.timePosString = videoObject.timePosString
 
         onDurationStringChanged: videoTimeLabel.durationString = videoObject.durationString
-    }
-
-    Timer {
-        id: volumeAutohideTimer
-        interval: 500
-        onTriggered: {
-            if (!volumeIconMouseArea.containsMouse && !volumeMouseArea.containsMouse)
-                oscVolume.state = ""
-        }
     }
 
     Rectangle {
@@ -245,92 +235,35 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
                     onContainsMouseChanged: {
-                        oscVolume.state = "revealed"
+                        volumeOsc.state = "revealed"
                         volumeAutohideTimer.restart()
                     }
                 }
             }
         }
     }
-    Item {
-        id: oscVolume
-        width: 42
-        height: 135
-        anchors.rightMargin: -width
-        anchors.right: parent.right
-        anchors.bottomMargin: oscControls.height
-        anchors.bottom: parent.bottom
-
-        SynchroBackground {
-            sourceItem: videoObject
-            sourceRect: Qt.rect(container.width-parent.width-(-radius),container.height-parent.height-parent.anchors.bottomMargin, width, height)
+    Timer {
+        id: volumeAutohideTimer
+        interval: 500
+        onTriggered: {
+            if (!volumeIconMouseArea.containsMouse && !volumeOsc.containsMouse)
+                volumeOsc.state = ""
         }
+    }
 
-        states: State {
-            name: "revealed"
-            PropertyChanges {
-                target: oscVolume
-                anchors.rightMargin: 0
-            }
-            PropertyChanges {
-                target: seekSlider
-                anchors.rightMargin: oscVolume.width-oscVolume.radius
-            }
-        }
+    VolumeOsc {
+        id: volumeOsc
 
-        transitions: Transition {
-            reversible: true
-            to: "revealed"
-            NumberAnimation {
-                target: oscVolume
-                properties: "anchors.rightMargin"
-                duration: 165
-                easing.type: Easing.InOutQuad
-            }
+        onVolumeChanged: changeIcon()
 
-            NumberAnimation {
-                target: seekSlider
-                properties: "anchors.rightMargin"
-                duration: 165
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-        MouseArea {
-            id: volumeMouseArea
-            anchors.fill: parent
-            acceptedButtons: Qt.NoButton
-            hoverEnabled: true
-            onContainsMouseChanged: {
-                oscVolume.state = "revealed"
-                volumeAutohideTimer.restart()
-            }
-        }
-
-        Slider {
-            property real storedValue: 100
-            id: volumeSlider
-            anchors.fill: parent
-            anchors.margins: 8
-            orientation: Qt.Vertical
-            to: 100
-            value: videoObject.muted ? 0 : storedValue
-            onValueChanged: {
-                changeIcon()
-                oscVolume.state = "revealed"
-                volumeAutohideTimer.restart()
-            }
-            onMoved: { videoObject.currentVolume = value}
-
-            function changeIcon()
-            {
-                if (videoObject.muted || value < 1)
-                    volumeIcon.state = "mute"
-                else if (value > 50)
-                    volumeIcon.state = ""
-                else
-                    volumeIcon.state = "low"
-            }
+        function changeIcon()
+        {
+            if (videoObject.muted || value < 1)
+                volumeIcon.state = "mute"
+            else if (value > 50)
+                volumeIcon.state = ""
+            else
+                volumeIcon.state = "low"
         }
     }
 }
