@@ -3,10 +3,9 @@ import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
 import Qt.labs.platform 1.0 as Platform
 
-
 import Synchro.Core 1.0
 import "synchrocomponents"
-
+import "synchrostyle"
 
 Window {
 
@@ -14,7 +13,7 @@ Window {
     visible: true
     width: 640
     height: 480
-    color: "#00040e"
+    color: Style.backgroundColor
     title: "Synchro"
 
     SynchronyController {
@@ -123,6 +122,35 @@ Window {
                 synchronyController: synchronyController
             }
         }
+
+        Menu {
+            id: mainContextMenu
+            MenuItem {
+                text: "Open..."
+                icon.source: "qrc:/resources/basic_folder.svg"
+                onTriggered: fileDialog.open()
+            }
+            MenuItem {
+                text: connectDialog.title
+                icon.source: "qrc:/resources/basic_server.svg"
+                onTriggered: connectDialog.open()
+            }
+            MenuItem {
+                text: "switch corner mode"
+                onTriggered: {
+                    if (videoContainer.state == "")
+                        videoContainer.state = "bottomright"
+                    else if (videoContainer.state == "bottomright")
+                        videoContainer.state = "bottomleft"
+                    else if (videoContainer.state == "bottomleft")
+                        videoContainer.state = "bottomcenter"
+                    else if (videoContainer.state == "bottomcenter")
+                        videoContainer.state = "topcenter"
+                    else if (videoContainer.state == "topcenter")
+                        videoContainer.state = ""
+                }
+            }
+        }
     }
 
 
@@ -149,36 +177,6 @@ Window {
                 text: "Open..."
                 iconName: "document-open"
                 onTriggered: fileDialog.open()
-            }
-        }
-    }
-
-    Menu {
-
-        id: mainContextMenu
-        MenuItem {
-            text: "Open..."
-            icon.source: "qrc:/resources/basic_folder.svg"
-            onTriggered: fileDialog.open()
-        }
-        MenuItem {
-            text: connectDialog.title
-            icon.source: "qrc:/resources/basic_server.svg"
-            onTriggered: connectDialog.open()
-        }
-        MenuItem {
-            text: "switch corner mode"
-            onTriggered: {
-                if (videoContainer.state == "")
-                    videoContainer.state = "bottomright"
-                else if (videoContainer.state == "bottomright")
-                    videoContainer.state = "bottomleft"
-                else if (videoContainer.state == "bottomleft")
-                    videoContainer.state = "bottomcenter"
-                else if (videoContainer.state == "bottomcenter")
-                    videoContainer.state = "topcenter"
-                else if (videoContainer.state == "topcenter")
-                    videoContainer.state = ""
             }
         }
     }
