@@ -16,7 +16,6 @@ Item {
         id: effectSource
         width: parent.width
         height: parent.height
-        anchors.margins: -64
     }
 
     FastBlur {

@@ -179,8 +179,6 @@ Window {
                     videoContainer.state = "topcenter"
                 else if (videoContainer.state == "topcenter")
                     videoContainer.state = ""
-
-                console.log(videoContainer.state)
             }
         }
     }

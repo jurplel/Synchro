@@ -12,6 +12,7 @@ Item {
 
     id: container
     anchors.fill: parent
+    clip: true
 
 
     Connections {
