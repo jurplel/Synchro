@@ -137,7 +137,7 @@ Window {
         interval: 500
 
         onTriggered: {
-            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < window.height-57) && !videoObject.paused)
+            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < videoContainer.height-57) && !videoObject.paused)
                 osc.state = "hidden"
         }
     }
