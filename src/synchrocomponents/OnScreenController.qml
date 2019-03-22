@@ -116,11 +116,44 @@ Item {
             }
         }
 
+        Label {
+            id: videoTimeLabel
+            property string timePosString;
+            property string durationString;
+
+            text: timePosString + "/" + durationString
+            anchors.leftMargin: 10
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         Item {
             id: controlsWrapper
             height: oscPanel.height-12
             anchors.rightMargin: 0
             anchors.fill: parent
+
+            AbstractButton {
+                id: backButton
+                width: 34
+                height: 34
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: -40
+                anchors.verticalCenter: parent.verticalCenter
+                onPressed: console.log("back pressed")
+
+                Image {
+                    id: backIcon
+                    width: parent.width
+                    height: parent.height
+                    source: "qrc:/resources/music_beginning_button.svg"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: Qt.PointingHandCursor
+                }
+            }
 
             AbstractButton {
                 id: playPauseButton
@@ -165,35 +198,26 @@ Item {
                 }
             }
 
-            Label {
-                id: videoTimeLabel
-                property string timePosString;
-                property string durationString;
-
-                text: timePosString + "/" + durationString
-                anchors.leftMargin: 10
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Image {
+            AbstractButton {
+                id: forwardButton
                 width: 34
                 height: 34
-                id: icon1
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.horizontalCenterOffset: -40
-                anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/resources/music_beginning_button.svg"
-            }
-
-            Image {
-                width: 34
-                height: 34
-                id: icon2
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: 40
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/resources/music_end_button.svg"
+                onPressed: console.log("forward pressed")
+
+                Image {
+                    id: forwardIcon
+                    width: parent.width
+                    height: parent.height
+                    source: "qrc:/resources/music_end_button.svg"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: Qt.PointingHandCursor
+                }
             }
 
             AbstractButton {
