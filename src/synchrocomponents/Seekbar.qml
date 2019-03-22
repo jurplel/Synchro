@@ -24,6 +24,7 @@ Slider {
         origin.y: background.height
     }
 
+
     states: State {
         name: "hovered"
         when: seekbarMouseArea.containsMouse

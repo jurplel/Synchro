@@ -9,7 +9,7 @@ Item {
     height: 135
     anchors.rightMargin: -width
     anchors.right: parent.right
-    anchors.bottomMargin: oscControls.height
+    anchors.bottomMargin: oscPanel.height
     anchors.bottom: parent.bottom
 
     property alias value:volumeSlider.value
@@ -33,7 +33,7 @@ Item {
 
             Rectangle {
                 width: parent.width + radius
-                height: oscControls.state == "hidden" ? parent.height : parent.height + radius
+                height: oscPanel.state == "hidden" ? parent.height : parent.height + radius
                 radius: oscVolumeBg.radius
                 opacity: 0.66
                 color: '#000000'

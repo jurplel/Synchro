@@ -6,7 +6,7 @@ import "../synchrostyle"
 import Synchro.Core 1.0
 
 Item {
-    property alias state:oscControls.state
+    property alias state:oscPanel.state
     property var videoObject
     property var synchronyController
 
@@ -37,12 +37,12 @@ Item {
 
     Rectangle {
         id: shadow
-        anchors.bottomMargin: oscControls.height+1
+        anchors.bottomMargin: oscPanel.height+1
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         height: 5
-        opacity: oscControls.opacity-0.7
+        opacity: oscPanel.opacity-0.7
         gradient: Gradient {
             GradientStop { position: 0.0; color: "transparent" }
             GradientStop { position: 1.0; color: "black" }
@@ -53,7 +53,7 @@ Item {
             when: seekSlider.state != ""
             PropertyChanges {
                 target: shadow
-                anchors.bottomMargin: oscControls.height+3
+                anchors.bottomMargin: oscPanel.height+3
             }
         }
 
@@ -72,11 +72,11 @@ Item {
     Seekbar {
         id: seekSlider
         transformOrigin: Item.Bottom
-        anchors.bottomMargin: oscControls.height-bottomPadding
+        anchors.bottomMargin: oscPanel.height-bottomPadding
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        opacity: oscControls.opacity
+        opacity: oscPanel.opacity
         implicitWidth: 99999999
         z: 1
         onSeek: {
@@ -86,7 +86,7 @@ Item {
     }
 
     Item {
-        id: oscControls
+        id: oscPanel
         height: 48
         anchors.right: parent.right
         anchors.left: parent.left
@@ -100,7 +100,7 @@ Item {
         states: State {
             name: "hidden"
             PropertyChanges {
-                target: oscControls
+                target: oscPanel
                 opacity: 0
                 enabled: false
             }
@@ -109,7 +109,7 @@ Item {
         transitions: Transition {
             reversible: true
             NumberAnimation {
-                target: oscControls
+                target: oscPanel
                 properties: "opacity"
                 duration: 165
                 easing.type: Easing.InOutQuad
@@ -118,7 +118,7 @@ Item {
 
         Item {
             id: controlsWrapper
-            height: oscControls.height-12
+            height: oscPanel.height-12
             anchors.rightMargin: 0
             anchors.fill: parent
 
