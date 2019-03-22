@@ -49,6 +49,9 @@ void SynchronyController::dataRecieved()
 
 void SynchronyController::sendCommand(Command command, QVariantList arguments)
 {
+    if (socket->state() != QTcpSocket::ConnectedState)
+        return;
+
     QByteArray dataBlock;
     QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
     dataBlockStream << quint16(0);
