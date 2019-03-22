@@ -37,12 +37,12 @@ Item {
 
     Rectangle {
         id: shadow
-        anchors.bottomMargin: oscPanel.height+1
+        anchors.bottomMargin: oscPanel.height+1+oscPanel.anchors.bottomMargin
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         height: 5
-        opacity: oscPanel.opacity-0.7
+        opacity: 0.7
         gradient: Gradient {
             GradientStop { position: 0.0; color: "transparent" }
             GradientStop { position: 1.0; color: "black" }
@@ -72,11 +72,10 @@ Item {
     Seekbar {
         id: seekSlider
         transformOrigin: Item.Bottom
-        anchors.bottomMargin: oscPanel.height-bottomPadding
+        anchors.bottomMargin: oscPanel.height-bottomPadding+oscPanel.anchors.bottomMargin
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        opacity: oscPanel.opacity
         implicitWidth: 99999999
         z: 1
         onSeek: {
@@ -101,7 +100,7 @@ Item {
             name: "hidden"
             PropertyChanges {
                 target: oscPanel
-                opacity: 0
+                anchors.bottomMargin: -height-shadow.height
                 enabled: false
             }
         }
@@ -110,8 +109,8 @@ Item {
             reversible: true
             NumberAnimation {
                 target: oscPanel
-                properties: "opacity"
-                duration: 165
+                properties: "anchors.bottomMargin"
+                duration: 200
                 easing.type: Easing.InOutQuad
             }
         }
