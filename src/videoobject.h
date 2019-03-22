@@ -60,15 +60,19 @@ signals:
 public slots:
     void onMpvEvents();
 
-    void seek(const qreal newPos, bool useKeyframes);
-
-    void command(const QVariant &args);
-
     void setProperty(const QString name, const QVariant &v);
 
     QVariant getProperty(const QString name);
 
+    void seek(const qreal newPos, bool useKeyframes);
+
+    void command(const QVariant &args);
+
     void loadFile(const QString &fileName);
+
+    void back();
+
+    void forward();
 
 private:
     mpv_handle *mpvHandler;

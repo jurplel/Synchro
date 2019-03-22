@@ -106,6 +106,21 @@ void VideoObject::handleMpvEvent(mpv_event *event)
 }
 }
 
+void VideoObject::command(const QVariant &args)
+{
+    mpv::qt::command(mpvHandler, args);
+}
+
+void VideoObject::setProperty(const QString name, const QVariant &v)
+{
+    mpv::qt::set_property(mpvHandler, name, v);
+}
+
+QVariant VideoObject::getProperty(const QString name)
+{
+    return mpv::qt::get_property(mpvHandler, name);
+}
+
 void VideoObject::seek(const qreal newPos, bool useKeyframes)
 {
     QStringList command = QStringList() << "seek" << QString::number(newPos);
@@ -122,26 +137,21 @@ void VideoObject::seek(const qreal newPos, bool useKeyframes)
     seekTimer->start();
 }
 
-void VideoObject::command(const QVariant &args)
-{
-    mpv::qt::command(mpvHandler, args);
-}
-
-void VideoObject::setProperty(const QString name, const QVariant &v)
-{
-    mpv::qt::set_property(mpvHandler, name, v);
-}
-
-QVariant VideoObject::getProperty(const QString name)
-{
-    return mpv::qt::get_property(mpvHandler, name);
-}
-
 void VideoObject::loadFile(const QString &fileName)
 {
     command(QStringList() << "loadfile" << fileName);
     setPaused(false);
     setPercentPos(0);
+}
+
+void VideoObject::back()
+{
+     command(QStringList() << "add" << "chapter" << "-1");
+}
+
+void VideoObject::forward()
+{
+    command(QStringList() << "add" << "chapter" << "1");
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)

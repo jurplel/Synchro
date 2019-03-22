@@ -139,7 +139,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: -40
                 anchors.verticalCenter: parent.verticalCenter
-                onPressed: console.log("back pressed")
+                onPressed: videoObject.back();
 
                 Image {
                     id: backIcon
@@ -204,7 +204,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: 40
                 anchors.verticalCenter: parent.verticalCenter
-                onPressed: console.log("forward pressed")
+                onPressed: videoObject.forward();
 
                 Image {
                     id: forwardIcon
