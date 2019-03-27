@@ -15,7 +15,6 @@ steps:
     wget http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-linux-x64-5.11.3.run
     chmod +x qt-opensource-linux-x64-5.11.3.run
     ./qt-opensource-linux-x64-5.11.3.run -platform minimal --script qt-installer-noninteractive.qs --verbose
-    PATH=$PATH:/home/vsts/Qt/5.11.3/gcc_64/bin
   displayName: 'Install Qt 5.11.3'
 
 - script: |
@@ -25,7 +24,7 @@ steps:
   displayName: 'Install mpv'
 
 - script: |
-    qmake
+    /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
     make
     ls
   displayName: 'Build synchro'
