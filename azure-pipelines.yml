@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get -y install p7zip
+    sudo apt-get -y install p7zip-full
     wget https://git.kaidan.im/lnj/qli-installer/raw/master/qli-installer.py
     chmod +x qli-installer.py
     ./qli-installer.py 5.11.3 linux desktop
