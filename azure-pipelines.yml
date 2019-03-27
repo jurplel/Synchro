@@ -11,15 +11,17 @@ pool:
 
 steps:
 - script: |
+    sudo apt-get -y install p7zip
     wget https://git.kaidan.im/lnj/qli-installer/raw/master/qli-installer.py
     chmod +x qli-installer.py
     ./qli-installer.py 5.11.3 linux desktop
+    ls
   displayName: 'Install Qt 5.11.3'
 
 - script: |
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     sudo apt-get -y update
-    sudo apt-get install mpv
+    sudo apt-get -y install mpv
   displayName: 'Install mpv'
 
 - script: |
