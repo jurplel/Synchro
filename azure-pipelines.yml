@@ -18,10 +18,13 @@ steps:
   displayName: 'Install Qt 5.11.3'
 
 - script: |
-    sudo add-apt-repository universe -y
-    sudo add-apt-repository ppa:mc3man/xerus-media -y
-    sudo apt-get -y update
-    sudo apt-get -y install libmpv-dev
+    git clone https://github.com/mpv-player/mpv-build.git
+    cd mpv-build
+    ./use-mpv-release
+    echo --enable-libmpv-shared > mpv_options
+    ./rebuild -j2
+    sudo ./install
+    cd ../
   displayName: 'Install mpv'
 
 - script: |
