@@ -1,42 +1,89 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - script: |
+      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+      wget http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-linux-x64-5.11.3.run
+      chmod +x qt-opensource-linux-x64-5.11.3.run
+      ./qt-opensource-linux-x64-5.11.3.run -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Install Qt 5.11.3'
 
-steps:
-- script: |
-    wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
-    wget http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-linux-x64-5.11.3.run
-    chmod +x qt-opensource-linux-x64-5.11.3.run
-    ./qt-opensource-linux-x64-5.11.3.run -platform minimal --script qt-installer-noninteractive.qs --verbose
-  displayName: 'Install Qt 5.11.3'
+  - script: |
+      sudo apt-get -y update
+      sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
+      git clone https://github.com/mpv-player/mpv-build.git
+      cd mpv-build
+      ./use-mpv-release
+      ./use-ffmpeg-release
+      echo --enable-libmpv-shared > mpv_options
+      ./rebuild -j2
+      sudo ./install
+      cd ../
+    displayName: 'Install mpv'
 
-- script: |
-    sudo apt-get -y update
-    sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
-    git clone https://github.com/mpv-player/mpv-build.git
-    cd mpv-build
-    ./use-mpv-release
-    ./use-ffmpeg-release
-    echo --enable-libmpv-shared > mpv_options
-    ./rebuild -j2
-    sudo ./install
-    cd ../
-  displayName: 'Install mpv'
+  - script: |
+      /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
+      make
+      cp bin/* $(Build.ArtifactStagingDirectory)
+    displayName: 'Build Synchro'
 
-- script: |
-    /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
-    make
-    cp bin/* $(Build.ArtifactStagingDirectory)
-  displayName: 'Build synchro'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**' 
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy Build Files to ArtifactStagingDirectory'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'Synchro-Linux-x64-$(Build.BuildNumber)'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
+    displayName: 'Publish Build Artifacts'
+
+- job: Windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - powershell: |
+      Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
+      Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe
+      ./qt-opensource-linux-x64-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Install Qt 5.11.3'
+  - powershell: |
+      Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z
+      
+      set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"  
+      sz e mpv-dev-20181002.7z -ompv
+
+      $oldfile = Get-Content mpv\x86_64\libmpv.def
+      $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
+      Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
+    displayName: 'Prepare to Build mpv lib'
+  - script: |
+      "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxilary\Build\vcvars64.bat"
+      cd mpv\x64_64
+      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+    displayName: 'Build mpv lib'
+  - script: |
+      "C:\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
+      "C:\Qt\Tools\QtCreator\bin\jom.exe /j 2"
+      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+    displayName: 'Build Synchro'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**' 
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy Build Files to ArtifactStagingDirectory'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
+    displayName: 'Publish Build Artifacts'
