@@ -24,7 +24,7 @@ steps:
   displayName: 'Install mpv'
 
 - script: |
-    5.11.3/gcc_64/bin/qmake
+    qmake
     make
     ls
   displayName: 'Build synchro'
