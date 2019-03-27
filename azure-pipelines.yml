@@ -19,7 +19,7 @@ steps:
 
 - script: |
     sudo apt-get -y update
-    sudo apt-get -y install libfribidi-dev yasm nasm autoconf autotools-dev libx11-6 libxext6 libxinerama1 libxkbcommon0 libxrandr2 libxv1 libvdpau1 libjpeg8 
+    sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
     git clone https://github.com/mpv-player/mpv-build.git
     cd mpv-build
     ./use-mpv-release
@@ -33,5 +33,10 @@ steps:
 - script: |
     /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
     make
-    ls
+    cp bin/* $(Build.ArtifactStagingDirectory)
   displayName: 'Build synchro'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'Synchro-Linux-x64-$(Build.BuildNumber)'
