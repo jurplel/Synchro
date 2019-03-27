@@ -18,6 +18,7 @@ steps:
   displayName: 'Install Qt 5.11.3'
 
 - script: |
+    sudo add-apt-repository universe -y
     sudo add-apt-repository ppa:mc3man/xerus-media -y
     sudo apt-get -y update
     sudo apt-get -y install libmpv
