@@ -24,7 +24,15 @@ macx {
     # pkg-config location if your brew installation is standard
     PKG_CONFIG = /usr/local/bin/pkg-config
 }
+win32 {
+    LIBS += -L$$PWD/mpv/x86_64/ -llibmpv.dll
 
+    INCLUDEPATH += $$PWD/mpv/include
+    DEPENDPATH += $$PWD/mpv/include
+
+    !win32-g++: PRE_TARGETDEPS += $$PWD/mpv/x86_64/libmpv.dll.lib
+    else:win32-g++: PRE_TARGETDEPS += $$PWD/mpv/x86_64/liblibmpv.dll.a
+}
 
 
 # Windows specific stuff
