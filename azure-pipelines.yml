@@ -21,7 +21,7 @@ steps:
     sudo add-apt-repository universe -y
     sudo add-apt-repository ppa:mc3man/xerus-media -y
     sudo apt-get -y update
-    sudo apt-get -y install libmpv
+    sudo apt-get -y install libmpv-dev
   displayName: 'Install mpv'
 
 - script: |
