@@ -18,9 +18,12 @@ steps:
   displayName: 'Install Qt 5.11.3'
 
 - script: |
+    sudo apt-get -y update
+    sudo apt-get -y install libfribidi-dev
     git clone https://github.com/mpv-player/mpv-build.git
     cd mpv-build
     ./use-mpv-release
+    ./use-ffmpeg-release
     echo --enable-libmpv-shared > mpv_options
     ./rebuild -j2
     sudo ./install
