@@ -11,11 +11,10 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get -y install p7zip-full
-    wget https://git.kaidan.im/lnj/qli-installer/raw/master/qli-installer.py
-    chmod +x qli-installer.py
-    ./qli-installer.py 5.11.3 linux desktop
-    ls
+    wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+    wget http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-linux-x64-5.11.3.run
+    chmod +x qt-opensource-linux-x64-5.11.3.run
+    ./qt-opensource-linux-x64-5.11.3.run -platform minimal --script qs-installer-noninteractive.qs
   displayName: 'Install Qt 5.11.3'
 
 - script: |
