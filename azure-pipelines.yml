@@ -11,10 +11,10 @@ pool:
 
 steps:
 - script: |
-    wget http://download.qt.io/official_releases/qt/5.12/5.12.2/qt-opensource-linux-x64-5.12.2.run
-    chmod +x qt-opensource-linux-x64-5.12.2.run
-    ./qt-opensource-linux-x64-5.12.2.run
-  displayName: 'Install Qt5.12'
+    wget https://git.kaidan.im/lnj/qli-installer/raw/master/qli-installer.py
+    chmod +x qli-installer.py
+    ./qli-installer.py 5.11.3 linux desktop
+  displayName: 'Install Qt 5.11.3'
 
 - script: |
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
