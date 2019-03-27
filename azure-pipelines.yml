@@ -10,10 +10,20 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: |
+    wget http://download.qt.io/official_releases/qt/5.12/5.12.2/qt-opensource-linux-x64-5.12.2.run
+    chmod +x qt-opensource-linux-x64-5.12.2.run
+    ./qt-opensource-linux-x64-5.12.2.run
+  displayName: 'Install Qt5.12'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    sudo apt-get -y update
+    sudo apt-get install mpv
+  displayName: 'Install mpv'
+
+- script: |
+    qmake
+    make
+    ls
+  displayName: 'Build synchro'
