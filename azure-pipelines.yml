@@ -19,7 +19,7 @@ steps:
 
 - script: |
     sudo apt-get -y update
-    sudo apt-get -y install libfribidi-dev yasm nasm autoconf autotools-dev  libx11-6 libxext6 libxinerama1 libxkbcommon0 libxrandr2 libxv1 libvdpau1 libgl1-mesa libjpeg8 
+    sudo apt-get -y install libfribidi-dev yasm nasm autoconf autotools-dev libx11-6 libxext6 libxinerama1 libxkbcommon0 libxrandr2 libxv1 libvdpau1 libgl1-mesa libjpeg8 
     git clone https://github.com/mpv-player/mpv-build.git
     cd mpv-build
     ./use-mpv-release
