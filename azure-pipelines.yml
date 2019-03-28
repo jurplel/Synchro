@@ -54,22 +54,21 @@ jobs:
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile $env:userprofile\jom.zip
 
-      set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
-      sz x $env:userprofile\jom.zip -y
+      & "$env:ProgramFiles\7-Zip\7z.exe" x $env:userprofile\jom.zip -y
     displayName: 'Download jom'
 
-  - script: |
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      git clone https://github.com/qt/qt5.git
-      cd qt5
-      git checkout tags/v5.11.3
-      perl init-repository
+  - powershell: |
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest https://download.qt.io/archive/qt/5.11/5.11.3/single/qt-everywhere-src-5.11.3.tar.xz -OutFile qt-everywhere-src-5.11.3.tar.xz
+
+      & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar.xz -y
+      & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar -y
     displayName: 'Download Qt'
     
   - script: |
-      cd qt5
+      cd qt-everywhere-src-5.11.3
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      configure -prefix %userprofile%\Qt -platform win32-msvc -release -ltcg -nomake examples -nomake tools -nomake tests -opengl dynamic
+      configure -prefix %userprofile%\Qt -platform win32-msvc -release -ltcg -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license
       %userprofile%\jom /j 2 install
     displayName: "Build Qt"
 
@@ -77,8 +76,7 @@ jobs:
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
       
-      set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
-      sz x mpv-dev-20181002.7z -y -ompv
+      & "$env:ProgramFiles\7-Zip\7z.exe" mpv-dev-20181002.7z -y -ompv
 
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
