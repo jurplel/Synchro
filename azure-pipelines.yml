@@ -50,7 +50,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
 
-  - powershell:
+  - powershell: |
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile $env:userprofile\jom.zip
 
