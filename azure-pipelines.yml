@@ -50,8 +50,9 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
 
-  - powershell: |
-      choco install jom nasm
+  - script: |
+      choco install jom nasm -vy
+      setx /M path "%programfiles%\nasm"
     displayName: 'Download jom and nasm'
 
   - bash: |
@@ -90,7 +91,7 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd qt-everywhere-src-5.11.3
-      %userprofile%\jom /j 2
+      jom /j 2
       nmake install
     displayName: "Build Qt"
     failOnStderr: false
@@ -114,7 +115,7 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       "%userprofile%\Qt\bin\qmake.exe"
-      %userprofile%\jom.exe /j 2
+      jom /j 2
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
