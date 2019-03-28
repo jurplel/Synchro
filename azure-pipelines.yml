@@ -53,7 +53,9 @@ jobs:
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
       Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe -OutFile qt-opensource-windows-x86-5.11.3.exe
-      ./qt-opensource-windows-x86-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Download Qt 5.11.3'
+
+  - script: ./qt-opensource-windows-x86-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
     displayName: 'Install Qt 5.11.3'
 
   - powershell: |
