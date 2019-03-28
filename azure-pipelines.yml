@@ -49,15 +49,29 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
-  - powershell: |
+
+  - powershell:
       $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
-      Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe -OutFile qt-opensource-windows-x86-5.11.3.exe
-    displayName: 'Download Qt 5.11.3'
+      Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile $env:userprofile\jom.zip
+
+      set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
+      sz x $env:userprofile\jom.zip -y -o$env:userprofile
+    displayName: 'Download jom'
+
+  - script: |
+      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      git clone https://github.com/qt/qt5.git
+      cd qt5
+      git checkout tags/v5.11.3
+      perl init-repository
+    displayName: 'Download Qt'
     
   - script: |
-      qt-opensource-windows-x86-5.11.3.exe --script qt-installer-noninteractive.qs --verbose
-    displayName: "Install Qt 5.11.3"
+      cd qt5
+      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      configure -prefix %userprofile%\Qt -platform win32-msvc -release -ltcg -nomake examples -nomake tools -nomake tests -opengl dynamic
+      %userprofile%\jom /j 2 install
+    displayName: "Build Qt"
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
@@ -69,7 +83,7 @@ jobs:
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
-    displayName: 'Prepare mpv lib'
+    displayName: 'Download mpv lib'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -78,8 +92,8 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      "%userprofile%\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
-      nmake
+      "%userprofile%\Qt\bin\qmake.exe"
+      %userprofile%\jom /j 2
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
