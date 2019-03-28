@@ -68,7 +68,7 @@ jobs:
     displayName: 'Prepare to Build mpv lib'
 
   - script: |
-      "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxilary\Build\vcvars64.bat"
+      "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd mpv\x64_64
       lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Build mpv lib'
