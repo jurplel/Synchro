@@ -77,8 +77,9 @@ jobs:
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd qt-everywhere-src-5.11.3
       %userprofile%\jom /j 2
-      %userprofile%\jom install
+      nmake install
     displayName: "Build Qt"
+    failOnStderr: false
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
