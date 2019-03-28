@@ -93,7 +93,7 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       "%userprofile%\Qt\bin\qmake.exe"
-      %userprofile%\jom /j 2
+      %userprofile%\jom.exe /j 2
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
