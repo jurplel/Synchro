@@ -51,14 +51,12 @@ jobs:
   steps:
   - powershell: |
       Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
-      Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe
-    displayName: 'Download Qt 5.11.3'
-
-  - script: ./qt-opensource-linux-x64-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
+      Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe -OutFile qt-opensource-windows-x86-5.11.3.exe
+      ./qt-opensource-linux-x64-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
     displayName: 'Install Qt 5.11.3'
 
   - powershell: |
-      Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z
+      Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
       
       set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"  
       sz e mpv-dev-20181002.7z -ompv
