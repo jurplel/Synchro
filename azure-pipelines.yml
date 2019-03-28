@@ -52,8 +52,11 @@ jobs:
   - powershell: |
       Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
       Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe
-      ./qt-opensource-linux-x64-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Download Qt 5.11.3'
+
+  - script: ./qt-opensource-linux-x64-5.11.3.exe -platform minimal --script qt-installer-noninteractive.qs --verbose
     displayName: 'Install Qt 5.11.3'
+
   - powershell: |
       Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z
       
@@ -64,11 +67,13 @@ jobs:
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
     displayName: 'Prepare to Build mpv lib'
+
   - script: |
       "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxilary\Build\vcvars64.bat"
       cd mpv\x64_64
       lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Build mpv lib'
+    
   - script: |
       "C:\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
       "C:\Qt\Tools\QtCreator\bin\jom.exe /j 2"
