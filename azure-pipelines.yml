@@ -51,13 +51,8 @@ jobs:
   steps:
 
   - powershell: |
-      cd $env:userprofile
-
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile jom.zip
-
-      & "$env:ProgramFiles\7-Zip\7z.exe" x jom.zip -y
-    displayName: 'Download jom'
+      choco install jom nasm
+    displayName: 'Download jom and nasm'
 
   - bash: |
       git clone https://github.com/openssl/openssl.git
