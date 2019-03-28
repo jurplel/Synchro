@@ -30,20 +30,20 @@ jobs:
       /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
       make
       cp bin/* $(Build.ArtifactStagingDirectory)
-    displayName: 'Build Synchro'
+    displayName: 'Build synchro'
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: bin
       contents: '**'
       targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy Build Files to ArtifactStagingDirectory'
+    displayName: 'Copy build artifacts'
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
-    displayName: 'Publish Build Artifacts'
+    displayName: 'Publish build artifacts'
 
 - job: Windows
   pool:
@@ -78,17 +78,20 @@ jobs:
       "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       "C:\Users\VssAdministrator\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
       "C:\Users\VssAdministrator\Qt\5.11.3\Tools\QtCreator\bin\jom.exe /j2"
-    displayName: 'Build Synchro'
+      dir
+      cd ../
+      dir
+    displayName: 'Build synchro'
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: bin
       contents: '**'
       targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy Build Files to ArtifactStagingDirectory'
+    displayName: 'Copy build artifacts'
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
-    displayName: 'Publish Build Artifacts'
+    displayName: 'Publish build artifacts'
