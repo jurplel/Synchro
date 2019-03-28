@@ -35,13 +35,13 @@ jobs:
   - task: CopyFiles@2
     inputs:
       sourceFolder: bin
-      contents: '**' 
+      contents: '**'
       targetFolder: $(Build.ArtifactStagingDirectory)
     displayName: 'Copy Build Files to ArtifactStagingDirectory'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
     displayName: 'Publish Build Artifacts'
 
@@ -53,9 +53,7 @@ jobs:
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
       Invoke-WebRequest http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe -OutFile qt-opensource-windows-x86-5.11.3.exe
-    displayName: 'Download Qt 5.11.3'
-
-  - script: qt-opensource-windows-x86-5.11.3.exe --script qt-installer-noninteractive.qs --verbose
+      qt-opensource-windows-x86-5.11.3.exe --script qt-installer-noninteractive.qs --verbose
     displayName: 'Install Qt 5.11.3'
 
   - powershell: |
@@ -77,6 +75,7 @@ jobs:
     displayName: 'Build mpv lib'
     
   - script: |
+      "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       "C:\Users\VssAdministrator\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
       "C:\Users\VssAdministrator\Qt\5.11.3\Tools\QtCreator\bin\jom.exe /j2"
     displayName: 'Build Synchro'
@@ -84,12 +83,12 @@ jobs:
   - task: CopyFiles@2
     inputs:
       sourceFolder: bin
-      contents: '**' 
+      contents: '**'
       targetFolder: $(Build.ArtifactStagingDirectory)
     displayName: 'Copy Build Files to ArtifactStagingDirectory'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
     displayName: 'Publish Build Artifacts'
