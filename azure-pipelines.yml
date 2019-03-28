@@ -74,14 +74,16 @@ jobs:
       lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Build mpv lib'
     
-  - powershell: |
-      & "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      & "C:\Users\VssAdministrator\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
-      & "C:\Users\VssAdministrator\Qt\5.11.3\Tools\QtCreator\bin\jom.exe /j2"
+  - script: |
+      "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      "C:\Users\VssAdministrator\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
+      "C:\Users\VssAdministrator\Qt\5.11.3\Tools\QtCreator\bin\jom.exe /j2"
+    displayName: 'Build synchro'
+
+  - script: |
       dir
       cd ../
       dir
-    displayName: 'Build synchro'
 
   - task: CopyFiles@2
     inputs:
