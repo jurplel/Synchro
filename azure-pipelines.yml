@@ -59,20 +59,20 @@ jobs:
       git clone https://github.com/openssl/openssl.git
       cd openssl
       git checkout tags/OpenSSL_1_1_0j
-    displayName: 'Download OpenSSL'
+    displayName: 'Download openssl'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd openssl
       perl Configure VC-WIN64A no-shared threads --prefix=%userprofile%\openssl64 --openssldir=%userprofile%\openssl64
-    displayName: 'Configure OpenSSL'
+    displayName: 'Configure openssl'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd openssl
       nmake
       nmake install
-    displayName: 'Configure OpenSSL'
+    displayName: 'Build openssl'
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
@@ -85,14 +85,15 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd qt-everywhere-src-5.11.3
-      configure -prefix %userprofile%\Qt -platform win32-msvc -static -ltcg -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license -openssl-linked OPENSSL_LIBS="-llibssl -llibcrypto" -I %userprofile%\openssl64\include -L %userprofile%\openssl64\lib
+      configure -prefix %userprofile%\Qt -platform win32-msvc -static -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license -openssl-linked OPENSSL_LIBS="-llibssl -llibcrypto" -I %userprofile%\openssl64\include -L %userprofile%\openssl64\lib
     displayName: "Configure Qt"
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd qt-everywhere-src-5.11.3
       jom /j 2
-      nmake install
+      cd $(Build.Repository.LocalPath)
+      mv qt-everywhere-src-5.11.3 %userprofile%\Qt
     displayName: "Build Qt"
     failOnStderr: false
 
