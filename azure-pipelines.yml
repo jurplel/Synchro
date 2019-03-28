@@ -66,7 +66,6 @@ jobs:
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
-      Get-Childitem -Path $(Agent.HomeDirectory) -Recurse -ErrorAction SilentlyContinue qmake.exe
     displayName: 'Prepare mpv lib'
 
   - script: |
