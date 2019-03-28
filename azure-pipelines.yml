@@ -76,8 +76,8 @@ jobs:
     displayName: 'Build mpv lib'
     
   - script: |
-      "C:\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
-      "C:\Qt\Tools\QtCreator\bin\jom.exe /j 2"
+      "C:\Qt\Qt5.11.3\5.11.3\msvc2017_64\bin\qmake.exe"
+      "C:\Qt\Qt5.11.3\Tools\QtCreator\bin\jom.exe /j 2"
     displayName: 'Build Synchro'
 
   - task: CopyFiles@2
