@@ -61,7 +61,7 @@ jobs:
       
       set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
       sz x mpv-dev-20181002.7z -y -ompv
-
+      dir
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
