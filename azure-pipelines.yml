@@ -65,7 +65,7 @@ jobs:
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
-    displayName: 'Prepare to Build mpv lib'
+    displayName: 'Prepare mpv lib'
 
   - script: |
       "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -76,7 +76,6 @@ jobs:
   - script: |
       "C:\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
       "C:\Qt\Tools\QtCreator\bin\jom.exe /j 2"
-      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Build Synchro'
 
   - task: CopyFiles@2
