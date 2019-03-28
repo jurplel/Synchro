@@ -79,8 +79,8 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      "C:\Users\VssAdministrator\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
-      "C:\Users\VssAdministrator\Qt\Tools\QtCreator\bin\jom.exe /j2"
+      "%userprofile%\Qt\5.11.3\msvc2017_64\bin\qmake.exe"
+      nmake
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
