@@ -69,8 +69,12 @@ jobs:
     
   - script: |
       cd qt-everywhere-src-5.11.3
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       configure -prefix %userprofile%\Qt -platform win32-msvc -release -ltcg -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license
+    displayName: "Configure Qt"
+
+  - script: |
+      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cd qt-everywhere-src-5.11.3
       %userprofile%\jom /j 2 install
     displayName: "Build Qt"
 
@@ -78,7 +82,7 @@ jobs:
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
       
-      & "$env:ProgramFiles\7-Zip\7z.exe" mpv-dev-20181002.7z -y -ompv
+      & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
 
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
