@@ -51,10 +51,12 @@ jobs:
   steps:
 
   - powershell: |
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile $env:userprofile\jom.zip
+      cd $env:userprofile
 
-      & "$env:ProgramFiles\7-Zip\7z.exe" x $env:userprofile\jom.zip -y
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile jom.zip
+
+      & "$env:ProgramFiles\7-Zip\7z.exe" x jom.zip -y
     displayName: 'Download jom'
 
   - powershell: |
