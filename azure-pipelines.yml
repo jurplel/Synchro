@@ -55,7 +55,7 @@ jobs:
       Invoke-WebRequest https://download.qt.io/official_releases/jom/jom.zip -OutFile $env:userprofile\jom.zip
 
       set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
-      sz x $env:userprofile\jom.zip -y -o$env:userprofile
+      sz x $env:userprofile\jom.zip -y
     displayName: 'Download jom'
 
   - script: |
