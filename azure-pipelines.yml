@@ -57,6 +57,7 @@ jobs:
     displayName: 'Install Qt 5.11.3'
 
   - powershell: |
+      $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
       
       set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"
@@ -65,6 +66,7 @@ jobs:
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
+      Get-Childitem -Path C:\ -Recurse -ErrorAction SilentlyContinue qmake.exe
     displayName: 'Prepare mpv lib'
 
   - script: |
