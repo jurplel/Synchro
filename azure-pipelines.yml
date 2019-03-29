@@ -51,7 +51,9 @@ jobs:
   steps:
 
   - script: |
+      where perl.exe
       choco install jom nasm activeperl -vy
+      where perl.exe
     displayName: 'Download jom, nasm, and activeperl'
 
   - bash: |
