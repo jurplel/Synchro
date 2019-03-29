@@ -2,49 +2,6 @@ trigger:
 - master
 
 jobs:
-- job: Linux
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps:
-  - script: |
-      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
-      wget http://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-linux-x64-5.11.3.run
-      chmod +x qt-opensource-linux-x64-5.11.3.run
-      ./qt-opensource-linux-x64-5.11.3.run -platform minimal --script qt-installer-noninteractive.qs --verbose
-    displayName: 'Install Qt 5.11.3'
-
-  - script: |
-      sudo apt-get -y update
-      sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
-      git clone https://github.com/mpv-player/mpv-build.git
-      cd mpv-build
-      ./use-mpv-release
-      ./use-ffmpeg-release
-      echo --enable-libmpv-shared > mpv_options
-      ./rebuild -j2
-      sudo ./install
-      cd ../
-    displayName: 'Install mpv'
-
-  - script: |
-      /home/vsts/Qt/5.11.3/gcc_64/bin/qmake
-      make
-      cp bin/* $(Build.ArtifactStagingDirectory)
-    displayName: 'Build synchro'
-
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: bin
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
-
 - job: Windows
   pool:
     vmImage: 'vs2017-win2016'
@@ -75,7 +32,7 @@ jobs:
 
       & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar.xz -y
       & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar -y
-    displayName: 'Download Qt'
+    displayName: 'Download Qt 5.11.3'
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -84,7 +41,7 @@ jobs:
       jom /j 2
       cd $(Build.Repository.LocalPath)
       mv qt-everywhere-src-5.11.3 %userprofile%\Qt
-    displayName: "Build Qt"
+    displayName: "Build Qt 5.11.3"
     failOnStderr: false
 
   - powershell: |
@@ -105,7 +62,7 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      "%userprofile%\Qt\bin\qmake.exe"
+      %userprofile%\Qt\bin\qmake.exe
       jom /j 2
     displayName: 'Build synchro'
 
@@ -120,4 +77,56 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
+    displayName: 'Publish build artifacts'
+
+# - job: macOS
+#   pool:
+#     vmImage: 'macOS-10.13'
+#   steps:
+#   - script: |
+#       curl -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+#       curl http://download.qt.io/official_releases/qt/5.12/5.12.2/qt-opensource-mac-x64-5.12.2.dmg
+#     displayName: 'Install Qt 5.12.2'
+
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - script: |
+      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+      wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
+      chmod +x qt-opensource-linux-x64-5.9.2.run
+      ./qt-opensource-linux-x64-5.9.2.run -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Install Qt 5.9.2'
+
+  - script: |
+      sudo apt-get -y update
+      sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
+      git clone https://github.com/mpv-player/mpv-build.git
+      cd mpv-build
+      ./use-mpv-release
+      ./use-ffmpeg-release
+      echo --enable-libmpv-shared > mpv_options
+      ./rebuild -j2
+      sudo ./install
+      cd ../
+    displayName: 'Install mpv'
+
+  - script: |
+      /home/vsts/Qt/5.9.2/gcc_64/bin/qmake
+      make
+      cp bin/* $(Build.ArtifactStagingDirectory)
+    displayName: 'Build synchro'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy build artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
     displayName: 'Publish build artifacts'
