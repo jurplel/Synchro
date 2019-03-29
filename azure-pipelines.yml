@@ -7,7 +7,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
 
-  - bash: yes | choco install jom nasm activeperl -y
+  - bash: yes "" | choco install jom nasm activeperl -y
     displayName: 'Download jom, nasm, and activeperl'
 
   - bash: |
@@ -35,6 +35,7 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      set PATH=%chocolateyinstall%\bin;%PATH%
       cd qt-everywhere-src-5.11.3
       configure -prefix %userprofile%\Qt -platform win32-msvc -static -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license -openssl-linked OPENSSL_LIBS="-llibssl -llibcrypto" -I %userprofile%\openssl64\include -L %userprofile%\openssl64\lib
       jom /j 2
@@ -85,8 +86,7 @@ jobs:
     displayName: 'Install Qt and mpv'
 
   - script: |
-      ls $(brew --prefix qt)
-      qmake
+      $(brew --prefix qt)/bin/qmake
       make
     displayName: 'Build synchro'
 
