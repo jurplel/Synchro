@@ -7,8 +7,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
 
-  - script: |
-      choco install jom nasm activeperl -vy
+  - bash: yes | choco install jom nasm activeperl -vy
     displayName: 'Download jom, nasm, and activeperl'
 
   - bash: |
@@ -40,7 +39,7 @@ jobs:
       configure -prefix %userprofile%\Qt -platform win32-msvc -static -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license -openssl-linked OPENSSL_LIBS="-llibssl -llibcrypto" -I %userprofile%\openssl64\include -L %userprofile%\openssl64\lib
       jom /j 2
       cd $(Build.Repository.LocalPath)
-      mv qt-everywhere-src-5.11.3 %userprofile%\Qt
+      robocopy qt-everywhere-src-5.11.3 %userprofile%\Qt /e /move
     displayName: "Build Qt 5.11.3"
     failOnStderr: false
 
@@ -79,14 +78,30 @@ jobs:
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
     displayName: 'Publish build artifacts'
 
-# - job: macOS
-#   pool:
-#     vmImage: 'macOS-10.13'
-#   steps:
-#   - script: |
-#       curl -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
-#       curl http://download.qt.io/official_releases/qt/5.12/5.12.2/qt-opensource-mac-x64-5.12.2.dmg
-#     displayName: 'Install Qt 5.12.2'
+- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - script: brew install qt pkg-config mpv
+    displayName: 'Install Qt and mpv'
+
+  - script: |
+      qmake
+      make
+    displayName: 'Install Qt 5.12'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy build artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
+    displayName: 'Publish build artifacts'
 
 - job: Linux
   pool:
@@ -115,7 +130,6 @@ jobs:
   - script: |
       /home/vsts/Qt/5.9.2/gcc_64/bin/qmake
       make
-      cp bin/* $(Build.ArtifactStagingDirectory)
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
