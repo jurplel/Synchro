@@ -51,8 +51,8 @@ jobs:
   steps:
 
   - script: |
-      choco install jom nasm -vy
-    displayName: 'Download jom and nasm'
+      choco install jom nasm activeperl -vy
+    displayName: 'Download jom, nasm, and activeperl'
 
   - bash: |
       git clone https://github.com/openssl/openssl.git
