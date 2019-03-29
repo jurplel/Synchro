@@ -51,9 +51,7 @@ jobs:
   steps:
 
   - script: |
-      where perl.exe
       choco install jom nasm activeperl -vy
-      where perl.exe
     displayName: 'Download jom, nasm, and activeperl'
 
   - bash: |
@@ -66,7 +64,7 @@ jobs:
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%programfiles%\NASM;%PATH%
       cd openssl
-      perl Configure VC-WIN64A no-shared threads --prefix=%userprofile%\openssl64 --openssldir=%userprofile%\openssl64
+      C:\Perl64\bin\perl.exe Configure VC-WIN64A no-shared threads --prefix=%userprofile%\openssl64 --openssldir=%userprofile%\openssl64
       nmake
       nmake install
     displayName: 'Build OpenSSL'
