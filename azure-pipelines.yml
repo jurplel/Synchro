@@ -58,21 +58,16 @@ jobs:
       git clone https://github.com/openssl/openssl.git
       cd openssl
       git checkout tags/OpenSSL_1_1_0j
-    displayName: 'Download openssl'
-
-  - script: |
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cd openssl
-      perl Configure VC-WIN64A no-shared threads --prefix=%userprofile%\openssl64 --openssldir=%userprofile%\openssl64
-    displayName: 'Configure openssl'
+    displayName: 'Download OpenSSL'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%programfiles%\NASM;%PATH%
       cd openssl
+      perl Configure VC-WIN64A no-shared threads --prefix=%userprofile%\openssl64 --openssldir=%userprofile%\openssl64
       nmake
       nmake install
-    displayName: 'Build openssl'
+    displayName: 'Build OpenSSL'
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
@@ -86,11 +81,6 @@ jobs:
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd qt-everywhere-src-5.11.3
       configure -prefix %userprofile%\Qt -platform win32-msvc -static -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license -openssl-linked OPENSSL_LIBS="-llibssl -llibcrypto" -I %userprofile%\openssl64\include -L %userprofile%\openssl64\lib
-    displayName: "Configure Qt"
-
-  - script: |
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cd qt-everywhere-src-5.11.3
       jom /j 2
       cd $(Build.Repository.LocalPath)
       mv qt-everywhere-src-5.11.3 %userprofile%\Qt
@@ -106,12 +96,12 @@ jobs:
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
       Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
-    displayName: 'Download mpv lib'
+    displayName: 'Download libmpv'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       lib /def:mpv\x86_64\libmpv.def /name:mpv\x86_64\mpv-1.dll /out:mpv\x86_64\libmpv.lib /MACHINE:X64
-    displayName: 'Build mpv lib'
+    displayName: 'Build libmpv'
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
