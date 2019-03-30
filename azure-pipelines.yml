@@ -32,6 +32,8 @@ jobs:
 
       & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar.xz -y
       & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar -y
+      Remove-Item qt-everywhere-src-5.11.3.tar.xz
+      Remove-Item qt-everywhere-src-5.11.3.tar
     displayName: 'Download Qt 5.11.3'
     
   - script: |
