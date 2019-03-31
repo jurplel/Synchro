@@ -83,8 +83,9 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   steps:
   - script: |
-      cd ~
+      pip install --upgrade pip 
       pip install aqtinstall
+      cd ~
       python -m aqt 5.9.2 linux desktop win64_msvc2017_64
     displayName: 'Install Qt 5.9.2'
 
