@@ -24,8 +24,7 @@ jobs:
       & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
 
       $oldfile = Get-Content mpv\x86_64\libmpv.def
-      $newstuff = 'LIBRARY MPV-1`nEXPORTS`n`n'
-      Set-Content mpv\x86_64\libmpv.def  -value $newstuff, $oldfile
+      Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n, $oldfile
     displayName: 'Download libmpv'
 
   - script: |
@@ -86,7 +85,7 @@ jobs:
   - script: |
       cd ~
       pip install aqtinstall
-      aqt 5.9.2 linux desktop win64_msvc2017_64
+      python -m aqt 5.9.2 linux desktop win64_msvc2017_64
     displayName: 'Install Qt 5.9.2'
 
   - script: |
