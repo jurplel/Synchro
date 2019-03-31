@@ -29,7 +29,8 @@ jobs:
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      lib /def:mpv\x86_64\libmpv.def /name:mpv\x86_64\mpv-1.dll /out:mpv\x86_64\libmpv.lib /MACHINE:X64
+      cd mpv\x86_64
+      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Build libmpv'
     
   - script: |
