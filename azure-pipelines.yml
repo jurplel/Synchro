@@ -24,7 +24,7 @@ jobs:
       & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
 
       $oldfile = Get-Content mpv\x86_64\libmpv.def
-      Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n, $oldfile
+      Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
     displayName: 'Download libmpv'
 
   - script: |
@@ -83,10 +83,10 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   steps:
   - script: |
-      pip install --upgrade pip 
-      pip install aqtinstall
-      cd ~
-      python -m aqt 5.9.2 linux desktop win64_msvc2017_64
+      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+      wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
+      chmod +x qt-opensource-linux-x64-5.9.2.run
+      ./qt-opensource-linux-x64-5.9.2.run -platform minimal --script qt-installer-noninteractive.qs --verbose
     displayName: 'Install Qt 5.9.2'
 
   - script: |
@@ -103,7 +103,7 @@ jobs:
     displayName: 'Install mpv'
 
   - script: |
-      ~/Qt5.9.2/5.9.2/gcc_64/bin/qmake
+      ~/Qt/5.9.2/gcc_64/bin/qmake
       make
     displayName: 'Build synchro'
 
