@@ -3,7 +3,6 @@ trigger:
 
 jobs:
 - job: Windows
-  timeoutInMinutes: 360
   pool:
     vmImage: 'vs2017-win2016'
   steps:
@@ -12,27 +11,11 @@ jobs:
     displayName: 'Install jom'
 
   - powershell: |
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://download.qt.io/archive/qt/5.11/5.11.3/single/qt-everywhere-src-5.11.3.tar.xz -OutFile qt-everywhere-src-5.11.3.tar.xz
-
-      & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar.xz -y
-      & "$env:ProgramFiles\7-Zip\7z.exe" x qt-everywhere-src-5.11.3.tar -y
-      Remove-Item qt-everywhere-src-5.11.3.tar.xz
-      Remove-Item qt-everywhere-src-5.11.3.tar
-    displayName: 'Download Qt 5.11.3'
-    
-  - script: |
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cd qt-everywhere-src-5.11.3
-      configure -prefix .\ -platform win32-msvc -nomake examples -nomake tools -nomake tests -opengl dynamic -opensource -confirm-license
-    displayName: "Configure Qt 5.11.3"
-
-  - script: |
-      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cd qt-everywhere-src-5.11.3
-      jom /j 2
-    displayName: "Build Qt 5.11.3"
-    failOnStderr: false
+      python -m pip install --upgrade pip
+      python -m pip install aqtinstall
+      cd ~
+      python -m aqt 5.11.3 windows desktop win64_msvc2017_64
+    displayName: 'Install Qt 5.11.3'
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
@@ -52,9 +35,9 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      $(Build.Repository.LocalPath)\qt-everywhere-src-5.11.3\qtbase\bin\qmake.exe
+      %userprofile%\Qt5.11.3\5.11.3\msvc2017_64\bin\qmake.exe
       jom /j 2
-      $(Build.Repository.LocalPath)\qt-everywhere-src-5.11.3\qtbase\bin\windeployqt.exe bin
+      %userprofile%\Qt5.11.3\5.11.3\msvc2017_64\bin\windeployqt.exe bin
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
@@ -101,10 +84,9 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   steps:
   - script: |
-      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
-      wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
-      chmod +x qt-opensource-linux-x64-5.9.2.run
-      ./qt-opensource-linux-x64-5.9.2.run -platform minimal --script qt-installer-noninteractive.qs --verbose
+      cd ~
+      pip install aqtinstall
+      aqt 5.9.2 linux desktop win64_msvc2017_64
     displayName: 'Install Qt 5.9.2'
 
   - script: |
@@ -121,7 +103,7 @@ jobs:
     displayName: 'Install mpv'
 
   - script: |
-      /home/vsts/Qt/5.9.2/gcc_64/bin/qmake
+      ~/Qt5.9.2/5.9.2/gcc_64/bin/qmake
       make
     displayName: 'Build synchro'
 
