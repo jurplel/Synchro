@@ -38,7 +38,7 @@ jobs:
       %userprofile%\Qt\msvc2017_64\bin\qmake.exe "CONFIG+=qtquickcompiler"
       jom
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
-      (robocopy %userprofile%\Qt\msvc2017_64\qml\ bin\ *) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      (robocopy %userprofile%\Qt\msvc2017_64\qml\ bin\ /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       del bin\vc_redist.x64.exe
     displayName: 'Build synchro'
