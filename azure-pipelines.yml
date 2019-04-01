@@ -72,6 +72,7 @@ jobs:
       $(brew --prefix qt)/bin/qmake
       make
       $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app
+      cp -r $(brew --prefix qt)/qml bin/Synchro.app/Contents/Resources/qml/
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
