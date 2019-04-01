@@ -35,9 +35,9 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      %userprofile%\Qt\msvc2017_64\bin\qmake.exe
+      %userprofile%\Qt\msvc2017_64\bin\qmake.exe "CONFIG+=qtquickcompiler"
       jom
-      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin --qmldir %userprofile%\Qt\msvc2017_64\qml\
       (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       del bin\vc_redist.x64.exe
     displayName: 'Build synchro'
