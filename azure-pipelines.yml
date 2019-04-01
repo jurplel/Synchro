@@ -6,6 +6,8 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
+  - checkout: self
+    lfs: true
 
   - bash: choco install jom -y
     displayName: 'Install jom'
@@ -61,6 +63,9 @@ jobs:
   pool:
     vmImage: 'macOS-10.13'
   steps:
+  - checkout: self
+    lfs: true
+
   - script: brew install qt pkg-config mpv
     displayName: 'Install Qt and mpv'
 
@@ -87,6 +92,9 @@ jobs:
   pool:
     vmImage: 'Ubuntu-16.04'
   steps:
+  - checkout: self
+    lfs: true
+
   - script: |
       wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
       wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
