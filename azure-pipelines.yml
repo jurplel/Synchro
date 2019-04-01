@@ -10,18 +10,12 @@ jobs:
   - bash: choco install jom -y
     displayName: 'Install jom'
 
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.7.2' 
-      addToPath: true 
-      architecture: 'x64'
-
   - powershell: |
+      cd ~
       $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://pastebin.com/raw/kaFPjncm -OutFile qt-installer-noninteractive.qs
-      Invoke-WebRequest https://download.qt.io/official_releases/qt/5.11/5.11.3/qt-opensource-windows-x86-5.11.3.exe -OutFile qt-opensource-windows-x86-5.11.3.exe
-      .\qt-opensource-windows-x86-5.11.3.exe --script qt-installer-noninteractive.qs --verbose
-    displayName: 'Install Qt 5.11.3'
+      Invoke-WebRequest https://1drv.ws/u/s!AjnapxPpaDx5lXUIf8C1tQkmHNXt -OutFile qt.7z
+      & "$env:ProgramFiles\7-Zip\7z.exe" x qt.7z -y -oQt
+    displayName: 'Download Qt'
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
@@ -31,19 +25,20 @@ jobs:
 
       $oldfile = Get-Content mpv\x86_64\libmpv.def
       Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
-    displayName: 'Download libmpv'
+    displayName: 'Download mpv dev archive'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd mpv\x86_64
       lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.dll.lib /MACHINE:X64
-    displayName: 'Build libmpv'
+    displayName: 'Generate mpv libraries'
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      %userprofile%\Qt\5.11.3\msvc2017_64\bin\qmake.exe
-      jom /j 2
-      %userprofile%\Qt\5.11.3\msvc2017_64\bin\windeployqt.exe bin
+      %userprofile%\Qt\msvc2017_64\bin\qmake.exe
+      jom
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
+      robocopy mpv\x86_64\ bin\ mpv-1.dll 
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
