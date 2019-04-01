@@ -13,7 +13,7 @@ jobs:
   - powershell: |
       cd ~
       $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://1drv.ws/u/s!AjnapxPpaDx5lXUIf8C1tQkmHNXt -OutFile qt.7z
+      Invoke-WebRequest https://dl.dropboxusercontent.com/s/8ur5xp7cbfjp86f/msvc2017_64.7z -OutFile qt.7z
       & "$env:ProgramFiles\7-Zip\7z.exe" x qt.7z -y -oQt
     displayName: 'Download Qt'
 
