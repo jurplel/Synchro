@@ -39,7 +39,7 @@ jobs:
       jom
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
       (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
-      del vc_redist.x64.exe
+      del bin\vc_redist.x64.exe
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
