@@ -35,7 +35,7 @@ jobs:
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      %userprofile%\Qt\msvc2017_64\bin\qmake.exe "CONFIG+=qtquickcompiler"
+      %userprofile%\Qt\msvc2017_64\bin\qmake.exe -spec win32-msvc "CONFIG+=qtquickcompiler"
       jom
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
       (robocopy %userprofile%\Qt\msvc2017_64\qml\ bin\ /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
