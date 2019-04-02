@@ -1,0 +1,145 @@
+trigger:
+- master
+
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - checkout: self
+    lfs: true
+
+  - bash: choco install jom -y
+    displayName: 'Install jom'
+
+  - powershell: |
+      cd ~
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest https://dl.dropboxusercontent.com/s/8ur5xp7cbfjp86f/msvc2017_64.7z -OutFile qt.7z
+      & "$env:ProgramFiles\7-Zip\7z.exe" x qt.7z -y -oQt
+    displayName: 'Download Qt'
+
+  - powershell: |
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
+      
+      & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
+
+      $oldfile = Get-Content mpv\x86_64\libmpv.def
+      Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
+    displayName: 'Download mpv dev archive'
+
+  - script: |
+      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cd mpv\x86_64
+      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.dll.lib /MACHINE:X64
+    displayName: 'Generate mpv libraries'
+    
+  - script: |
+      call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      %userprofile%\Qt\msvc2017_64\bin\qmake.exe "CONFIG+=qtquickcompiler"
+      jom
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin --no-compiler-runtime
+      (robocopy %userprofile%\Qt\msvc2017_64\qml\ bin\ /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+    displayName: 'Build synchro'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy build artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
+    displayName: 'Publish build artifacts'
+
+- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - checkout: self
+    lfs: true
+
+  - script: brew install qt pkg-config mpv
+    displayName: 'Install Qt and mpv'
+
+  - script: |
+      $(brew --prefix qt)/bin/qmake
+      make
+      $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
+    displayName: 'Build synchro'
+
+  - script: |
+      cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+      cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
+      qtvers=$(echo $(brew info --json=v1 qt | jq .[].versions.stable) | sed -e 's/^"//' -e 's/"$//')
+      install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+    displayName: 'Add qt labs platform plugin and change dylib install names'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy build artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
+    displayName: 'Publish build artifacts'
+
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - checkout: self
+    lfs: true
+
+  - script: |
+      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
+      wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
+      chmod +x qt-opensource-linux-x64-5.9.2.run
+      ./qt-opensource-linux-x64-5.9.2.run -platform minimal --script qt-installer-noninteractive.qs --verbose
+    displayName: 'Install Qt 5.9.2'
+
+  - script: |
+      sudo apt-get -y update
+      sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
+      git clone https://github.com/mpv-player/mpv-build.git
+      cd mpv-build
+      ./use-mpv-release
+      ./use-ffmpeg-release
+      echo --enable-libmpv-shared > mpv_options
+      ./rebuild -j2
+      sudo ./install
+      cd ../
+    displayName: 'Install mpv'
+
+  - script: |
+      ~/Qt/5.9.2/gcc_64/bin/qmake
+      make
+    displayName: 'Build synchro'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: bin
+      contents: '**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy build artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
+    displayName: 'Publish build artifacts'

@@ -11,6 +11,7 @@ CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandle
 {
     videoObject = newVideoObject;
     mpvHandler = newMpvHandler;
+    mpvRenderContext = nullptr;
 
     paused = true;
 }
