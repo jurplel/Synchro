@@ -71,18 +71,19 @@ jobs:
       $(brew --prefix qt)/bin/qmake
       make
       $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
-      cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
     displayName: 'Build synchro'
 
   - script: |
-      install_name_tool -change $(brew --prefix qt)/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-      install_name_tool -change $(brew --prefix qt)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
-    displayName: 'Change dylib to rpath'
+      cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+      cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
+      install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/5.12.2/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+    displayName: 'Add qt labs platform plugin and change dylib install names'
 
   - task: CopyFiles@2
     inputs:
