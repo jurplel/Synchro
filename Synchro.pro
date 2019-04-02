@@ -1,4 +1,4 @@
-QT += quick quickcontrols2 widgets network
+QT += quick quickcontrols2 widgets network svg
 CONFIG += c++14
 
 VERSION = 0.1 # major.minor
