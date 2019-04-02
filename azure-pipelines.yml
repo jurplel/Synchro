@@ -86,6 +86,7 @@ jobs:
       cmd6="install_name_tool -change $(brew --prefix qt)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib"
       cmd7="install_name_tool -change $(brew --prefix qt)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib"
       eval $cmd1 && eval $cmd2 && eval $cmd3 && eval $cmd4 && eval $cmd5 && eval $cmd6 && eval $cmd7
+      echo $cmd1 $cmd2 $cmd3 $cmd4 $cmd5 $cmd6 $cmd7
     displayName: 'Add qt labs platform plugin and change dylib install names'
 
   - task: CopyFiles@2
