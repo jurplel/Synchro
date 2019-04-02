@@ -39,10 +39,9 @@ jobs:
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       %userprofile%\Qt\msvc2017_64\bin\qmake.exe -spec win32-msvc "CONFIG+=qtquickcompiler"
       jom
-      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin --no-compiler-runtime
       (robocopy %userprofile%\Qt\msvc2017_64\qml\ bin\ /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
-      del bin\vc_redist.x64.exe
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
@@ -71,8 +70,15 @@ jobs:
   - script: |
       $(brew --prefix qt)/bin/qmake
       make
-      $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app
-      cp -r $(brew --prefix qt)/qml bin/Synchro.app/Contents/Resources/qml/
+      $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
+      cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+      install_name_tool -change $(brew --prefix qt)/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
+      install_name_tool -change $(brew --prefix qt)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/libqtlabsplatformplugin.dylib
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
