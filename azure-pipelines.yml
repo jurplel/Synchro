@@ -76,17 +76,14 @@ jobs:
   - script: |
       cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
       cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
-
+      qtvers=$(echo $(brew info --json=v1 qt | jq .[].versions.stable) | sed -e 's/^"//' -e 's/"$//')
       install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
-      cmd1="install_name_tool -change $(brew --prefix qt)/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib"
-      cmd2="install_name_tool -change $(brew --prefix qt)/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib"
-      cmd3="install_name_tool -change $(brew --prefix qt)/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib"
-      cmd4="install_name_tool -change $(brew --prefix qt)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib"
-      cmd5="install_name_tool -change $(brew --prefix qt)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib"
-      cmd6="install_name_tool -change $(brew --prefix qt)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib"
-      cmd7="install_name_tool -change $(brew --prefix qt)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib"
-      eval $cmd1 && eval $cmd2 && eval $cmd3 && eval $cmd4 && eval $cmd5 && eval $cmd6 && eval $cmd7
-      echo $cmd1 $cmd2 $cmd3 $cmd4 $cmd5 $cmd6 $cmd7
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
     displayName: 'Add qt labs platform plugin and change dylib install names'
 
   - task: CopyFiles@2
