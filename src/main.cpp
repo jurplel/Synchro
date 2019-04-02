@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(fmt);
 
     QQuickStyle::setStyle("synchrostyle");
-    QQuickStyle::setFallbackStyle("Fusion");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
