@@ -83,3 +83,6 @@ HEADERS += \
     src/corerenderer.h \
     src/videoobject.h \
     src/synchronycontroller.h
+
+DISTFILES += \
+    src/synchrostyle/qtquickcontrols2.conf

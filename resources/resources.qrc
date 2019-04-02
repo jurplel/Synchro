@@ -1,12 +1,12 @@
 <RCC>
     <qresource prefix="/resources">
         <file>play-pause.png</file>
-        <file>music_volume_up.svg</file>
-        <file>music_beginning_button.svg</file>
-        <file>music_end_button.svg</file>
-        <file>music_mute.svg</file>
-        <file>music_volume_down.svg</file>
         <file>basic_folder.svg</file>
         <file>basic_server.svg</file>
+        <file>music_volume_up.png</file>
+        <file>music_mute.png</file>
+        <file>music_volume_down.png</file>
+        <file>music_beginning_button.png</file>
+        <file>music_end_button.png</file>
     </qresource>
 </RCC>

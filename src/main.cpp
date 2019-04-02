@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
     fmt.setSwapInterval(0);
     QSurfaceFormat::setDefaultFormat(fmt);
 
-    QQuickStyle::setStyle("synchrostyle");
-
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

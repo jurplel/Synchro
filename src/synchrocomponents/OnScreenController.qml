@@ -134,8 +134,8 @@ Item {
 
             AbstractButton {
                 id: backButton
-                width: 34
-                height: 34
+                width: 22
+                height: 22
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: -40
                 anchors.verticalCenter: parent.verticalCenter
@@ -145,7 +145,8 @@ Item {
                     id: backIcon
                     width: parent.width
                     height: parent.height
-                    source: "qrc:/resources/music_beginning_button.svg"
+                    source: "qrc:/resources/music_beginning_button.png"
+                    fillMode: Image.PreserveAspectFit
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -199,8 +200,8 @@ Item {
 
             AbstractButton {
                 id: forwardButton
-                width: 34
-                height: 34
+                width: 22
+                height: 22
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: 40
                 anchors.verticalCenter: parent.verticalCenter
@@ -210,7 +211,8 @@ Item {
                     id: forwardIcon
                     width: parent.width
                     height: parent.height
-                    source: "qrc:/resources/music_end_button.svg"
+                    source: "qrc:/resources/music_end_button.png"
+                    fillMode: Image.PreserveAspectFit
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -232,21 +234,23 @@ Item {
                     id: volumeIcon
                     width: parent.width
                     height: parent.height
-                    source: "qrc:/resources/music_volume_up.svg"
+                    source: "qrc:/resources/music_volume_up.png"
+                    fillMode: Image.PreserveAspectFit
+                    horizontalAlignment: Image.AlignLeft
 
                     states: [
                         State {
                             name: "low"
                             PropertyChanges {
                                 target: volumeIcon
-                                source: "qrc:/resources/music_volume_down.svg"
+                                source: "qrc:/resources/music_volume_down.png"
                             }
                         },
                         State {
                             name: "mute"
                             PropertyChanges {
                                 target: volumeIcon
-                                source: "qrc:/resources/music_mute.svg"
+                                source: "qrc:/resources/music_mute.png"
                             }
                         }
                     ]
