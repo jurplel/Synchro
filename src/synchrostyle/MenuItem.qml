@@ -21,7 +21,7 @@ T.MenuItem {
 
         text: control.text
         font: control.font
-        color: control.enabled ? Style.lightColor : Default.textDisabledColor
+        color: control.highlighted ? "white" : Style.lightColor
         elide: Text.ElideRight
         verticalAlignment: Text.AlignVCenter
     }
@@ -42,7 +42,7 @@ T.MenuItem {
         radius: 1
         width: parent.width - 2
         height: parent.height - 2
-        color: control.down ? Style.accentColorMiddle : Qt.darker(Style.accentColorMiddle, 2)
+        color: control.down ? Qt.lighter(Style.accentColorDark, 1.1) : Qt.darker(Style.accentColorDark, 1.1)
         visible: control.highlighted
     }
 }
