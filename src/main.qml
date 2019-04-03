@@ -127,12 +127,15 @@ Window {
             id: mainContextMenu
             MenuItem {
                 text: "Open..."
-                icon.source: "qrc:/resources/basic_folder.svg"
+//                icon.source: "qrc:/resources/basic_folder.svg"
                 onTriggered: fileDialog.open()
+            }
+            MenuSeparator {
+
             }
             MenuItem {
                 text: connectDialog.title
-                icon.source: "qrc:/resources/basic_server.svg"
+//                icon.source: "qrc:/resources/basic_server.svg"
                 onTriggered: connectDialog.open()
             }
             MenuItem {

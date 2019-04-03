@@ -32,8 +32,9 @@ T.Menu {
         SynchroBackground {
             sourceItem: videoObject
             sourceRect: Qt.rect(control.x, control.y, control.width, control.height)
-            border.color: Style.middleColor
+            border.color: Style.lightColor
             border.width: 1
+            radius: 2
         }
         implicitWidth: 200
         implicitHeight: 40

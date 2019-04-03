@@ -9,5 +9,8 @@
         <file>synchrocomponents/SynchroBackground.qml</file>
         <file>synchrocomponents/VolumeOsc.qml</file>
         <file>synchrostyle/Menu.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>synchrostyle/MenuItem.qml</file>
+        <file>synchrostyle/MenuSeparator.qml</file>
     </qresource>
 </RCC>

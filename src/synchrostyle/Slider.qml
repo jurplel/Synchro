@@ -33,14 +33,14 @@ T.Slider {
             height: control.horizontal ? parent.height : control.position * parent.height
 
             radius: parent.radius
-            color: Style.accentColor
+            color: Style.accentColorMiddle
 
             layer.enabled: true
             layer.effect: LinearGradient {
                 start: Qt.point(0, 0)
                 end: control.horizontal ? Qt.point(parent.width, 0) : Qt.point(0, parent.height)
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: Style.accentColor }
+                    GradientStop { position: 0.0; color: Style.accentColorLight }
                     GradientStop { position: 1.0; color: Style.accentColorDark }
                 }
             }

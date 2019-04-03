@@ -10,6 +10,7 @@ Item {
     property alias radius:tint.radius
     property alias tintOpacity:tint.opacity
     property alias border:tint.border
+    property alias color:tint.color
 
 
 
