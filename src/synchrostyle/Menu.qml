@@ -34,7 +34,7 @@ T.Menu {
             sourceRect: Qt.rect(control.x, control.y, control.width, control.height)
             border.color: Style.lightColor
             border.width: 1
-            radius: 2
+            radius: 1
         }
         implicitWidth: 200
         implicitHeight: 40

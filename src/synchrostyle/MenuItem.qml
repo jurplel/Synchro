@@ -39,7 +39,6 @@ T.MenuItem {
         implicitHeight: 28
         x: 1
         y: 1
-        radius: 1
         width: parent.width - 2
         height: parent.height - 2
         color: control.down ? Qt.lighter(Style.accentColorDark, 1.1) : Qt.darker(Style.accentColorDark, 1.1)
