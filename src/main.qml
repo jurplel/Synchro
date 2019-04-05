@@ -11,8 +11,8 @@ Window {
 
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 1024
+    height: 576
     color: Style.backgroundColor
     title: "Synchro"
 
