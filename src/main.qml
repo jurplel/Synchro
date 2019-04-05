@@ -165,7 +165,7 @@ Window {
 
     Timer {
         id: autohideTimer
-        interval: 500
+        interval: 650
 
         onTriggered: {
             if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < videoContainer.height-57) && !videoObject.paused)

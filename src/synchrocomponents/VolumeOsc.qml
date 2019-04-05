@@ -62,21 +62,21 @@ Item {
         NumberAnimation {
             target: oscVolume
             properties: "anchors.rightMargin"
-            duration: 200
-            easing.type: Easing.InOutQuad
+            duration: 300
+            easing.type: Easing.InOutSine
         }
 
         NumberAnimation {
             target: seekSlider
             properties: "anchors.rightMargin"
-            duration: 200
-            easing.type: Easing.InOutQuad
+            duration: 300
+            easing.type: Easing.InOutSine
         }
         NumberAnimation {
             target: shadow
             properties: "anchors.rightMargin"
-            duration: 200
-            easing.type: Easing.InOutQuad
+            duration: 300
+            easing.type: Easing.InOutSine
         }
     }
 

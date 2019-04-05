@@ -104,15 +104,26 @@ Item {
             }
         }
 
-        transitions: Transition {
-            reversible: true
-            NumberAnimation {
-                target: oscPanel
-                properties: "anchors.bottomMargin"
-                duration: 200
-                easing.type: Easing.InOutQuad
+        transitions: [
+            Transition {
+                to: ""
+                NumberAnimation {
+                    target: oscPanel
+                    properties: "anchors.bottomMargin"
+                    duration: 600
+                    easing.type: Easing.OutExpo
+                }
+            },
+            Transition {
+                to: "hidden"
+                NumberAnimation {
+                    target: oscPanel
+                    properties: "anchors.bottomMargin"
+                    duration: 600
+                    easing.type: Easing.InExpo
+                }
             }
-        }
+        ]
 
         Label {
             id: videoTimeLabel
