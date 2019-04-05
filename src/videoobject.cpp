@@ -42,8 +42,9 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("audio-client-name", "Synchro");
 
     setProperty("video-timing-offset", 0);
-//    setProperty("video-sync", "display-resample");
-//    setProperty("interpolation", "yes");
+    setProperty("video-sync", "display-resample");
+    setProperty("interpolation", "yes");
+    setProperty("hwdec", "auto");
 
     //update variables with mpv values for safety
     paused = getProperty("pause").toBool();
@@ -51,7 +52,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     currentVolume = getProperty("volume").toReal();
 
     seekTimer = new QTimer();
-    seekTimer->setInterval(50);
+    seekTimer->setInterval(1000);
     connect(seekTimer, &QTimer::timeout, this, [this]{seeking = false;});
     seekTimer->setSingleShot(true);
 }
@@ -134,7 +135,11 @@ void VideoObject::seek(const qreal newPos, bool useKeyframes)
     mpv_command_node_async(mpvHandler, 0, node.node());
 
     seeking = true;
-    seekTimer->start();
+    if (!seekTimer->isActive())
+    {
+        seekTimer->start();
+        update();
+    }
 }
 
 void VideoObject::loadFile(const QString &fileName)

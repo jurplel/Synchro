@@ -14,6 +14,7 @@ CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandle
     mpvRenderContext = nullptr;
 
     paused = true;
+    seeking = false;
 }
 
 CoreRenderer::~CoreRenderer()
@@ -64,7 +65,6 @@ void CoreRenderer::render()
         {MPV_RENDER_PARAM_INVALID, nullptr}
 
     };
-    mpv_render_context_report_swap(mpvRenderContext);
     // See render_gl.h on what OpenGL environment mpv expects, and
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
