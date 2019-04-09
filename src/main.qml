@@ -2,6 +2,7 @@
 import QtQuick.Window 2.9
 import QtQuick.Controls 2.2
 import Qt.labs.platform 1.0 as Platform
+import Qt.labs.settings 1.0
 
 import Synchro.Core 1.0
 import "synchrocomponents"
@@ -186,12 +187,19 @@ Window {
 
     Platform.FileDialog {
         id: fileDialog
-        folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
+        folder: settings.lastFolder
         onAccepted: {
             videoObject.loadFile(fileDialog.file.toString())
             fileDialog.close()
+            settings.lastFolder = fileDialog.folder
         }
     }
+
+    Settings {
+        id: settings
+        property url lastFolder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
+    }
+
     Dialog {
         id: connectDialog
         title: "Connect to server..."
