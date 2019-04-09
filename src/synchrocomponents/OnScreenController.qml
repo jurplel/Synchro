@@ -99,7 +99,7 @@ Item {
             name: "hidden"
             PropertyChanges {
                 target: oscPanel
-                anchors.bottomMargin: -height-shadow.height
+                anchors.bottomMargin: -height-shadow.height*2
                 enabled: false
             }
         }
@@ -305,11 +305,3 @@ Item {
         }
     }
 }
-
-
-
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/

@@ -85,4 +85,4 @@ HEADERS += \
     src/synchronycontroller.h
 
 DISTFILES += \
-    src/synchrostyle/qtquickcontrols2.conf
+    src/qtquickcontrols2.conf
