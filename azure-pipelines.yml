@@ -66,6 +66,7 @@ jobs:
     displayName: 'Install required homebrew packages'
 
   - script: |
+      export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
       cmake --version
       cmake .
       make
