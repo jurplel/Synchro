@@ -35,7 +35,7 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set Qt5_DIR=%userprofile%\Qt\msvc2017_64
-      cmake CMakeLists.txt -A x64
+      cmake . -A x64
       msbuild Synchro.sln /p:Configuration=Release /m
       %Qt5_DIR%\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
       (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
@@ -62,12 +62,15 @@ jobs:
   - checkout: self
     lfs: true
 
-  - script: brew install qt pkg-config mpv
-    displayName: 'Install Qt and mpv'
+  - script: brew install qt pkg-config mpv cmake
+    displayName: 'Install required homebrew packages'
 
   - script: |
-      $(brew --prefix qt)/bin/qmake
+      cmake --version
+      cmake .
       make
+      mkdir bin
+      cp -r Synchro.app bin/
       $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
     displayName: 'Build synchro'
 
@@ -125,8 +128,10 @@ jobs:
     displayName: 'Install mpv'
 
   - script: |
-      ~/Qt/5.9.2/gcc_64/bin/qmake
+      cmake
       make
+      mkdir bin
+      cp Synchro bin/
     displayName: 'Build synchro'
 
   - task: CopyFiles@2
