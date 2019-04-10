@@ -35,7 +35,7 @@ elseif (UNIX)
     pkg_check_modules(MPV REQUIRED mpv)
 endif()
 
-add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${RESOURCES})
+add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${MPV_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MPV_LIBRARIES} Qt5::Core Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Network)

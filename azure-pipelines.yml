@@ -67,7 +67,6 @@ jobs:
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-      cmake --version
       cmake .
       make
       mkdir bin
@@ -129,7 +128,7 @@ jobs:
     displayName: 'Install mpv'
 
   - script: |
-      cmake
+      cmake .
       make
       mkdir bin
       cp Synchro bin/
