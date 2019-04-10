@@ -14,9 +14,11 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(qreal percentPos READ getPercentPos WRITE setPercentPos NOTIFY percentPosChanged)
     Q_PROPERTY(QString timePosString READ getTimePosString WRITE setTimePosString NOTIFY timePosStringChanged)
     Q_PROPERTY(QString durationString READ getDurationString WRITE setDurationString NOTIFY durationStringChanged)
+    Q_PROPERTY(qreal duration READ getDuration WRITE setDuration NOTIFY durationChanged)
     Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
+    Q_PROPERTY(QVariantList chapterList READ getChapterList WRITE setChapterList NOTIFY chapterListChanged)
 
 
 public:
@@ -45,6 +47,12 @@ public:
     QString getDurationString() const { return durationString; }
     void setDurationString(const QString &value) { durationString = value; emit durationStringChanged(); }
 
+    qreal getDuration() const { return duration; }
+    void setDuration(const qreal &value) { duration = value; emit durationChanged(); }
+
+    QVariantList getChapterList() const { return chapterList; }
+    void setChapterList(const QVariantList &value) { chapterList = value; emit chapterListChanged(); }
+
     bool getSeeking() const { return seeking; }
     void setSeeking(bool value) { seeking = value; }
 
@@ -56,6 +64,8 @@ signals:
     void percentPosChanged();
     void timePosStringChanged();
     void durationStringChanged();
+    void durationChanged();
+    void chapterListChanged();
 
 public slots:
     void onMpvEvents();
@@ -83,9 +93,12 @@ private:
     qreal percentPos;
     QString timePosString;
     QString durationString;
-    qreal currentVolume;
+    qreal duration;
     bool paused;
     bool muted;
+    qreal currentVolume;
+    QVariantList chapterList;
+
 };
 
 #endif // VIDEOOBJECT_H

@@ -18,11 +18,36 @@ Slider {
 
     signal seek(bool dragged)
 
+    property var chapterMarkers
+
+    Connections {
+        target: videoObject
+
+        onChapterListChanged: {
+        if (control.chapterMarkers)
+        {
+            control.chapterMarkers.forEach(function(currentValue) {
+                currentValue.destroy()
+            })
+        }
+
+        var chapterLocations = []
+        videoObject.chapterList.forEach(function(currentValue) {
+            chapterLocations.push(currentValue.time/videoObject.duration)
+        })
+
+        var chapterMarkers = []
+        for (var i = 1; i < chapterLocations.length; i++) {
+            chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.lightColor; width: 1; height: 2; y:' + 0 + '; x:' +  chapterLocations[i]*control.width + ' }', background))
+        }
+        control.chapterMarkers = chapterMarkers
+        }
+    }
+
     background.transform: Scale {
         id: seekbarTransformScale
         origin.y: background.height
     }
-
 
     states: State {
         name: "hovered"

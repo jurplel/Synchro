@@ -21,6 +21,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     seeking = false;
     currentVolume = 100;
     percentPos = 0;
+    duration = 0;
 
     mpvHandler = mpv_create();
 
@@ -35,6 +36,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_observe_property(mpvHandler, 0, "percent-pos", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "time-pos", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpvHandler, 0, "chapter-list", MPV_FORMAT_NODE);
 
     setProperty("terminal", true);
     setProperty("pause", true);
@@ -98,7 +100,13 @@ void VideoObject::handleMpvEvent(mpv_event *event)
             setTimePosString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "time-pos")));
 
         if (strcmp(prop->name, "duration") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+        {
+            setDuration(*reinterpret_cast<double*>(prop->data));
             setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
+        }
+
+        if (strcmp(prop->name, "chapter-list") == 0 && prop->format == MPV_FORMAT_NODE)
+            setChapterList(getProperty("chapter-list").value<QVariantList>());
 
         break;
     }
