@@ -128,6 +128,7 @@ jobs:
     displayName: 'Install mpv'
 
   - script: |
+      export Qt5_DIR=~/Qt/5.9.2/gcc_64/lib/cmake/Qt5
       cmake .
       make
       mkdir bin
