@@ -35,6 +35,11 @@ elseif (UNIX)
     pkg_check_modules(MPV REQUIRED mpv)
 endif()
 
+IF(APPLE)
+    # Fix linking on 10.14+. See https://stackoverflow.com/questions/54068035
+    LINK_DIRECTORIES(/usr/local/lib)
+ENDIF()
+
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${MPV_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
