@@ -63,8 +63,8 @@ jobs:
   - checkout: self
     lfs: true
 
-  - script: brew install qt pkg-config mpv cmake
-    displayName: 'Install required homebrew packages'
+  - script: brew install qt pkg-config mpv
+    displayName: 'Install homebrew packages'
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
@@ -90,6 +90,6 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$bin'
+      pathtoPublish: 'bin'
       artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
     displayName: 'Publish .app as build artifact'
