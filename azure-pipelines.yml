@@ -37,23 +37,24 @@ jobs:
       set Qt5_DIR=%userprofile%\Qt\msvc2017_64
       cmake . -A x64
       msbuild Synchro.sln /p:Configuration=Release /m
-      %Qt5_DIR%\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
+    displayName: 'Build Synchro'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'Release'
+      artifactName: 'Synchro-exe64-$(Build.BuildNumber)'
+    displayName: 'Publish exe as build artifact'
+
+  -script: |
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
       (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
-    displayName: 'Build synchro'
-
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: Release
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
+    displayName: 'Deploy Synchro'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      pathtoPublish: 'Release'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
+    displayName: 'Publish exe and libraries as build artifacts'
 
 - job: macOS
   pool:
@@ -72,7 +73,7 @@ jobs:
       mkdir bin
       cp -r Synchro.app bin/
       $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
-    displayName: 'Build synchro'
+    displayName: 'Build Synchro'
 
   - script: |
       cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
@@ -86,16 +87,9 @@ jobs:
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
     displayName: 'Add qt labs platform plugin and change dylib install names'
-
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: bin
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
-
+    
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      pathtoPublish: '$bin'
       artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
+    displayName: 'Publish .app as build artifact'
