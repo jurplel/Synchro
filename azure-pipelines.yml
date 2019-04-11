@@ -9,9 +9,6 @@ jobs:
   - checkout: self
     lfs: true
 
-  - bash: choco install jom -y
-    displayName: 'Install jom'
-
   - powershell: |
       cd ~
       $ProgressPreference = 'SilentlyContinue'
@@ -32,30 +29,32 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd mpv\x86_64
-      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.dll.lib /MACHINE:X64
+      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
     displayName: 'Generate mpv libraries'
     
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      %userprofile%\Qt\msvc2017_64\bin\qmake.exe "CONFIG+=qtquickcompiler"
-      jom
-      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe bin --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
-      (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform bin\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
-      (robocopy mpv\x86_64\ bin\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
-    displayName: 'Build synchro'
-
-  - task: CopyFiles@2
+      set Qt5_DIR=%userprofile%\Qt\msvc2017_64
+      cmake . -A x64
+      msbuild Synchro.sln /p:Configuration=Release /m
+    displayName: 'Build Synchro'
+  - task: PublishBuildArtifacts@1
     inputs:
-      sourceFolder: bin
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
+      pathtoPublish: 'Release'
+      artifactName: 'Synchro-exe64-$(Build.BuildNumber)'
+    displayName: 'Publish exe as build artifact'
+
+  - script: |
+      %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
+      (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+    displayName: 'Deploy Synchro'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      pathtoPublish: 'Release'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
+    displayName: 'Publish exe and libraries as build artifacts'
 
 - job: macOS
   pool:
@@ -65,13 +64,16 @@ jobs:
     lfs: true
 
   - script: brew install qt pkg-config mpv
-    displayName: 'Install Qt and mpv'
+    displayName: 'Install homebrew packages'
 
   - script: |
-      $(brew --prefix qt)/bin/qmake
+      export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
+      cmake .
       make
+      mkdir bin
+      cp -r Synchro.app bin/
       $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
-    displayName: 'Build synchro'
+    displayName: 'Build Synchro'
 
   - script: |
       cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
@@ -86,60 +88,8 @@ jobs:
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
     displayName: 'Add qt labs platform plugin and change dylib install names'
 
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: bin
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
-
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      pathtoPublish: 'bin'
       artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
-
-- job: Linux
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps:
-  - checkout: self
-    lfs: true
-
-  - script: |
-      wget -O qt-installer-noninteractive.qs https://pastebin.com/raw/nXrQLStE
-      wget http://download.qt.io/official_releases/qt/5.9/5.9.2/qt-opensource-linux-x64-5.9.2.run
-      chmod +x qt-opensource-linux-x64-5.9.2.run
-      ./qt-opensource-linux-x64-5.9.2.run -platform minimal --script qt-installer-noninteractive.qs --verbose
-    displayName: 'Install Qt 5.9.2'
-
-  - script: |
-      sudo apt-get -y update
-      sudo apt-get -y install libfribidi-dev yasm nasm libvdpau1
-      git clone https://github.com/mpv-player/mpv-build.git
-      cd mpv-build
-      ./use-mpv-release
-      ./use-ffmpeg-release
-      echo --enable-libmpv-shared > mpv_options
-      ./rebuild -j2
-      sudo ./install
-      cd ../
-    displayName: 'Install mpv'
-
-  - script: |
-      ~/Qt/5.9.2/gcc_64/bin/qmake
-      make
-    displayName: 'Build synchro'
-
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: bin
-      contents: '**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-    displayName: 'Copy build artifacts'
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'Synchro-Linux64-$(Build.BuildNumber)'
-    displayName: 'Publish build artifacts'
+    displayName: 'Publish .app as build artifact'
