@@ -1,88 +1,70 @@
 #include "synchronycontroller.h"
 
+#include <QtConcurrent/QtConcurrentRun>
+
+#include <QByteArray>
+#include <QDataStream>
+#include <QVariantList>
+
 #include <QDebug>
+
+static void callback(void *ctx, Command cmd) {
+    qDebug() << "received";
+    auto obj = reinterpret_cast<SynchronyController*>(ctx);
+    obj->handleCommand(cmd);
+}
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 {
-    socket = new QTcpSocket(this);
-
-    in.setDevice(socket);
-    in.setVersion(QDataStream::Qt_5_9);
-
-    connect(socket, &QTcpSocket::connected, []{ qInfo() << "Connection successfully established."; });
-    connect(socket, &QTcpSocket::readyRead, this, &SynchronyController::dataRecieved);
-
-    connectToServer("35.227.80.175", 32019);
+    connectToServer("127.0.0.1", 32019);
 }
 
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
-    socket->connectToHost(ip, port);
+    socket2 = synchro_connection_connect(qPrintable(ip), port);
+    synchro_connection_set_callback(socket2, callback, this);
+    QtConcurrent::run(synchro_connection_run, socket2);
 }
 
-void SynchronyController::dataRecieved()
+void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
 {
-    in.startTransaction();
+    // if (socket->state() != QTcpSocket::ConnectedState)
+    //     return;
 
-    quint16 incomingData;
-    bool hasArguments;
-    quint8 numericCommand;
-    QVariantList arguments;
-    in >> incomingData >> hasArguments >> numericCommand;
+    Command cmd = Command();
+    cmd.tag = static_cast<Command::Tag>(cmdNum);
 
-    if (hasArguments)
-        in >> arguments;
-
-    if (!in.commitTransaction())
-        return;
-
-
-    auto command = static_cast<Command>(numericCommand);
-
-    qDebug() << "Recieved new command:" << command << arguments;
-
-    recieveCommand(command, arguments);
-
-    if (!in.atEnd())
-        dataRecieved();
-}
-
-void SynchronyController::sendCommand(Command command, QVariantList arguments)
-{
-    if (socket->state() != QTcpSocket::ConnectedState)
-        return;
-
-    QByteArray dataBlock;
-    QDataStream dataBlockStream(&dataBlock, QIODevice::WriteOnly);
-    dataBlockStream << quint16(0);
-    switch(command) {
-    case Command::Pause: {
-        dataBlockStream << true << quint8(command) << arguments;
+    switch(cmd.tag) {
+    case Command::Tag::Pause: {
+        cmd.pause.paused = arguments.takeFirst().toBool();
+        cmd.pause.percent_pos = arguments.takeFirst().toDouble();
         break;
     }
-    case Command::Seek: {
-        dataBlockStream << true << quint8(command) << arguments;
+    case Command::Tag::Seek: {
+        cmd.seek.percent_pos = arguments.takeFirst().toDouble();
+        cmd.seek.dragged = arguments.takeFirst().toBool();
         break;
     }
     }
 
-    dataBlockStream.device()->seek(0);
-    dataBlockStream << quint16(dataBlock.size() - static_cast<int>(sizeof(quint16)));
-
-    qDebug() << "send em" << socket->write(dataBlock) << "bytes";
+    synchro_connection_send(socket2, cmd);
+    qDebug() << "Send em";
 }
 
-void SynchronyController::recieveCommand(Command command, QVariantList arguments)
+void SynchronyController::handleCommand(Command command)
 {
-    switch(command) {
-    case Command::Pause: {
-        if (arguments.length() > 1)
-            emit pause(arguments[0].toBool(), arguments[1].toDouble());
+    qDebug() << "recieved data";
+    switch(command.tag) {
+    case Command::Tag::Pause: {
+        emit pause(command.pause.paused, command.pause.percent_pos);
         break;
     }
-    case Command::Seek: {
-        if (arguments.length() > 1)
-            emit seek(arguments[0].toDouble(), arguments[1].toBool());
+    case Command::Tag::Seek: {
+        emit seek(command.seek.percent_pos, command.seek.dragged);
+        break;
+    }
+    case Command::Tag::Invalid: {
+        qDebug() << "Invalid command received";
         break;
     }
     }

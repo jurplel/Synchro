@@ -2,25 +2,16 @@
 #define SYNCHRONYCONTROLLER_H
 
 #include <QObject>
-#include <QTcpSocket>
-#include <QDataStream>
+
+#include "libsynchro.hpp"
 
 class SynchronyController : public QObject
 {
     Q_OBJECT
 public:
-    enum class Command : quint8
-    {
-       Pause,
-       Seek
-    };
-    Q_ENUM(Command)
-
     explicit SynchronyController(QObject *parent = nullptr);
 
-    void dataRecieved();
-
-    void recieveCommand(Command command, QVariantList arguments = QVariantList());
+    void handleCommand(Command command);
 
 signals:
     void pause(bool paused, double percentPos);
@@ -30,11 +21,10 @@ signals:
 public slots:
     void connectToServer(QString ip, quint16 port);
 
-    void sendCommand(Command command, QVariantList arguments = QVariantList());
+    void sendCommand(quint8 command, QVariantList arguments);
 
 private:
-    QTcpSocket *socket;
-    QDataStream in;
+    SynchroConnection *socket2;
 };
 
 #endif // SYNCHRONYCONTROLLER_H

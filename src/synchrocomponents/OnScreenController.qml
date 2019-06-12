@@ -79,7 +79,7 @@ Item {
         z: 1
         onSeek: {
             videoObject.seek(value, dragged)
-            synchronyController.sendCommand(SynchronyController.Seek, [value, dragged])
+            synchronyController.sendCommand(2, [value, dragged])
         }
     }
 
@@ -174,7 +174,7 @@ Item {
                 onPressed: {
                     var newPausedState = !videoObject.paused
                     videoObject.paused = newPausedState
-                    synchronyController.sendCommand(SynchronyController.Pause, [newPausedState, videoObject.percentPos])
+                    synchronyController.sendCommand(1, [newPausedState, videoObject.percentPos])
                 }
                 AnimatedSprite {
                     id: playPauseIcon
