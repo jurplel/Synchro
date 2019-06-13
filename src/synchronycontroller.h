@@ -10,6 +10,7 @@ class SynchronyController : public QObject
     Q_OBJECT
 public:
     explicit SynchronyController(QObject *parent = nullptr);
+    ~SynchronyController() override;
 
     void handleCommand(Command command);
 

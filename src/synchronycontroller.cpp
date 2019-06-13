@@ -2,8 +2,6 @@
 
 #include <QtConcurrent/QtConcurrentRun>
 
-#include <QByteArray>
-#include <QDataStream>
 #include <QVariantList>
 
 #include <QDebug>
@@ -16,13 +14,18 @@ static void callback(void *ctx, Command cmd) {
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 {
+    socket2 = nullptr;
+
     connectToServer("127.0.0.1", 32019);
+}
+
+SynchronyController::~SynchronyController() {
+    synchro_connection_free(socket2);
 }
 
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
-    socket2 = synchro_connection_connect(qPrintable(ip), port);
-    synchro_connection_set_callback(socket2, callback, this);
+    socket2 = synchro_connection_new(qPrintable(ip), port, callback, this);
     QtConcurrent::run(synchro_connection_run, socket2);
 }
 
@@ -48,7 +51,7 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
     }
 
     synchro_connection_send(socket2, cmd);
-    qDebug() << "Send em";
+    qDebug() << "send em";
 }
 
 void SynchronyController::handleCommand(Command command)
