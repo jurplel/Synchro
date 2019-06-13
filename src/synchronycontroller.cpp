@@ -7,9 +7,8 @@
 #include <QDebug>
 
 static void callback(void *ctx, Command cmd) {
-    qDebug() << "received";
     auto obj = reinterpret_cast<SynchronyController*>(ctx);
-    obj->handleCommand(cmd);
+    obj->receiveCommand(cmd);
 }
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
@@ -31,8 +30,8 @@ void SynchronyController::connectToServer(QString ip, quint16 port)
 
 void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
 {
-    // if (socket->state() != QTcpSocket::ConnectedState)
-    //     return;
+    if (socket2 == nullptr)
+        return;
 
     Command cmd = Command();
     cmd.tag = static_cast<Command::Tag>(cmdNum);
@@ -54,9 +53,9 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
     qDebug() << "send em";
 }
 
-void SynchronyController::handleCommand(Command command)
+void SynchronyController::receiveCommand(Command command)
 {
-    qDebug() << "recieved data";
+    qDebug() << "recieved command";
     switch(command.tag) {
     case Command::Tag::Pause: {
         emit pause(command.pause.paused, command.pause.percent_pos);

@@ -12,7 +12,7 @@ public:
     explicit SynchronyController(QObject *parent = nullptr);
     ~SynchronyController() override;
 
-    void handleCommand(Command command);
+    void receiveCommand(Command command);
 
 signals:
     void pause(bool paused, double percentPos);
