@@ -52,6 +52,7 @@ jobs:
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
       (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
     displayName: 'Deploy Synchro'
 
   - task: PublishBuildArtifacts@1

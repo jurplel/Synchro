@@ -39,7 +39,7 @@ elseif (UNIX)
 endif()
 
 # Link libsynchro
-find_library(LIBSYNCHRO_LIBRARIES NAMES libsynchro.a synchro.lib PATHS ${CMAKE_CURRENT_SOURCE_DIR}/libsynchro/capi/target/release/)
+find_library(LIBSYNCHRO_LIBRARIES NAMES libsynchro.so libsynchro.dylib synchro.dll PATHS ${CMAKE_CURRENT_SOURCE_DIR}/libsynchro/capi/target/release/)
 find_path(LIBSYNCHRO_INCLUDE_DIRS NAMES libsynchro.hpp PATHS ${CMAKE_CURRENT_SOURCE_DIR}/libsynchro/capi/target/include/)
 
 # Fix linking on 10.14+. See https://stackoverflow.com/questions/54068035
