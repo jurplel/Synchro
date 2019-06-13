@@ -36,6 +36,13 @@ jobs:
     displayName: 'Install Rust'
 
   - script: |
+        rustup -V
+        rustup component list --installed
+        rustc -Vv
+        cargo -V
+    displayName: 'get version numbers'
+
+  - script: |
       git clone https://github.com/jurplel/libsynchro.git
       cd libsynchro\capi
       cargo +nightly build --release
