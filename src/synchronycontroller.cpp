@@ -53,6 +53,9 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
         cmd.seek.dragged = arguments.takeFirst().toBool();
         break;
     }
+    default: {
+        break;
+    }
     }
 
     synchro_connection_send(socket2, cmd);
