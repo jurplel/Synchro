@@ -85,7 +85,7 @@ void VideoObject::onMpvEvents()
     }
 }
 
-void VideoObject::handleMpvEvent(mpv_event *event)
+void VideoObject::handleMpvEvent(const mpv_event *event)
 {
     switch (event->event_id)
     {
@@ -130,7 +130,7 @@ QVariant VideoObject::getProperty(const QString name)
     return mpv::qt::get_property(mpvHandler, name);
 }
 
-void VideoObject::seek(const qreal newPos, bool useKeyframes)
+void VideoObject::seek(const qreal newPos, const bool useKeyframes)
 {
     QStringList command = QStringList() << "seek" << QString::number(newPos);
     //keyframes are used when dragging, and exact used when clicking
@@ -148,23 +148,25 @@ void VideoObject::seek(const qreal newPos, bool useKeyframes)
         seekTimer->start();
         update();
     }
+    emit seeked(useKeyframes);
 }
 
 void VideoObject::loadFile(const QString &fileName)
 {
     command(QStringList() << "loadfile" << fileName);
-    setPaused(false);
-    setPercentPos(0);
+    seek(0, false);
 }
 
 void VideoObject::back()
 {
      command(QStringList() << "add" << "chapter" << "-1");
+     emit seeked(false);
 }
 
 void VideoObject::forward()
 {
     command(QStringList() << "add" << "chapter" << "1");
+    emit seeked(false);
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)

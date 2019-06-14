@@ -77,10 +77,7 @@ Item {
         anchors.bottom: parent.bottom
         implicitWidth: 99999999
         z: 1
-        onSeek: {
-            videoObject.seek(value, dragged)
-            synchronyController.sendCommand(2, [value, dragged])
-        }
+        onSeek: videoObject.seek(value, dragged)
     }
 
     Item {
@@ -171,11 +168,7 @@ Item {
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                onPressed: {
-                    var newPausedState = !videoObject.paused
-                    videoObject.paused = newPausedState
-                    synchronyController.sendCommand(1, [newPausedState, videoObject.percentPos])
-                }
+                onPressed: videoObject.paused = !videoObject.paused
                 AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height

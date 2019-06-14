@@ -27,7 +27,7 @@ public:
 
     virtual Renderer *createRenderer() const;
 
-    void handleMpvEvent(mpv_event *event);
+    void handleMpvEvent(const mpv_event *event);
 
     qreal getPercentPos() const { return percentPos; }
     void setPercentPos(const qreal &value) { setProperty("percentPos", value); percentPos = value; emit percentPosChanged(); }
@@ -67,6 +67,8 @@ signals:
     void durationChanged();
     void chapterListChanged();
 
+    void seeked(bool dragged);
+
 public slots:
     void onMpvEvents();
 
@@ -74,7 +76,7 @@ public slots:
 
     QVariant getProperty(const QString name);
 
-    void seek(const qreal newPos, bool useKeyframes);
+    void seek(const qreal newPos, const bool useKeyframes);
 
     void command(const QVariant &args);
 

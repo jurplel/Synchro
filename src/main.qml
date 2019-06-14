@@ -35,7 +35,11 @@ Window {
 
     Connections {
         target: videoObject
-        onPausedChanged: restartAutohideTimer()
+        onPausedChanged: {
+            restartAutohideTimer()
+            synchronyController.sendCommand(1, [videoObject.paused, videoObject.percentPos])
+        }
+        onSeeked: synchronyController.sendCommand(2, [videoObject.percentPos, +dragged])
     }
 
 
