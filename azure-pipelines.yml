@@ -58,7 +58,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'Release'
-      artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
+      artifactName: 'Synchro-win64-$(Build.BuildNumber)'
     displayName: 'Publish .exe with libraries as build artifact'
 
 - job: macOS
