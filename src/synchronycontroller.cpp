@@ -25,6 +25,9 @@ SynchronyController::~SynchronyController() {
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
     socket2 = synchro_connection_new(qPrintable(ip), port, callback, this);
+    if (socket2 == nullptr)
+        return;
+
     QtConcurrent::run(synchro_connection_run, socket2);
 }
 
