@@ -15,7 +15,7 @@ SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 {
     socket2 = nullptr;
 
-    connectToServer("127.0.0.1", 32019);
+    connectToServer("35.227.80.175", 32019);
 }
 
 SynchronyController::~SynchronyController() {
