@@ -19,6 +19,9 @@ SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 }
 
 SynchronyController::~SynchronyController() {
+    if (socket2 == nullptr)
+        return;
+        
     synchro_connection_free(socket2);
 }
 
