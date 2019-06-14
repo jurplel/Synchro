@@ -39,14 +39,14 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set Qt5_DIR=%userprofile%\Qt\msvc2017_64
-      cmake . -A x64
+      cmake --config Release . -A x64
       msbuild Synchro.sln /p:Configuration=Release /m
     displayName: 'Build Synchro'
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'Release'
       artifactName: 'Synchro-exe64-$(Build.BuildNumber)'
-    displayName: 'Publish exe as build artifact'
+    displayName: 'Publish .exe as build artifact'
 
   - script: |
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
@@ -59,17 +59,17 @@ jobs:
     inputs:
       pathtoPublish: 'Release'
       artifactName: 'Synchro-Win64-$(Build.BuildNumber)'
-    displayName: 'Publish exe and libraries as build artifacts'
+    displayName: 'Publish .exe with libraries as build artifact'
 
 - job: macOS
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'macOS-10.14'
   steps:
   - checkout: self
     lfs: true
 
   - script: brew install qt pkg-config mpv
-    displayName: 'Install homebrew packages'
+    displayName: 'Install Homebrew packages'
 
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
@@ -84,7 +84,7 @@ jobs:
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-      cmake .
+      cmake --config Release .
       make
       mkdir bin
       cp -r Synchro.app bin/
@@ -102,7 +102,7 @@ jobs:
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
       install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
-    displayName: 'Add qt labs platform plugin and change dylib install names'
+    displayName: 'Add Qt Labs Platform plugin (QTBUG-74997)'
 
   - task: PublishBuildArtifacts@1
     inputs:
