@@ -64,7 +64,7 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
 
 void SynchronyController::receiveCommand(Command command)
 {
-    qDebug() << "recieved command";
+    qDebug() << "recieved command" << static_cast<int>(command.tag);
     switch(command.tag) {
     case Command::Tag::Pause: {
         emit pause(command.pause.paused, command.pause.percent_pos);

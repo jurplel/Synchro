@@ -16,7 +16,7 @@ static void wakeup(void *videoObject)
 VideoObject::VideoObject() : QQuickFramebufferObject()
 {
     //initialize variables
-    paused = true;
+    isPaused = true;
     muted = false;
     seeking = false;
     currentVolume = 100;
@@ -38,7 +38,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "chapter-list", MPV_FORMAT_NODE);
 
-    setProperty("terminal", true);
+//    setProperty("terminal", true);
     setProperty("pause", true);
 
     setProperty("audio-client-name", "Synchro");
@@ -49,7 +49,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("hwdec", "auto");
 
     //update variables with mpv values for safety
-    paused = getProperty("pause").toBool();
+    isPaused = getProperty("pause").toBool();
     muted = getProperty("mute").toBool();
     currentVolume = getProperty("volume").toReal();
 
@@ -130,8 +130,11 @@ QVariant VideoObject::getProperty(const QString name)
     return mpv::qt::get_property(mpvHandler, name);
 }
 
-void VideoObject::seek(const qreal newPos, const bool useKeyframes)
+void VideoObject::seek(const qreal newPos, const bool useKeyframes, const bool synchronize)
 {
+    if (synchronize)
+        emit seeked(newPos, useKeyframes);
+
     QStringList command = QStringList() << "seek" << QString::number(newPos);
     //keyframes are used when dragging, and exact used when clicking
     if (useKeyframes)
@@ -148,7 +151,11 @@ void VideoObject::seek(const qreal newPos, const bool useKeyframes)
         seekTimer->start();
         update();
     }
-    emit seeked(useKeyframes);
+}
+
+void VideoObject::pause(bool newPaused) {
+    setIsPaused(newPaused);
+    emit paused();
 }
 
 void VideoObject::loadFile(const QString &fileName)
@@ -160,13 +167,13 @@ void VideoObject::loadFile(const QString &fileName)
 void VideoObject::back()
 {
      command(QStringList() << "add" << "chapter" << "-1");
-     emit seeked(false);
+     emit seeked(percentPos, false);
 }
 
 void VideoObject::forward()
 {
     command(QStringList() << "add" << "chapter" << "1");
-    emit seeked(false);
+    emit seeked(percentPos, false);
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)

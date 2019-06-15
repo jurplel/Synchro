@@ -15,7 +15,7 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(QString timePosString READ getTimePosString WRITE setTimePosString NOTIFY timePosStringChanged)
     Q_PROPERTY(QString durationString READ getDurationString WRITE setDurationString NOTIFY durationStringChanged)
     Q_PROPERTY(qreal duration READ getDuration WRITE setDuration NOTIFY durationChanged)
-    Q_PROPERTY(bool paused READ getPaused WRITE setPaused NOTIFY pausedChanged)
+    Q_PROPERTY(bool isPaused READ getIsPaused WRITE setIsPaused NOTIFY isPausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
     Q_PROPERTY(QVariantList chapterList READ getChapterList WRITE setChapterList NOTIFY chapterListChanged)
@@ -32,8 +32,8 @@ public:
     qreal getPercentPos() const { return percentPos; }
     void setPercentPos(const qreal &value) { setProperty("percentPos", value); percentPos = value; emit percentPosChanged(); }
 
-    bool getPaused() const { return paused; }
-    void setPaused(bool value) { setProperty("pause", value); paused = value; emit pausedChanged(); }
+    bool getIsPaused() const { return isPaused; }
+    void setIsPaused(bool value) { setProperty("pause", value); isPaused = value; emit isPausedChanged(); }
 
     bool getMuted() const { return muted; }
     void setMuted(bool value) { setProperty("mute", value); muted = value; emit mutedChanged(); }
@@ -58,7 +58,7 @@ public:
 
 
 signals:
-    void pausedChanged();
+    void isPausedChanged();
     void mutedChanged();
     void currentVolumeChanged();
     void percentPosChanged();
@@ -67,7 +67,8 @@ signals:
     void durationChanged();
     void chapterListChanged();
 
-    void seeked(bool dragged);
+    void seeked(qreal percentPos, bool dragged);
+    void paused();
 
 public slots:
     void onMpvEvents();
@@ -76,7 +77,9 @@ public slots:
 
     QVariant getProperty(const QString name);
 
-    void seek(const qreal newPos, const bool useKeyframes);
+    void seek(const qreal newPos, const bool useKeyframes, const bool synchronize = false);
+
+    void pause(bool newPaused);
 
     void command(const QVariant &args);
 
@@ -96,7 +99,7 @@ private:
     QString timePosString;
     QString durationString;
     qreal duration;
-    bool paused;
+    bool isPaused;
     bool muted;
     qreal currentVolume;
     QVariantList chapterList;

@@ -24,10 +24,11 @@ Window {
     Connections {
         target: synchronyController
         onPause: {
-            videoObject.paused = paused
+            videoObject.isPaused = paused
             videoObject.seek(percentPos, false)
         }
         onSeek: {
+            console.log("seeking to " + percentPos + useKeyframes);
             videoObject.seek(percentPos, useKeyframes)
             restartAutohideTimer()
         }
@@ -35,11 +36,11 @@ Window {
 
     Connections {
         target: videoObject
-        onPausedChanged: {
-            restartAutohideTimer()
-            synchronyController.sendCommand(1, [videoObject.paused, videoObject.percentPos])
+        onIsPausedChanged: restartAutohideTimer()
+        onPaused: {
+            synchronyController.sendCommand(1, [videoObject.isPaused, videoObject.percentPos])
         }
-        onSeeked: synchronyController.sendCommand(2, [videoObject.percentPos, +dragged])
+        onSeeked: synchronyController.sendCommand(2, [percentPos, dragged])
     }
 
 
@@ -173,7 +174,7 @@ Window {
         interval: 650
 
         onTriggered: {
-            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < videoContainer.height-57) && !videoObject.paused)
+            if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < videoContainer.height-57) && !videoObject.isPaused)
                 osc.state = "hidden"
         }
     }

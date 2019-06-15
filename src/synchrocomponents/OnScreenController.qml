@@ -18,8 +18,8 @@ Item {
         target: videoObject
         onMutedChanged: volumeOsc.changeIcon()
 
-        onPausedChanged: {
-        if (videoObject.paused)
+        onIsPausedChanged: {
+        if (videoObject.isPaused)
             playPauseIcon.state = ""
         else
             playPauseIcon.state = "playing"
@@ -77,7 +77,7 @@ Item {
         anchors.bottom: parent.bottom
         implicitWidth: 99999999
         z: 1
-        onSeek: videoObject.seek(value, dragged)
+        onSeek: videoObject.seek(value, dragged, true)
     }
 
     Item {
@@ -168,7 +168,7 @@ Item {
                 height: 36
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                onPressed: videoObject.paused = !videoObject.paused
+                onPressed: videoObject.pause(!videoObject.isPaused)
                 AnimatedSprite {
                     id: playPauseIcon
                     width: parent.height

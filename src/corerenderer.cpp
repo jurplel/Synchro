@@ -78,6 +78,6 @@ void CoreRenderer::render()
 void CoreRenderer::synchronize(QQuickFramebufferObject *item)
 {
     auto vidObj = reinterpret_cast<VideoObject*>(item);
-    paused = vidObj->getPaused();
+    paused = vidObj->getIsPaused();
     seeking = vidObj->getSeeking();
 }
