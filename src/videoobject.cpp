@@ -167,13 +167,13 @@ void VideoObject::loadFile(const QString &fileName)
 void VideoObject::back()
 {
      command(QStringList() << "add" << "chapter" << "-1");
-     emit seeked(percentPos, false);
+     emit seeked(getProperty("percent-pos").toReal(), false);
 }
 
 void VideoObject::forward()
 {
     command(QStringList() << "add" << "chapter" << "1");
-    emit seeked(percentPos, false);
+    emit seeked(getProperty("percent-pos").toReal(), false);
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)
@@ -185,7 +185,7 @@ void VideoObject::setCurrentVolume(const qreal &value)
         newValue = 100;
 
     setMuted(false);
-    setProperty("volume", newValue);
+    command(QStringList() << "set" << "volume" << QString::number(newValue));
     currentVolume = newValue;
     emit currentVolumeChanged();
 }
