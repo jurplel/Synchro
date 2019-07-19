@@ -49,7 +49,7 @@ Window {
         id: listOfClients
         anchors.right: parent.right
         height: parent.height
-        width: parent.width*0.25
+        width: parent.width/4
 
         model: []
         delegate: Item {

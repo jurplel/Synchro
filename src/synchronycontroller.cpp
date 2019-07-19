@@ -72,7 +72,7 @@ void SynchronyController::receiveCommand(Synchro_Command command)
         emit seek(command.seek.percent_pos, command.seek.dragged);
         break;
     }
-    case Synchro_Command::Tag::Update_Client_List: {
+    case Synchro_Command::Tag::UpdateClientList: {
         qDebug() << QString::fromUtf8(command.update_client_list.client_list).split(",");
         emit updateClientList(QString::fromUtf8(command.update_client_list.client_list).split(","));
         synchro_char_free(command.update_client_list.client_list);
