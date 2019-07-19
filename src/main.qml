@@ -28,9 +28,11 @@ Window {
             videoObject.seek(percentPos, false)
         }
         onSeek: {
-            console.log("seeking to " + percentPos + useKeyframes);
             videoObject.seek(percentPos, useKeyframes)
             restartAutohideTimer()
+        }
+        onUpdateClientList: {
+            listOfClients.model = clientList
         }
     }
 
@@ -43,7 +45,32 @@ Window {
         onSeeked: synchronyController.sendCommand(2, [percentPos, dragged])
     }
 
+    ListView {
+        id: listOfClients
+        anchors.right: parent.right
+        height: parent.height
+        width: parent.width*0.25
 
+        model: []
+        delegate: Item {
+            height: 15
+            width: parent.width
+            Text {
+                color: "white"
+                text: modelData
+            }
+        }
+
+        header: Item {
+            height: 30
+            width: parent.width
+            Text {
+                color: "white"
+                text: "Users: " + listOfClients.model.length
+                font.pointSize: 20
+            }
+        }
+    }
 
     Item {
         id: videoContainer
@@ -62,8 +89,8 @@ Window {
             name: "bottomleft"
             PropertyChanges {
                 target: videoContainer
-                anchors.topMargin: parent.height/3
-                anchors.rightMargin: parent.width/3
+                anchors.topMargin: parent.height/4
+                anchors.rightMargin: parent.width/4
             }
             },
             State {
@@ -142,20 +169,14 @@ Window {
             MenuItem {
                 text: connectDialog.title
 //                icon.source: "qrc:/resources/basic_server.svg"
-                onTriggered: connectDialog.open()
+                onTriggered: synchronyController.connectToServer("0.0.0.0", 32019)
             }
             MenuItem {
-                text: "switch corner mode"
+                text: "View list of users"
                 onTriggered: {
-                    if (videoContainer.state == "")
-                        videoContainer.state = "bottomright"
-                    else if (videoContainer.state == "bottomright")
+                    if (videoContainer.state != "bottomleft")
                         videoContainer.state = "bottomleft"
-                    else if (videoContainer.state == "bottomleft")
-                        videoContainer.state = "bottomcenter"
-                    else if (videoContainer.state == "bottomcenter")
-                        videoContainer.state = "topcenter"
-                    else if (videoContainer.state == "topcenter")
+                    else
                         videoContainer.state = ""
                 }
             }

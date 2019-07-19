@@ -12,12 +12,14 @@ public:
     explicit SynchronyController(QObject *parent = nullptr);
     ~SynchronyController() override;
 
-    void receiveCommand(Command command);
+    void receiveCommand(Synchro_Command command);
 
 signals:
     void pause(bool paused, double percentPos);
 
     void seek(double percentPos, bool useKeyframes);
+
+    void updateClientList(QStringList clientList);
 
 public slots:
     void connectToServer(QString ip, quint16 port);
@@ -25,7 +27,7 @@ public slots:
     void sendCommand(quint8 command, QVariantList arguments);
 
 private:
-    SynchroConnection *socket2;
+    SynchroConnection *socket;
 };
 
 #endif // SYNCHRONYCONTROLLER_H
