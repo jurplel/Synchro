@@ -167,9 +167,17 @@ Window {
 
             }
             MenuItem {
-                text: connectDialog.title
+                text: "Connect to server"
 //                icon.source: "qrc:/resources/basic_server.svg"
-                onTriggered: synchronyController.connectToServer("0.0.0.0", 32019)
+                onTriggered: {
+                    synchronyController.connectToServer("0.0.0.0", 32019)
+                }
+            }
+            MenuItem {
+                text: nameDialog.title
+                onTriggered: {
+                    nameDialog.open()
+                }
             }
             MenuItem {
                 text: "View list of users"
@@ -248,7 +256,23 @@ Window {
         }
         onAccepted: {
             synchronyController.connectToServer(ipField.text, portField.value)
-            fileDialog.close()
+        }
+    }
+
+    Dialog {
+        id: nameDialog
+        title: "Set name..."
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        TextField {
+            id: nameField
+        }
+        onAccepted: {
+            synchronyController.sendCommand(4, [nameField.text])
+            close()
         }
     }
 }

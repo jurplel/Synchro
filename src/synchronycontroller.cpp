@@ -25,6 +25,9 @@ SynchronyController::~SynchronyController() {
 
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
+    if (socket != nullptr)
+        synchro_connection_free(socket);
+
     socket = synchro_connection_new(qPrintable(ip), port, callback, this);
     if (socket == nullptr)
         return;
@@ -49,6 +52,15 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
     case Synchro_Command::Tag::Seek: {
         cmd.seek.percent_pos = arguments.takeFirst().toDouble();
         cmd.seek.dragged = arguments.takeFirst().toBool();
+        break;
+    }
+    case Synchro_Command::Tag::UpdateClientList: {
+        cmd.update_client_list.client_list = nullptr;
+        break;
+    }
+    case Synchro_Command::Tag::SetName: {
+        char* name = arguments.takeFirst().toString().toUtf8().data();
+        cmd.set_name.desired_name = name;
         break;
     }
     default: {
@@ -76,6 +88,10 @@ void SynchronyController::receiveCommand(Synchro_Command command)
         qDebug() << QString::fromUtf8(command.update_client_list.client_list).split(",");
         emit updateClientList(QString::fromUtf8(command.update_client_list.client_list).split(","));
         synchro_char_free(command.update_client_list.client_list);
+        break;
+    }
+    case Synchro_Command::Tag::SetName: {
+        qDebug() << "SetName command received";
         break;
     }
     case Synchro_Command::Tag::Invalid: {

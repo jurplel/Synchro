@@ -24,7 +24,7 @@ signals:
 public slots:
     void connectToServer(QString ip, quint16 port);
 
-    void sendCommand(quint8 command, QVariantList arguments);
+    void sendCommand(quint8 command, QVariantList arguments = QVariantList());
 
 private:
     SynchroConnection *socket;
