@@ -89,7 +89,6 @@ Window {
             name: "bottomleft"
             PropertyChanges {
                 target: videoContainer
-                anchors.topMargin: parent.height/4
                 anchors.rightMargin: parent.width/4
             }
             },
@@ -170,7 +169,7 @@ Window {
                 text: "Connect to server"
 //                icon.source: "qrc:/resources/basic_server.svg"
                 onTriggered: {
-                    synchronyController.connectToServer("0.0.0.0", 32019)
+                    synchronyController.connectToServer("35.227.80.175", 32019)
                 }
             }
             MenuItem {
