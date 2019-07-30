@@ -69,8 +69,8 @@ Window {
             NumberAnimation {
                 target: videoContainer
                 properties: "anchors.topMargin,anchors.leftMargin,anchors.rightMargin,anchors.bottomMargin"
-                duration: 800
-                easing.type: Easing.InOutQuad
+                duration: 450
+                easing.type: Easing.InOutCubic
             }
         }
 

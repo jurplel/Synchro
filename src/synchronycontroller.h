@@ -22,6 +22,8 @@ signals:
     void updateClientList(QStringList clientList);
 
 public slots:
+    void disconnect();
+
     void connectToServer(QString ip, quint16 port);
 
     void sendCommand(quint8 command, QVariantList arguments = QVariantList());

@@ -107,7 +107,7 @@ Item {
                 NumberAnimation {
                     target: oscPanel
                     properties: "anchors.bottomMargin"
-                    duration: 600
+                    duration: 450
                     easing.type: Easing.OutExpo
                 }
             },
@@ -116,7 +116,7 @@ Item {
                 NumberAnimation {
                     target: oscPanel
                     properties: "anchors.bottomMargin"
-                    duration: 600
+                    duration: 450
                     easing.type: Easing.InExpo
                 }
             }

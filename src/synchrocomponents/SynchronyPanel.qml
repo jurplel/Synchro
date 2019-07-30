@@ -2,68 +2,95 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 Item {
-    property alias clientListModel:listOfClients.model
+    property var clientListModel: []
 
     id: synchronyPanel
     anchors.right: parent.right
     height: parent.height
     width: parent.width/4
 
-    TextField {
-        id: ipField
-        width: parent.width-connectButton.width
-        text: "35.227.80.175:32019"
-    }
-    Button {
-        id: connectButton
-        anchors.right: parent.right
-        text: "Connect"
-
-        onPressed: {
-            let stringList = ipField.text.split(":");
-            synchronyController.connectToServer(stringList[0], stringList[1]);
-        }
-    }
-    ListView {
-        id: listOfClients
-        anchors.topMargin: ipField.height
-        anchors.bottomMargin: nameField.height
+    StackView {
+        id: stack
+        initialItem: connectScreen
         anchors.fill: parent
+    }
 
-        model: []
-        delegate: Item {
-            height: 20
+    Component {
+        id: connectScreen
+
+        Column {
             width: parent.width
-            Text {
-                color: "white"
-                text: modelData
+            anchors.top: parent.top
+            spacing: 5
+            Row {
+                TextField {
+                    id: ipField
+                    width: 200
+                    text: "35.227.80.175:32019"
+                }
             }
-        }
 
-        header: Item {
-            height: 30
-            width: parent.width
-            Text {
-                color: "white"
-                text: "Users: " + listOfClients.model.length
-                font.pointSize: 20
+
+            TextField {
+                id: nameField
+                width: 200
+                text: "rusty shackleford"
+            }
+
+
+
+            Button {
+                id: connectButton
+                text: "Connect"
+
+                onPressed: {
+                    let stringList = ipField.text.split(":");
+                    synchronyController.connectToServer(stringList[0], stringList[1]);
+                    synchronyController.sendCommand(4, [nameField.text])
+                    stack.push(connectedScreen);
+                }
             }
         }
     }
-    Row {
-        width: parent.width
-        anchors.bottom: parent.bottom
 
-        TextField {
-            id: nameField
-            width: parent.width-nameButton.width
-        }
-        Button {
-            id: nameButton
-            text: "Set Name"
+    Component {
+        id: connectedScreen
 
-            onPressed: {
-                synchronyController.sendCommand(4, [nameField.text])
+        Item {
+            ListView {
+                id: listOfClients
+                anchors.fill: parent
+                model: clientListModel
+                delegate: Item {
+                    height: 20
+                    width: parent.width
+                    Text {
+                        color: "white"
+                        text: modelData
+                    }
+                }
+
+                header: Item {
+                    height: 30
+                    width: parent.width
+                    Text {
+                        color: "white"
+                        text: "Users: " + listOfClients.model.length
+                        font.pointSize: 20
+                    }
+                }
+            }
+
+            Button {
+                text: "Disconnect btw"
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                onPressed: {
+                    stack.pop();
+                    synchronyController.disconnect();
+                    clientListModel = [];
+                }
             }
         }
     }

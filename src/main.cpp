@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<ServerBrowser>("Synchro.Core", 1, 0, "ServerBrowser");
 
     //disable vsync for perfect resizing
-    QSurfaceFormat fmt;
-    fmt.setSwapInterval(0);
-    QSurfaceFormat::setDefaultFormat(fmt);
+//    QSurfaceFormat fmt;
+//    fmt.setSwapInterval(0);
+//    QSurfaceFormat::setDefaultFormat(fmt);
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

@@ -53,7 +53,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     muted = getProperty("mute").toBool();
     currentVolume = getProperty("volume").toReal();
 
-    seekTimer = new QTimer();
+    seekTimer = new QTimer(this);
     seekTimer->setInterval(1000);
     connect(seekTimer, &QTimer::timeout, this, [this]{seeking = false;});
     seekTimer->setSingleShot(true);

@@ -17,16 +17,21 @@ SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 }
 
 SynchronyController::~SynchronyController() {
+    disconnect();
+}
+
+void SynchronyController::disconnect() {
     if (socket == nullptr)
         return;
-        
+
     synchro_connection_free(socket);
+    socket = nullptr;
 }
 
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
     if (socket != nullptr)
-        synchro_connection_free(socket);
+        disconnect();
 
     socket = synchro_connection_new(qPrintable(ip), port, callback, this);
     if (socket == nullptr)
