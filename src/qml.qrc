@@ -12,5 +12,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>synchrostyle/MenuItem.qml</file>
         <file>synchrostyle/MenuSeparator.qml</file>
+        <file>synchrocomponents/SynchronyPanel.qml</file>
     </qresource>
 </RCC>

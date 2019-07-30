@@ -32,7 +32,7 @@ Window {
             restartAutohideTimer()
         }
         onUpdateClientList: {
-            listOfClients.model = clientList
+            synchronyPanel.clientListModel = clientList
         }
     }
 
@@ -45,31 +45,9 @@ Window {
         onSeeked: synchronyController.sendCommand(2, [percentPos, dragged])
     }
 
-    ListView {
-        id: listOfClients
-        anchors.right: parent.right
-        height: parent.height
-        width: parent.width/4
 
-        model: []
-        delegate: Item {
-            height: 15
-            width: parent.width
-            Text {
-                color: "white"
-                text: modelData
-            }
-        }
-
-        header: Item {
-            height: 30
-            width: parent.width
-            Text {
-                color: "white"
-                text: "Users: " + listOfClients.model.length
-                font.pointSize: 20
-            }
-        }
+    SynchronyPanel {
+        id: synchronyPanel
     }
 
     Item {
@@ -78,36 +56,10 @@ Window {
 
         states: [
             State {
-            name: "bottomright"
-            PropertyChanges {
-                target: videoContainer
-                anchors.topMargin: parent.height/3
-                anchors.leftMargin: parent.width/3
-            }
-            },
-            State {
-            name: "bottomleft"
+            name: "left"
             PropertyChanges {
                 target: videoContainer
                 anchors.rightMargin: parent.width/4
-            }
-            },
-            State {
-            name: "bottomcenter"
-            PropertyChanges {
-                target: videoContainer
-                anchors.topMargin: parent.height/3
-                anchors.leftMargin: parent.width/6
-                anchors.rightMargin: parent.width/6
-            }
-            },
-            State {
-            name: "topcenter"
-            PropertyChanges {
-                target: videoContainer
-                anchors.bottomMargin: parent.height/3
-                anchors.leftMargin: parent.width/6
-                anchors.rightMargin: parent.width/6
             }
             }
         ]
@@ -166,23 +118,10 @@ Window {
 
             }
             MenuItem {
-                text: "Connect to server"
-//                icon.source: "qrc:/resources/basic_server.svg"
+                text: "View synchrony panel..."
                 onTriggered: {
-                    synchronyController.connectToServer("35.227.80.175", 32019)
-                }
-            }
-            MenuItem {
-                text: nameDialog.title
-                onTriggered: {
-                    nameDialog.open()
-                }
-            }
-            MenuItem {
-                text: "View list of users"
-                onTriggered: {
-                    if (videoContainer.state != "bottomleft")
-                        videoContainer.state = "bottomleft"
+                    if (videoContainer.state != "left")
+                        videoContainer.state = "left"
                     else
                         videoContainer.state = ""
                 }
@@ -231,47 +170,5 @@ Window {
     Settings {
         id: settings
         property url lastFolder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
-    }
-
-    Dialog {
-        id: connectDialog
-        title: "Connect to server..."
-
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: 300
-        height: 100
-        modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
-        TextField {
-            id: ipField
-        }
-        SpinBox {
-            id: portField
-            x: ipField.width + 10
-            width: 70
-            to: 65535
-            editable: true
-        }
-        onAccepted: {
-            synchronyController.connectToServer(ipField.text, portField.value)
-        }
-    }
-
-    Dialog {
-        id: nameDialog
-        title: "Set name..."
-
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
-        TextField {
-            id: nameField
-        }
-        onAccepted: {
-            synchronyController.sendCommand(4, [nameField.text])
-            close()
-        }
     }
 }

@@ -17,6 +17,7 @@ set(SOURCES
     src/corerenderer.cpp
     src/videoobject.cpp
     src/synchronycontroller.cpp
+    src/serverbrowser.cpp
 )
 set(RESOURCES
     src/qml.qrc
