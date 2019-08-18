@@ -170,5 +170,6 @@ Window {
     Settings {
         id: settings
         property url lastFolder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
+        property string lastName: ""
     }
 }

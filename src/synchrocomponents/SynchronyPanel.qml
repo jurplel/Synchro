@@ -34,7 +34,7 @@ Item {
             TextField {
                 id: nameField
                 width: 200
-                text: "rusty shackleford"
+                text: settings.lastName
             }
 
 
@@ -45,8 +45,12 @@ Item {
 
                 onPressed: {
                     let stringList = ipField.text.split(":");
-                    synchronyController.connectToServer(stringList[0], stringList[1]);
-                    synchronyController.sendCommand(4, [nameField.text])
+                    if (stringList.length > 1)
+                    {
+                        synchronyController.connectToServer(stringList[0], stringList[1]);
+                    }
+                    settings.lastName = nameField.text;
+                    synchronyController.sendCommand(4, [nameField.text]);
                     stack.push(connectedScreen);
                 }
             }
