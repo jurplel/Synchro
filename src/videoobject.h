@@ -19,6 +19,7 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
     Q_PROPERTY(QVariantList chapterList READ getChapterList WRITE setChapterList NOTIFY chapterListChanged)
+    Q_PROPERTY(QVariantList cachedList READ getCachedList WRITE setCachedList NOTIFY chapterListChanged)
 
 
 public:
@@ -53,6 +54,9 @@ public:
     QVariantList getChapterList() const { return chapterList; }
     void setChapterList(const QVariantList &value) { chapterList = value; emit chapterListChanged(); }
 
+    QVariantList getCachedList() const { return cachedList; }
+    void setCachedList(const QVariantList &value) { cachedList = value; emit cachedListChanged(); }
+
     bool getSeeking() const { return seeking; }
     void setSeeking(bool value) { seeking = value; }
 
@@ -66,11 +70,14 @@ signals:
     void durationStringChanged();
     void durationChanged();
     void chapterListChanged();
+    void cachedListChanged();
 
     void seeked(qreal percentPos, bool dragged);
     void paused();
 
 public slots:
+    void poll();
+
     void onMpvEvents();
 
     void setProperty(const QString name, const QVariant &v);
@@ -92,6 +99,7 @@ public slots:
 private:
     mpv_handle *mpvHandler;
 
+    QTimer *pollTimer;
     QTimer *seekTimer;
     bool seeking;
 
@@ -103,6 +111,7 @@ private:
     bool muted;
     qreal currentVolume;
     QVariantList chapterList;
+    QVariantList cachedList;
 
 };
 

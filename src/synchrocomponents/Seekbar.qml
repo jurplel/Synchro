@@ -19,28 +19,55 @@ Slider {
     signal seek(bool dragged)
 
     property var chapterMarkers
+    property var cachedRanges
 
     Connections {
         target: videoObject
 
         onChapterListChanged: {
-        if (control.chapterMarkers)
-        {
-            control.chapterMarkers.forEach(function(currentValue) {
-                currentValue.destroy()
+            if (control.chapterMarkers)
+            {
+                control.chapterMarkers.forEach(function(marker) {
+                    marker.destroy()
+                })
+            }
+
+            var chapterLocations = []
+            videoObject.chapterList.forEach(function(chapter) {
+                chapterLocations.push(chapter.time/videoObject.duration)
             })
+
+            var chapterMarkers = []
+            for (var i = 1; i < chapterLocations.length; i++) {
+                chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.lightColor; width: 1; height: 2; y: 0; x:' +  chapterLocations[i] + '*control.width; z: 10;}', background))
+            }
+            control.chapterMarkers = chapterMarkers
         }
 
-        var chapterLocations = []
-        videoObject.chapterList.forEach(function(currentValue) {
-            chapterLocations.push(currentValue.time/videoObject.duration)
-        })
-
-        var chapterMarkers = []
-        for (var i = 1; i < chapterLocations.length; i++) {
-            chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.lightColor; width: 1; height: 2; y: 0; x:' +  chapterLocations[i] + '*control.width; }', background))
-        }
-        control.chapterMarkers = chapterMarkers
+        onCachedListChanged: {
+            if (control.cachedRanges)
+            {
+                control.cachedRanges.forEach(function(range) {
+                    range.destroy()
+                })
+            }
+            
+            var range = []
+            var ranges = []
+            var i = 1
+            videoObject.cachedList.forEach(function(number) {
+                range.push(number)
+                if (i % 2 == 0) {
+                    ranges.push(range)
+                    range = [];
+                }
+                i++
+            })
+            console.log(ranges)
+            ranges.forEach(function(range) {
+                console.log(control.width);
+                chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.middleLightColor; width:' + (range[1]-range[0]) + '*control.width; height: 2; y: 0; x:' +  range[0] + '*control.width; z: 1;}', background))
+            })
         }
     }
 

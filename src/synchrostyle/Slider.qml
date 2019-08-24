@@ -29,6 +29,7 @@ T.Slider {
         Rectangle {
 
             y: control.horizontal ? 0 : control.visualPosition * parent.height
+            z: 5
             width: control.horizontal ? control.position * parent.width : parent.width
             height: control.horizontal ? parent.height : control.position * parent.height
 

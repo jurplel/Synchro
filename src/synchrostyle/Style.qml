@@ -6,6 +6,7 @@ QtObject {
     property color accentColorMiddle: "#0b90db"
     property color accentColorDark: "#0b76db"
     property color middleColor: "#404040"
+    property color middleLightColor: "#595959"
     property color lightColor: "#cecece"
     property color backgroundColor: "#0f1126"
 }

@@ -47,6 +47,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("video-sync", "display-resample");
     setProperty("interpolation", "yes");
     setProperty("hwdec", "auto");
+    setProperty("keep-open", "always");
 
     //update variables with mpv values for safety
     isPaused = getProperty("pause").toBool();
@@ -57,6 +58,11 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     seekTimer->setInterval(1000);
     connect(seekTimer, &QTimer::timeout, this, [this]{seeking = false;});
     seekTimer->setSingleShot(true);
+
+    pollTimer = new QTimer(this);
+    pollTimer->setInterval(1000);
+    pollTimer->start();
+    connect(pollTimer, &QTimer::timeout, this, &VideoObject::poll);
 }
 
 VideoObject::~VideoObject()
@@ -69,6 +75,21 @@ QQuickFramebufferObject::Renderer *VideoObject::createRenderer() const
     window()->setPersistentOpenGLContext(true);
     window()->setPersistentSceneGraph(true);
     return new CoreRenderer(const_cast<VideoObject*>(this), mpvHandler);
+}
+
+void VideoObject::poll() 
+{
+    auto seekableRanges = getProperty("demuxer-cache-state").value<QVariantMap>().value("seekable-ranges").value<QVariantList>();
+    QVariantList seekableRangesList;
+    foreach (auto variant, seekableRanges)
+    {
+        auto variantMap = variant.value<QVariantMap>();
+        auto start = variantMap.value("start").toDouble()/duration;
+        auto end = variantMap.value("end").toDouble()/duration;
+        seekableRangesList.append({start, end});
+    }
+    if (getCachedList() != seekableRangesList)
+        setCachedList(seekableRangesList);
 }
 
 void VideoObject::onMpvEvents()
@@ -93,21 +114,19 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
     {
         auto *prop = reinterpret_cast<mpv_event_property*>(event->data);
 
-        if (strcmp(prop->name, "percent-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+        if (strcmp(prop->name, "percent-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setPercentPos(*reinterpret_cast<double*>(prop->data));
-
-        if (strcmp(prop->name, "time-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE)
+        } 
+        else if (strcmp(prop->name, "time-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setTimePosString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "time-pos")));
-
-        if (strcmp(prop->name, "duration") == 0 && prop->format == MPV_FORMAT_DOUBLE)
-        {
+        }
+        else if (strcmp(prop->name, "duration") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setDuration(*reinterpret_cast<double*>(prop->data));
             setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
         }
-
-        if (strcmp(prop->name, "chapter-list") == 0 && prop->format == MPV_FORMAT_NODE)
+        else if (strcmp(prop->name, "chapter-list") == 0 && prop->format == MPV_FORMAT_NODE) {
             setChapterList(getProperty("chapter-list").value<QVariantList>());
-
+        }
         break;
     }
     default:
