@@ -103,5 +103,9 @@ void SynchronyController::receiveCommand(Synchro_Command command)
         qDebug() << "Invalid command received";
         break;
     }
+    default: {
+        qDebug() << "Unknown command received";
+        break;
+    }
     }
 }
