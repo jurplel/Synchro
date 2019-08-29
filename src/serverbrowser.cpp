@@ -4,7 +4,6 @@
 
 ServerBrowser::ServerBrowser(QObject *parent) : QObject(parent)
 {
-
 }
 
 void ServerBrowser::refresh()
