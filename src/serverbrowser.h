@@ -12,6 +12,8 @@ public:
 
     void receiveList(QNetworkReply *reply);
 
+    void error();
+
 signals:
     void refreshed();
 
