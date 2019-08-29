@@ -61,6 +61,13 @@ Window {
                 target: videoContainer
                 anchors.rightMargin: parent.width/4
             }
+            },
+            State {
+            name: "right"
+            PropertyChanges {
+                target: videoContainer
+                anchors.leftMargin: parent.width/3
+            }
             }
         ]
 
@@ -118,10 +125,19 @@ Window {
 
             }
             MenuItem {
-                text: "View synchrony panel..."
+                text: "Synchrony panel"
                 onTriggered: {
                     if (videoContainer.state != "left")
                         videoContainer.state = "left"
+                    else
+                        videoContainer.state = ""
+                }
+            }
+            MenuItem {
+                text: "Preferences"
+                onTriggered: {
+                    if (videoContainer.state != "right")
+                        videoContainer.state = "right"
                     else
                         videoContainer.state = ""
                 }
