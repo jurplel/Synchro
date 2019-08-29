@@ -46,7 +46,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     setProperty("video-timing-offset", 0);
     setProperty("video-sync", "display-resample");
     setProperty("interpolation", "yes");
-    setProperty("hwdec", "auto");
     setProperty("keep-open", "always");
 
     //update variables with mpv values for safety
