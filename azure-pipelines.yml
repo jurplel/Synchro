@@ -39,15 +39,10 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set Qt5_DIR=%userprofile%\Qt\msvc2017_64
-      cmake --config Release . -A x64
+      cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildNumber)
       msbuild Synchro.sln /p:Configuration=Release /m
     displayName: 'Build Synchro'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: 'Release'
-      artifactName: 'Synchro-exe64-$(Build.BuildNumber)'
-    displayName: 'Publish .exe as build artifact'
-
+    
   - script: |
       %userprofile%\Qt\msvc2017_64\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %userprofile%\Qt\msvc2017_64\qml
       (robocopy %userprofile%\Qt\msvc2017_64\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
@@ -84,7 +79,7 @@ jobs:
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-      cmake --config Release .
+      cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildNumber)
       make
       mkdir bin
       cp -r Synchro.app bin/

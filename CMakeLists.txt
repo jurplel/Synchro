@@ -1,13 +1,35 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Synchro LANGUAGES CXX)
-
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(meta)
+
+# Set project metadata
+
+set(VERSION 0.1)
+
+IF(NIGHTLY)
+    IF(BUILD_NUMBER)
+        set(VERSION 0.${BUILD_NUMBER})
+    ELSE()
+        string(TIMESTAMP VERSION "0.%Y%m%d.%H%M%S")
+    ENDIF()
+ENDIF()
+    
+project("Synchro" VERSION ${VERSION} LANGUAGES CXX)
+set(COMPANY "Interverse")
+set(COPYRIGHT "Copyright © 2019 jurplel")
+set(IDENTIFIER "com.interverse.Synchro")
+
+setup_meta_files(META_FILES)
+
+# End of metadata section
 
 add_compile_definitions(QT_DEPRECATED_WARNINGS)
 add_compile_definitions(VERSION=0.1)
@@ -49,7 +71,7 @@ IF(APPLE)
     LINK_DIRECTORIES(/usr/local/lib)
 ENDIF()
 
-add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES})
+add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES} ${META_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${MPV_INCLUDE_DIRS} ${LIBSYNCHRO_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MPV_LIBRARIES} ${LIBSYNCHRO_LIBRARIES} Threads::Threads ${CMAKE_DL_LIBS} Qt5::Core Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Network)
