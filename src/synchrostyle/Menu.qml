@@ -3,7 +3,6 @@ import QtQuick.Controls 2.3
 import QtQuick.Controls.impl 2.3
 import QtQuick.Templates 2.3 as T
 
-import "../synchrocomponents"
 import "./"
 
 T.Menu {
@@ -33,13 +32,12 @@ T.Menu {
     }
 
     background: Rectangle {
-        SynchroBackground {
-            sourceItem: videoObject
-            sourceRect: Qt.rect(control.x, control.y, control.width, control.height)
-            border.color: Style.lightColor
-            border.width: 1
-            radius: 1
-        }
+        color: Style.darkestColor
+        opacity: 0.95
+
+        border.color: Style.lightColor
+        border.width: 1
+        radius: 4
         implicitWidth: 200
         implicitHeight: 0
     }
