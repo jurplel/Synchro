@@ -18,7 +18,7 @@ IF(NIGHTLY)
     IF(BUILD_NUMBER)
         set(VERSION 0.${BUILD_NUMBER})
     ELSE()
-        string(TIMESTAMP VERSION "0.%Y%m%d.%H%M%S")
+        string(TIMESTAMP VERSION "0.%Y%m%d.0")
     ENDIF()
 ENDIF()
     
