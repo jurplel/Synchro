@@ -51,8 +51,6 @@ void ServerBrowser::receiveList(QNetworkReply *reply)
         serverList.append(variant.toString());
     }
 
-    qDebug() << serverList;
-
     emit refreshed();
 }
 

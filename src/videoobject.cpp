@@ -1,5 +1,6 @@
 ﻿#include "videoobject.h"
 #include "corerenderer.h"
+#include "trackhandler.h"
 
 #include <QtQuick/QQuickWindow>
 #include <QStringList>
@@ -37,6 +38,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_observe_property(mpvHandler, 0, "time-pos", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "chapter-list", MPV_FORMAT_NODE);
+    mpv_observe_property(mpvHandler, 0, "track-list", MPV_FORMAT_NODE);
 
 //    setProperty("terminal", true);
     setProperty("pause", true);
@@ -126,6 +128,15 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
         else if (strcmp(prop->name, "chapter-list") == 0 && prop->format == MPV_FORMAT_NODE) {
             setChapterList(getProperty("chapter-list").value<QVariantList>());
         }
+        else if (strcmp(prop->name, "track-list") == 0 && prop->format == MPV_FORMAT_NODE) {
+            qDebug() << "Path";
+            TrackHandler trackHandler(mpvHandler, this);
+            trackHandler.updateTracks();
+            audioTrackList = trackHandler.getAudioTrackList();
+            subTrackList = trackHandler.getSubTrackList();
+            videoTrackList = trackHandler.getVideoTrackList();
+            emit trackListsUpdated();
+        }
         break;
     }
     default:
@@ -192,6 +203,22 @@ void VideoObject::forward()
 {
     command(QStringList() << "add" << "chapter" << "1");
     emit seeked(getProperty("percent-pos").toReal(), false);
+}
+
+void VideoObject::setVideoTrack(int id)
+{
+    setProperty("vid", id);
+}
+
+void VideoObject::setAudioTrack(int id)
+{
+    qDebug() << id;
+    setProperty("aid", id);
+}
+
+void VideoObject::setSubTrack(int id)
+{
+    setProperty("sid", id);
 }
 
 void VideoObject::setCurrentVolume(const qreal &value)

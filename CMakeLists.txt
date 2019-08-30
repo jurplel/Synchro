@@ -18,6 +18,7 @@ set(SOURCES
     src/videoobject.cpp
     src/synchronycontroller.cpp
     src/serverbrowser.cpp
+    src/trackhandler.cpp
 )
 set(RESOURCES
     src/qml.qrc

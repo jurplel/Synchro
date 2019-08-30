@@ -11,15 +11,18 @@ class VideoObject : public QQuickFramebufferObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal percentPos READ getPercentPos WRITE setPercentPos NOTIFY percentPosChanged)
-    Q_PROPERTY(QString timePosString READ getTimePosString WRITE setTimePosString NOTIFY timePosStringChanged)
-    Q_PROPERTY(QString durationString READ getDurationString WRITE setDurationString NOTIFY durationStringChanged)
+    Q_PROPERTY(qreal percentPos READ getPercentPos NOTIFY percentPosChanged)
+    Q_PROPERTY(QString timePosString READ getTimePosString NOTIFY timePosStringChanged)
+    Q_PROPERTY(QString durationString READ getDurationString NOTIFY durationStringChanged)
     Q_PROPERTY(qreal duration READ getDuration WRITE setDuration NOTIFY durationChanged)
     Q_PROPERTY(bool isPaused READ getIsPaused WRITE setIsPaused NOTIFY isPausedChanged)
     Q_PROPERTY(bool muted READ getMuted WRITE setMuted NOTIFY mutedChanged)
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
-    Q_PROPERTY(QVariantList chapterList READ getChapterList WRITE setChapterList NOTIFY chapterListChanged)
-    Q_PROPERTY(QVariantList cachedList READ getCachedList WRITE setCachedList NOTIFY chapterListChanged)
+    Q_PROPERTY(QVariantList chapterList READ getChapterList NOTIFY chapterListChanged)
+    Q_PROPERTY(QVariantList cachedList READ getCachedList NOTIFY chapterListChanged)
+    Q_PROPERTY(QStringList audioTrackList READ getAudioTrackList)
+    Q_PROPERTY(QStringList subTrackList READ getSubTrackList)
+    Q_PROPERTY(QStringList videoTrackList READ getVideoTrackList)
 
 
 public:
@@ -57,6 +60,10 @@ public:
     QVariantList getCachedList() const { return cachedList; }
     void setCachedList(const QVariantList &value) { cachedList = value; emit cachedListChanged(); }
 
+    QStringList getAudioTrackList() const { return audioTrackList; }
+    QStringList getSubTrackList() const { return subTrackList; }
+    QStringList getVideoTrackList() const { return videoTrackList; }
+
     bool getSeeking() const { return seeking; }
     void setSeeking(bool value) { seeking = value; }
 
@@ -72,8 +79,11 @@ signals:
     void chapterListChanged();
     void cachedListChanged();
 
+    void trackListsUpdated();
+
     void seeked(qreal percentPos, bool dragged);
     void paused();
+
 
 public slots:
     void poll();
@@ -96,6 +106,12 @@ public slots:
 
     void forward();
 
+    void setVideoTrack(int id);
+
+    void setAudioTrack(int id);
+
+    void setSubTrack(int id);
+
 private:
     mpv_handle *mpvHandler;
 
@@ -112,6 +128,10 @@ private:
     qreal currentVolume;
     QVariantList chapterList;
     QVariantList cachedList;
+
+    QStringList audioTrackList;
+    QStringList subTrackList;
+    QStringList videoTrackList;
 
 };
 

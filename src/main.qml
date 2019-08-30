@@ -1,6 +1,6 @@
-﻿import QtQuick 2.9
-import QtQuick.Window 2.9
-import QtQuick.Controls 2.2
+﻿import QtQuick 2.10
+import QtQuick.Window 2.10
+import QtQuick.Controls 2.3
 import Qt.labs.platform 1.0 as Platform
 import Qt.labs.settings 1.0
 
@@ -23,7 +23,7 @@ Window {
 
     Connections {
         target: synchronyController
-        onPause: {
+        onPause: {2
             videoObject.isPaused = paused
             videoObject.seek(percentPos, false)
         }
@@ -36,6 +36,8 @@ Window {
         }
     }
 
+    property var allTrackMenuItems
+
     Connections {
         target: videoObject
         onIsPausedChanged: restartAutohideTimer()
@@ -43,6 +45,33 @@ Window {
             synchronyController.sendCommand(1, [videoObject.isPaused, videoObject.percentPos])
         }
         onSeeked: synchronyController.sendCommand(2, [percentPos, dragged])
+        onTrackListsUpdated: {
+            if (window.allTrackMenuItems) {
+                window.allTrackMenuItems.forEach(function(item) {
+                    item.destroy()
+                })
+            }
+            allTrackMenuItems = []
+            for (var i = 0; i < videoObject.videoTrackList.length; i++) {
+                var item = Qt.createQmlObject('import QtQuick 2.10; import QtQuick.Controls 2.3; import "synchrostyle"; MenuItem { text: "'+ videoObject.videoTrackList[i] +'"; onTriggered: videoObject.setVideoTrack(' + (i+1) + ')}', videoTracksMenu)
+                allTrackMenuItems.push(item)
+                videoTracksMenu.addItem(allTrackMenuItems[allTrackMenuItems.length-1])
+            }
+
+            for (var i = 0; i < videoObject.audioTrackList.length; i++) {
+                console.log(i)
+                var item = Qt.createQmlObject('import QtQuick 2.10; import QtQuick.Controls 2.3; import "synchrostyle"; MenuItem { text: "'+ videoObject.audioTrackList[i] +'"; onTriggered: videoObject.setAudioTrack(' + (i+1) + ')}', audioTracksMenu)
+                allTrackMenuItems.push(item)
+                audioTracksMenu.addItem(allTrackMenuItems[allTrackMenuItems.length-1])
+            }
+
+            for (var i = 0; i < videoObject.subTrackList.length; i++) {
+                var item = Qt.createQmlObject('import QtQuick 2.10; import QtQuick.Controls 2.3; import "synchrostyle"; MenuItem { text: "'+ videoObject.subTrackList[i] +'"; onTriggered: videoObject.setSubTrack(' + (i+1) + ')}', subTracksMenu)
+                allTrackMenuItems.push(item)
+                subTracksMenu.addItem(allTrackMenuItems[allTrackMenuItems.length-1])
+            }
+            window.allTrackMenuItems = allTrackMenuItems
+        }
     }
 
 
@@ -123,6 +152,21 @@ Window {
             }
             MenuSeparator {
 
+            }
+            Menu {
+                id: videoTracksMenu
+                title: "Video Track"
+            }
+            Menu {
+                id: audioTracksMenu
+                title: "Audio Track"
+            }
+            Menu {
+                id: subTracksMenu
+                title: "Subtitle Track"
+            }
+            MenuSeparator {
+                
             }
             MenuItem {
                 text: "Synchrony panel"

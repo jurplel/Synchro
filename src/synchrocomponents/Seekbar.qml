@@ -1,5 +1,5 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.10
+import QtQuick.Controls 2.3
 import "../synchrostyle"
 
 import Synchro.Core 1.0
@@ -63,9 +63,7 @@ Slider {
                 }
                 i++
             })
-            console.log(ranges)
             ranges.forEach(function(range) {
-                console.log(control.width);
                 chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.middleLightColor; width:' + (range[1]-range[0]) + '*control.width; height: 2; y: 0; x:' +  range[0] + '*control.width; z: 1;}', background))
             })
         }
