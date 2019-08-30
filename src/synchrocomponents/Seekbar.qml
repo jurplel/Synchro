@@ -21,16 +21,27 @@ Slider {
     property var chapterMarkers
     property var cachedRanges
 
+    function clearChapterMarkers() {
+        if (control.chapterMarkers) {
+            control.chapterMarkers.forEach(function(marker) {
+                marker.destroy()
+            })
+        }
+    }
+
+    function clearCachedRanges() {
+        if (control.cachedRanges) {
+            control.cachedRanges.forEach(function(range) {
+                range.destroy()
+            })
+        }
+    }
+
     Connections {
         target: videoObject
 
         onChapterListChanged: {
-            if (control.chapterMarkers)
-            {
-                control.chapterMarkers.forEach(function(marker) {
-                    marker.destroy()
-                })
-            }
+            clearChapterMarkers()
 
             var chapterLocations = []
             videoObject.chapterList.forEach(function(chapter) {
@@ -45,12 +56,7 @@ Slider {
         }
 
         onCachedListChanged: {
-            if (control.cachedRanges)
-            {
-                control.cachedRanges.forEach(function(range) {
-                    range.destroy()
-                })
-            }
+            clearCachedRanges()
             
             var range = []
             var ranges = []
@@ -66,6 +72,11 @@ Slider {
             ranges.forEach(function(range) {
                 chapterMarkers.push(Qt.createQmlObject('import QtQuick 2.0; import "../synchrostyle"; Rectangle {color: Style.middleLightColor; width:' + (range[1]-range[0]) + '*control.width; height: 2; y: 0; x:' +  range[0] + '*control.width; z: 1;}', background))
             })
+        }
+
+        onFileChanged: {
+            clearChapterMarkers()
+            clearCachedRanges()
         }
     }
 

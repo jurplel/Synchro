@@ -81,6 +81,8 @@ signals:
 
     void trackListsUpdated();
 
+    void fileChanged();
+
     void seeked(qreal percentPos, bool dragged);
     void paused();
 

@@ -39,6 +39,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
     mpv_observe_property(mpvHandler, 0, "chapter-list", MPV_FORMAT_NODE);
     mpv_observe_property(mpvHandler, 0, "track-list", MPV_FORMAT_NODE);
+    mpv_observe_property(mpvHandler, 0, "path", MPV_FORMAT_NODE);
 
 //    setProperty("terminal", true);
     setProperty("pause", true);
@@ -129,13 +130,15 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
             setChapterList(getProperty("chapter-list").value<QVariantList>());
         }
         else if (strcmp(prop->name, "track-list") == 0 && prop->format == MPV_FORMAT_NODE) {
-            qDebug() << "Path";
             TrackHandler trackHandler(mpvHandler, this);
             trackHandler.updateTracks();
             audioTrackList = trackHandler.getAudioTrackList();
             subTrackList = trackHandler.getSubTrackList();
             videoTrackList = trackHandler.getVideoTrackList();
             emit trackListsUpdated();
+        }
+        else if (strcmp(prop->name, "path") == 0 && prop->format == MPV_FORMAT_NODE) {
+            emit fileChanged();
         }
         break;
     }
@@ -212,7 +215,6 @@ void VideoObject::setVideoTrack(int id)
 
 void VideoObject::setAudioTrack(int id)
 {
-    qDebug() << id;
     setProperty("aid", id);
 }
 

@@ -59,7 +59,6 @@ Window {
             }
 
             for (var i = 0; i < videoObject.audioTrackList.length; i++) {
-                console.log(i)
                 var item = Qt.createQmlObject('import QtQuick 2.10; import QtQuick.Controls 2.3; import "synchrostyle"; MenuItem { text: "'+ videoObject.audioTrackList[i] +'"; onTriggered: videoObject.setAudioTrack(' + (i+1) + ')}', audioTracksMenu)
                 allTrackMenuItems.push(item)
                 audioTracksMenu.addItem(allTrackMenuItems[allTrackMenuItems.length-1])
