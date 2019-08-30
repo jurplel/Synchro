@@ -32,7 +32,7 @@ T.Menu {
     }
 
     background: Rectangle {
-        color: Style.darkestColor
+        color: Style.darkColor
         opacity: 0.95
 
         border.color: Style.lightColor
