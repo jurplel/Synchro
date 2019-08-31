@@ -53,7 +53,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'Release'
-      artifactName: 'Synchro-win64-$(Build.BuildNumber)'
+      artifactName: 'Synchro-Nightly-win64-b$(Build.BuildNumber)'
     displayName: 'Publish .exe with libraries as build artifact'
 
 - job: macOS
@@ -79,7 +79,7 @@ jobs:
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-      cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildNumber)
+      cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
       make
       mkdir bin
       cp -r Synchro.app bin/
@@ -102,5 +102,5 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'bin'
-      artifactName: 'Synchro-macOS-$(Build.BuildNumber)'
+      artifactName: 'Synchro-Nightly-macOS-b$(Build.BuildId)'
     displayName: 'Publish .app as build artifact'
