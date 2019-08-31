@@ -1,4 +1,18 @@
+macro(fix_project_version)
+
+if (NOT PROJECT_VERSION_PATCH)
+    set(PROJECT_VERSION_PATCH 0)
+endif()
+
+if (NOT PROJECT_VERSION_TWEAK)
+    set(PROJECT_VERSION_TWEAK 0)
+endif()
+
+endmacro()
+
 macro(setup_meta_files FILES_TO_INCLUDE)
+
+fix_project_version()
 
 IF(NIGHTLY)
     set(ICON_NAME Nightly)
@@ -38,4 +52,5 @@ if (APPLE)
 
     set(${FILES_TO_INCLUDE} ${ICON_FILE})
 endif()
+
 endmacro()
