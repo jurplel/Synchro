@@ -4,6 +4,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QSurfaceFormat>
+#include <QQmlContext>
 
 #include "videoobject.h"
 #include "synchronycontroller.h"
@@ -30,6 +31,9 @@ int main(int argc, char *argv[])
 //    QSurfaceFormat::setDefaultFormat(fmt);
 
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("SYNCHRO_NIGHTLY", SYNCHRO_NIGHTLY);
+    engine.rootContext()->setContextProperty("SYNCHRO_VERSION", SYNCHRO_VERSION);
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

@@ -15,7 +15,13 @@ Window {
     width: 1024
     height: 576
     color: Style.backgroundColor
-    title: "Synchro"
+    title: {
+        if (SYNCHRO_NIGHTLY) {
+            return "Synchro Nightly"
+        } else {
+            return "Synchro"
+        }
+    }
 
     SynchronyController {
         id: synchronyController
