@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/resources">
         <file>play-pause.png</file>
-        <file>basic_folder.svg</file>
-        <file>basic_server.svg</file>
         <file>music_volume_up.png</file>
         <file>music_mute.png</file>
         <file>music_volume_down.png</file>
