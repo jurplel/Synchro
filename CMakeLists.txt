@@ -8,6 +8,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(NIGHTLY "Nightly")
+set(BUILD_NUMBER "" CACHE STRING "Build number to be set as the version (for ci)")
+
 include(meta)
 
 # Set project metadata
@@ -73,7 +76,7 @@ IF(APPLE)
     LINK_DIRECTORIES(/usr/local/lib)
 ENDIF()
 
-add_definitions( -DSYNCHRO_VERSION=${VERSION} -DSYNCHRO_NIGHTLY=${NIGHTLY} )
+add_definitions(-DSYNCHRO_VERSION=${VERSION} -DSYNCHRO_NIGHTLY=$<BOOL:${NIGHTLY}>)
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES} ${META_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${MPV_INCLUDE_DIRS} ${LIBSYNCHRO_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)

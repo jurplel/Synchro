@@ -39,7 +39,7 @@ jobs:
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set Qt5_DIR=%userprofile%\Qt\msvc2017_64
-      cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+      cmake --config Release . -A x64 -DNIGHTLY=ON -DBUILD_NUMBER=$(Build.BuildId)
       msbuild Synchro.sln /p:Configuration=Release /m
     displayName: 'Build Synchro'
     
@@ -79,7 +79,7 @@ jobs:
 
   - script: |
       export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-      cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+      cmake --config Release . -DNIGHTLY=ON -DBUILD_NUMBER=$(Build.BuildId)
       make
       mkdir bin
       cp -r Synchro.app bin/
