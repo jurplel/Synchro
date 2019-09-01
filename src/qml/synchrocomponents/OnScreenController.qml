@@ -6,8 +6,6 @@ import Synchro.Core 1.0
 
 Item {
     property alias state:oscPanel.state
-    property var videoObject
-    property var synchronyController
 
     id: container
     anchors.fill: parent

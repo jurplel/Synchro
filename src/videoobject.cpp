@@ -185,6 +185,16 @@ void VideoObject::seek(const qreal newPos, const bool useKeyframes, const bool s
     }
 }
 
+void VideoObject::seekBy(const qreal seconds)
+{
+    qreal currentSeconds = getProperty("time-pos").toReal();
+    qreal targetedSeconds = currentSeconds+seconds;
+    qreal totalSeconds = getProperty("duration").toReal();
+
+    qreal targetedPercentage = (targetedSeconds/totalSeconds)*100;
+    seek(targetedPercentage, false);
+}
+
 void VideoObject::pause(bool newPaused) {
     setIsPaused(newPaused);
     emit paused();

@@ -7,6 +7,7 @@ import Qt.labs.settings 1.0
 import Synchro.Core 1.0
 import "synchrocomponents"
 import "synchrostyle"
+import "synchroutil"
 
 Window {
 
@@ -21,6 +22,10 @@ Window {
         } else {
             return "Synchro"
         }
+    }
+
+    Shortcuts {
+
     }
 
     SynchronyController {
@@ -143,8 +148,6 @@ Window {
 
             OnScreenController {
                 id: osc
-                videoObject: videoObject
-                synchronyController: synchronyController
             }
         }
 

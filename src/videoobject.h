@@ -98,6 +98,8 @@ public slots:
 
     void seek(const qreal newPos, const bool useKeyframes, const bool synchronize = false);
 
+    void seekBy(const qreal seconds);
+
     void pause(bool newPaused);
 
     void command(const QVariant &args);

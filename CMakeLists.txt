@@ -48,7 +48,7 @@ set(SOURCES
     src/trackhandler.cpp
 )
 set(RESOURCES
-    src/qml.qrc
+    src/qml/qml.qrc
     resources/resources.qrc
 )
 
