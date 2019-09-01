@@ -2,7 +2,6 @@
 #define SERVERBROWSER_H
 
 #include <QObject>
-#include <QtNetwork>
 
 class ServerBrowser : public QObject
 {
@@ -10,13 +9,10 @@ class ServerBrowser : public QObject
 public:
     explicit ServerBrowser(QObject *parent = nullptr);
 
-    void receiveList(QNetworkReply *reply);
-
     void error();
 
 signals:
     void refreshed();
-
 
 public slots:
     void refresh();

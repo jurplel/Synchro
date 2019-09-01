@@ -40,6 +40,9 @@ Item {
             }
 
             Connections {
+                Component.onCompleted: {
+                    serverBrowser.refresh()
+                }
                 target: serverBrowser
                 onRefreshed: {
                     serverList.model = serverBrowser.getList()
@@ -84,9 +87,6 @@ Item {
                 }
 
                 header: Item {
-                    Component.onCompleted: {
-                        serverBrowser.refresh()
-                    }
                     height: 30
                     width: parent.width
                     Text {
