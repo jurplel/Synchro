@@ -1,4 +1,5 @@
 #include "trackhandler.h"
+#include "iso639.h"
 
 #include <QDebug>
 
@@ -22,6 +23,9 @@ void TrackHandler::updateTracks()
         track.type = getTrackProperty(QString::number(i) + "/type").toString();
 
         track.title = getTrackProperty(QString::number(i) + "/title").toString();
+        if (track.title.isEmpty()) {
+            track.title = "Track " + QString::number(track.id);
+        }
 
         track.lang = getTrackProperty(QString::number(i) + "/lang").toString();
         
@@ -29,7 +33,7 @@ void TrackHandler::updateTracks()
 
         // Create a readable name for menus and such
         // Simple for now but much to be improved on in the future
-        track.readable = "Track " + QString::number(track.id);
+        track.readable = track.title + " - [" + iso639LanguageHash.value(track.lang) + "]";
 
         // Add to global track list
         trackList.append(track);
