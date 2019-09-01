@@ -31,9 +31,6 @@ if (WIN32)
       "{PROJECT_NAME}.rc"
     )
     set(RES_FILES "{PROJECT_NAME}.rc")
-    set(CMAKE_RC_COMPILER_INIT windres)
-    ENABLE_LANGUAGE(RC)
-    SET(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
 
     set(${FILES_TO_INCLUDE} ${RES_FILES})
 endif()
