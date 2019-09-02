@@ -25,4 +25,12 @@ Item {
         sequence: "m"
         onActivated: videoObject.muted = !videoObject.muted
     }
+    Shortcut {
+        sequence: StandardKey.FullScreen
+        onActivated: if (window.visibility === 5) {window.showNormal()} else {window.showFullScreen()}
+    }
+    Shortcut {
+        sequence: "Escape"
+        onActivated: if (window.visibility === 5) {window.showNormal()}
+    }
 }
