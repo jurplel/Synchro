@@ -17,7 +17,7 @@ Window {
     height: 576
     color: Style.backgroundColor
     title: {
-        if (SYNCHRO_NIGHTLY) {
+        if (NIGHTLY) {
             return "Synchro Nightly"
         } else {
             return "Synchro"

@@ -15,9 +15,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
-    app.setOrganizationName("Synchro");
-    app.setApplicationName("Synchro");
-    app.setApplicationVersion(QString::number(VERSION));
+    app.setOrganizationName(COMPANY);
+    app.setApplicationName(PROJECT_NAME);
+    app.setApplicationVersion(VERSION);
     // libmpv requires LC_NUMERIC to be set to "C"
     setlocale(LC_NUMERIC, "C");
 
@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 //    QSurfaceFormat::setDefaultFormat(fmt);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("SYNCHRO_NIGHTLY", SYNCHRO_NIGHTLY);
-    engine.rootContext()->setContextProperty("SYNCHRO_VERSION", SYNCHRO_VERSION);
+    engine.rootContext()->setContextProperty("NIGHTLY", NIGHTLY);
+    engine.rootContext()->setContextProperty("VERSION", VERSION);
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())

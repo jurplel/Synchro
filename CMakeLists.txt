@@ -9,7 +9,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(NIGHTLY "Nightly")
-set(BUILD_NUMBER "" CACHE STRING "Build number to be set as the version (for ci)")
+set(BUILD_NUMBER "0" CACHE STRING "Build number to be set as the version (for ci)")
+
+message(${BUILD_NUMBER})
 
 include(meta)
 
@@ -18,14 +20,12 @@ include(meta)
 set(VERSION 0.1)
 
 IF(NIGHTLY)
-    IF(BUILD_NUMBER)
-        set(VERSION 0.${BUILD_NUMBER})
-    ELSE()
-        string(TIMESTAMP VERSION "0.0")
-    ENDIF()
+    set(VERSION "0.${BUILD_NUMBER}")
 ELSE()
-    set(NIGHTLY false)
+    set(NIGHTLY OFF)
 ENDIF()
+
+message(${VERSION})
 
 project("Synchro" VERSION ${VERSION} LANGUAGES CXX)
 set(COMPANY "Interverse")
@@ -35,9 +35,6 @@ set(IDENTIFIER "com.interverse.Synchro")
 setup_meta_files(META_FILES)
 
 # End of metadata section
-
-add_compile_definitions(QT_DEPRECATED_WARNINGS)
-add_compile_definitions(VERSION=0.1)
 
 set(SOURCES
     src/main.cpp
@@ -76,7 +73,8 @@ IF(APPLE)
     LINK_DIRECTORIES(/usr/local/lib)
 ENDIF()
 
-add_definitions(-DSYNCHRO_VERSION=${VERSION} -DSYNCHRO_NIGHTLY=$<BOOL:${NIGHTLY}>)
+add_compile_definitions(QT_DEPRECATED_WARNINGS)
+add_compile_definitions(VERSION="${VERSION}" NIGHTLY=$<BOOL:${NIGHTLY}> PROJECT_NAME="${PROJECT_NAME}" COMPANY="${COMPANY}")
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCES} ${RESOURCES} ${META_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${MPV_INCLUDE_DIRS} ${LIBSYNCHRO_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
