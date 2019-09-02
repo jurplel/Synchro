@@ -25,7 +25,6 @@ Window {
     }
 
     Shortcuts {
-
     }
 
     SynchronyController {

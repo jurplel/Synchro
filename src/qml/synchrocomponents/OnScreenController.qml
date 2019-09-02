@@ -14,7 +14,6 @@ Item {
 
     Connections {
         target: videoObject
-        onMutedChanged: volumeOsc.changeIcon()
 
         onIsPausedChanged: {
         if (videoObject.isPaused)
@@ -22,8 +21,6 @@ Item {
         else
             playPauseIcon.state = "playing"
         }
-
-        onCurrentVolumeChanged: volumeOsc.storedValue = videoObject.currentVolume
 
         onPercentPosChanged: seekSlider.value = videoObject.percentPos
 
@@ -188,8 +185,8 @@ Item {
                     }
 
                     states: State {
-                            name: "playing"
-                        }
+                        name: "playing"
+                    }
 
                     MouseArea {
                         anchors.fill: parent
@@ -264,19 +261,10 @@ Item {
                     cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
                     onContainsMouseChanged: {
-                        volumeOsc.state = "revealed"
-                        volumeAutohideTimer.restart()
+                        volumeOsc.showOsc();
                     }
                 }
             }
-        }
-    }
-    Timer {
-        id: volumeAutohideTimer
-        interval: 500
-        onTriggered: {
-            if (!volumeIconMouseArea.containsMouse && !volumeOsc.containsMouse)
-                volumeOsc.state = ""
         }
     }
 

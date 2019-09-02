@@ -17,6 +17,19 @@ Item {
 
     signal volumeChanged()
 
+    function showOsc() {
+        volumeAutohideTimer.restart()
+    }
+
+    Connections {
+        target: videoObject
+
+        onCurrentVolumeChanged: {
+            storedValue = videoObject.currentVolume
+            showOsc();
+        }
+    }
+
     SynchroBackground {
         id: oscVolumeBg
         sourceItem: videoObject
@@ -80,29 +93,42 @@ Item {
         }
     }
 
+    Timer {
+        id: volumeAutohideTimer
+        interval: 500
+
+        onRunningChanged: {
+            if (running)
+                volumeOsc.state = "revealed"
+        }
+
+        onTriggered: {
+            if (!volumeIconMouseArea.containsMouse && !volumeOsc.containsMouse)
+                volumeOsc.state = ""
+        }
+    }
+
     MouseArea {
         id: volumeMouseArea
         anchors.fill: parent
         acceptedButtons: Qt.NoButton
         hoverEnabled: true
         onContainsMouseChanged: {
-            oscVolume.state = "revealed"
-            volumeAutohideTimer.restart()
+            showOsc()
         }
-    }
 
-    Slider {
-        id: volumeSlider
-        anchors.fill: parent
-        anchors.margins: 8
-        orientation: Qt.Vertical
-        to: 100
-        value: videoObject.muted ? 0 : oscVolume.storedValue
-        onValueChanged: {
-            volumeChanged()
-            oscVolume.state = "revealed"
-            volumeAutohideTimer.restart()
+        Slider {
+            id: volumeSlider
+            anchors.fill: parent
+            anchors.margins: 8
+            orientation: Qt.Vertical
+            to: 100
+            value: videoObject.muted ? 0 : oscVolume.storedValue
+            onValueChanged: {
+                volumeChanged()
+                showOsc()
+            }
+            onMoved: { videoObject.currentVolume = value}
         }
-        onMoved: { videoObject.currentVolume = value}
     }
 }
