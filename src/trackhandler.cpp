@@ -33,7 +33,11 @@ void TrackHandler::updateTracks()
 
         // Create a readable name for menus and such
         // Simple for now but much to be improved on in the future
-        track.readable = track.title + " - [" + iso639LanguageHash.value(track.lang) + "]";
+        track.readable = track.title;
+
+        // If track is audio or sub, add language to the end
+        if (track.type != "video")
+                track.readable += " - [" + iso639LanguageHash.value(track.lang) + "]";
 
         // Add to global track list
         trackList.append(track);
