@@ -39,16 +39,6 @@ Item {
                 id: serverBrowser
             }
 
-            Connections {
-                Component.onCompleted: {
-                    serverBrowser.refresh()
-                }
-                target: serverBrowser
-                onRefreshed: {
-                    serverList.model = serverBrowser.getList()
-                }
-            }
-
             // Row {
             //     TextField {
             //         id: ipField
@@ -66,24 +56,41 @@ Item {
 
             Layout.fillHeight: true
             Layout.fillWidth: true
+
             ListView {
-                id: serverList 
+                id: serverList
+
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
+                model: serverBrowser
+
                 delegate: Item {
-                    height: 20
+                    height: 32
                     width: parent.width
-                    property var text: modelData
+
+                    property var ipAddress: ip
+
                     Text {
+                        id: nametext
                         color: "white"
-                        text: parent.text
+                        font.pointSize: 12
+                        text: name
                     }
+
+                    Text {
+                        id: iptext
+                        topPadding: 16
+                        color: "gray"
+                        text: ip
+                    }
+
                     MouseArea {
                         anchors.fill: parent
                         onClicked: serverList.currentIndex = index
-                        onDoubleClicked: connectToServer(serverList.currentItem.text)
+                        onDoubleClicked: connectToServer(parent.ipAddress)
                     }
+
                 }
 
                 header: Item {

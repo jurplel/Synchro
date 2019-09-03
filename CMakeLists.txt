@@ -11,8 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(NIGHTLY "Nightly")
 set(BUILD_NUMBER "0" CACHE STRING "Build number to be set as the version (for ci)")
 
-message(${BUILD_NUMBER})
-
 include(meta)
 
 # Set project metadata
@@ -24,8 +22,6 @@ IF(NIGHTLY)
 ELSE()
     set(NIGHTLY OFF)
 ENDIF()
-
-message(${VERSION})
 
 project("Synchro" VERSION ${VERSION} LANGUAGES CXX)
 set(COMPANY "Interverse")

@@ -10,7 +10,7 @@ class TrackHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit TrackHandler(mpv_handle *newMpvHandler, QObject *parent = nullptr);
+    TrackHandler(mpv_handle *newMpvHandler, QObject *parent = nullptr);
 
     struct Track {
         int id;
