@@ -1,24 +1,22 @@
-#include "serverbrowser.h"
+#include "serverlistmodel.h"
 #include "libsynchro.hpp"
 
 #include <QDebug>
 
-ServerBrowser::ServerBrowser(QObject *parent) : QAbstractListModel(parent)
+ServerListModel::ServerListModel(QObject *parent) : QAbstractListModel(parent)
 {
     refresh();
 }
 
-int ServerBrowser::rowCount(const QModelIndex & parent) const {
+int ServerListModel::rowCount(const QModelIndex & parent) const {
     Q_UNUSED(parent);
     return serverList.count();
 }
 
-QVariant ServerBrowser::data(const QModelIndex & index, int role) const {
+QVariant ServerListModel::data(const QModelIndex & index, int role) const {
     if (index.row() < 0 || index.row() >= serverList.count())
         return QVariant();
 
-
-    qDebug() << "call";
     const Server &server = serverList[index.row()];
 
     switch (role)
@@ -34,14 +32,14 @@ QVariant ServerBrowser::data(const QModelIndex & index, int role) const {
     return QVariant();
 }
 
-QHash<int, QByteArray> ServerBrowser::roleNames() const {
+QHash<int, QByteArray> ServerListModel::roleNames() const {
     QHash<int, QByteArray> roles;
     roles[NameRole] = "name";
     roles[IpRole] = "ip";
     return roles;
 }
 
-void ServerBrowser::refresh()
+void ServerListModel::refresh()
 {
     serverList.clear();
     serverList.append({"Local Server", "0.0.0.0:32019"});

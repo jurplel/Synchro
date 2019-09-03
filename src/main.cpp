@@ -8,7 +8,7 @@
 
 #include "videoobject.h"
 #include "synchronycontroller.h"
-#include "serverbrowser.h"
+#include "serverlistmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<VideoObject>("Synchro.Core", 1, 0, "VideoObject");
     qmlRegisterType<SynchronyController>("Synchro.Core", 1, 0, "SynchronyController");
-    qmlRegisterType<ServerBrowser>("Synchro.Core", 1, 0, "ServerBrowser");
+    qmlRegisterType<ServerListModel>("Synchro.Core", 1, 0, "ServerListModel");
 
     //disable vsync for perfect resizing
 //    QSurfaceFormat fmt;

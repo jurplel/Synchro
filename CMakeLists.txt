@@ -37,7 +37,7 @@ set(SOURCES
     src/corerenderer.cpp
     src/videoobject.cpp
     src/synchronycontroller.cpp
-    src/serverbrowser.cpp
+    src/serverlistmodel.cpp
     src/trackhandler.cpp
 )
 set(RESOURCES

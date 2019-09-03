@@ -16,7 +16,7 @@ private:
     QString ip;
 };
 
-class ServerBrowser : public QAbstractListModel
+class ServerListModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -25,7 +25,7 @@ public:
         IpRole
     };
 
-    explicit ServerBrowser(QObject *parent = nullptr);
+    explicit ServerListModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 

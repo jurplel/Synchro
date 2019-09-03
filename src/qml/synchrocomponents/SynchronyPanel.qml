@@ -35,10 +35,6 @@ Item {
                 stack.push(connectedScreen);
             }
 
-            ServerBrowser {
-                id: serverBrowser
-            }
-
             // Row {
             //     TextField {
             //         id: ipField
@@ -57,13 +53,14 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
+
             ListView {
                 id: serverList
 
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                model: serverBrowser
+                model: ServerListModel {}
 
                 delegate: Item {
                     height: 32
