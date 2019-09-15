@@ -1,4 +1,4 @@
-name: Main Workflow
+name: Master
 
 on: [push]
       
@@ -52,7 +52,7 @@ jobs:
       run: |
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set Qt5_DIR=%HOME%\Qt\msvc2017_64
-        cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+        cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=999
         msbuild Synchro.sln /p:Configuration=Release /m
         
         %Qt5_DIR%\windeployqt.exe Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: Synchro-Nightly-win64-b$(Build.BuildId)
-        path: bin
+        path: Release
         
         
   macos:
