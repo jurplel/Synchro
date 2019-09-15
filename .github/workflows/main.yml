@@ -6,7 +6,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
-    image: keneanung/qt-windows:5.12.4-mingw-x86
+    container: keneanung/qt-windows:5.12.4-mingw-x86
 
     steps:
     - uses: actions/checkout@v1
