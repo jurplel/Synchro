@@ -1,0 +1,113 @@
+name: Main Workflow
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    image: keneanung/qt-windows:5.12.4-mingw-x86
+
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Download mpv dev archive
+      run: |
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
+        
+        & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
+        
+        $oldfile = Get-Content mpv\x86_64\libmpv.def
+        Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
+      shell: pwsh
+
+    - name: Generate mpv libraries
+      run: |
+        call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cd mpv\x86_64
+        lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+      
+    - name: Setup Rust environment
+      uses: raftario/setup-rust-action@v1.0.0
+      with:
+        rust-channel: nightly
+        
+    - name: Clone and build libsynchro
+      run: |
+        git clone https://github.com/jurplel/libsynchro.git
+        cd libsynchro\capi
+        cargo +nightly build --release
+      
+    - name: Build Synchro
+      run: |
+        call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        
+        cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+        msbuild Synchro.sln /p:Configuration=Release /m
+      
+    - name: Deploy Synchro
+      run: |
+        %Qt5_DIR%\windeployqt.exe Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
+        (robocopy %Qt5_DIR%\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+        (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+        (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+    
+    - name: Publish .exe with libraries as build artifact
+      uses: actions/upload-artifact@v1
+        with:
+          name: Synchro-Nightly-win64-b$(Build.BuildId)
+          path: bin
+
+  
+  macos:
+    name: macOS
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Install Homebrew packages
+      run: brew install qt pkg-config mpv
+      
+    - name: Install Rust
+      run: |
+        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
+        echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+        
+    - name: Clone and build libsynchro
+      run: |
+        git clone https://github.com/jurplel/libsynchro.git
+        cd libsynchro/capi
+        cargo +nightly build --release
+   
+    - name: Build Synchro
+      run: |
+        export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
+        cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+        make
+        mkdir bin
+        cp -r Synchro.app bin/
+        $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
+    
+    - name: Add Qt Labs Platform plugin (QTBUG-74997)
+      run: |
+        cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+        cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
+        qtvers=$(echo $(brew info --json=v1 qt | jq .[].versions.stable) | sed -e 's/^"//' -e 's/"$//')
+        install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+ 
+    - name: Publish .app as build artifact
+      uses: actions/upload-artifact@v1
+        with:
+          name: Synchro-Nightly-macOS-b$(Build.BuildId)
+          path: bin
