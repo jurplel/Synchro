@@ -13,6 +13,16 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
+    - name: Download Qt 
+      run: |
+         cd ~
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest $env:QT_DROPBOX_URL -OutFile qt.7z
+        & "$env:ProgramFiles\7-Zip\7z.exe" x qt.7z -y -oQt
+      shell: pwsh
+      env:
+        QT_DROPBOX_URL: ${{ secrets.qtdropboxurl }}
+    
     - name: Download mpv dev archive
       run: |
         $ProgressPreference = 'SilentlyContinue'
@@ -41,15 +51,13 @@ jobs:
         cd libsynchro\capi
         cargo +nightly build --release
       
-    - name: Build Synchro
+    - name: Build Synchro and copy libraries to build folder
       run: |
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        
+        set Qt5_DIR=%HOME%\Qt\msvc2017_64
         cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
         msbuild Synchro.sln /p:Configuration=Release /m
-      
-    - name: Deploy Synchro
-      run: |
+        
         %Qt5_DIR%\windeployqt.exe Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
         (robocopy %Qt5_DIR%\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
         (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
@@ -82,7 +90,7 @@ jobs:
     - name: Build Synchro
       run: |
         export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
-        cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=$(Build.BuildId)
+        cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=999
         make
         mkdir bin
         cp -r Synchro.app bin/
