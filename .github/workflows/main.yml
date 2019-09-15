@@ -6,9 +6,6 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
-    container:
-      image: cy15196/qt-bdp-msvc2017
-      options: --isolation=hyperv
 
     steps:
     - uses: actions/checkout@v1
