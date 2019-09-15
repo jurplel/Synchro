@@ -16,7 +16,7 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($url, "$Env:HOME\qt-installer.exe")
         (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/keneanung/Qt-Windows-Docker/master/qt-silent-install.qs", "$Env:HOME/qt-silent-install.qs")
         dir $Env:HOME
-        Start-Process -FilePath "~/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=$Env:HOME/qt-silent-install.qs")
+        Start-Process -FilePath "$Env:HOME/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=$Env:HOME/qt-silent-install.qs")
         dir "C:\Qt\"
       shell: pwsh
       env:
