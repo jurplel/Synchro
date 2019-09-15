@@ -14,11 +14,10 @@ jobs:
       run: |
         cd ~
         $url = "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
-        (New-Object System.Net.WebClient).DownloadFile($url, "qt-installer.exe")
-        (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/keneanung/Qt-Windows-Docker/master/qt-silent-install.qs", "qt-silent-install.qs")
+        (New-Object System.Net.WebClient).DownloadFile($url, "~/qt-installer.exe")
+        (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/keneanung/Qt-Windows-Docker/master/qt-silent-install.qs", "~/qt-silent-install.qs")
         dir ~/
-        dir
-        Start-Process -FilePath "qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=~/qt-silent-install.qs")
+        Start-Process -FilePath "~/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=~/qt-silent-install.qs")
         dir "C:\Qt\"
       shell: pwsh
       env:
