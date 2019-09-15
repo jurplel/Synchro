@@ -1,9 +1,6 @@
 name: Main Workflow
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
       
 jobs:
   windows:
