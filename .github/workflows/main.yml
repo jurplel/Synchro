@@ -6,7 +6,9 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
-    container: keneanung/qt-windows:5.12.4-mingw-x86
+    container:
+      image: cy15196/qt-bdp-msvc2017
+      options: --isolation=hyperv
 
     steps:
     - uses: actions/checkout@v1
@@ -69,17 +71,13 @@ jobs:
     
     - name: Install Homebrew packages
       run: brew install qt pkg-config mpv
-      
-    - name: Install Rust
-      run: |
-        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
-        echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
         
     - name: Clone and build libsynchro
       run: |
+        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
         git clone https://github.com/jurplel/libsynchro.git
         cd libsynchro/capi
-        cargo +nightly build --release
+        $HOME/.cargo/bin/cargo +nightly build --release
    
     - name: Build Synchro
       run: |
