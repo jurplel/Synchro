@@ -108,6 +108,6 @@ jobs:
  
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
-        with:
-          name: Synchro-Nightly-macOS-b$(Build.BuildId)
-          path: bin
+      with:
+        name: Synchro-Nightly-macOS-b$(Build.BuildId)
+        path: bin
