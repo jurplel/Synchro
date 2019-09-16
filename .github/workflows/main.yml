@@ -15,10 +15,8 @@ jobs:
         $url = "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
         (New-Object System.Net.WebClient).DownloadFile($url, "$Env:HOME\qt-installer.exe")
         (New-Object System.Net.WebClient).DownloadFile("https://paste.ee/r/QAidf/0", "$Env:HOME/qt-silent-install.qs")
-        echo $Env:HOME
-        echo $Env:UserProfile
         Start-Process -FilePath "$Env:HOME/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=$Env:HOME/qt-silent-install.qs")
-        dir "C:\Qt\"
+        dir $Env:HOME
       shell: pwsh
       env:
         QT_DROPBOX_URL: ${{ secrets.qtdropboxurl }}
