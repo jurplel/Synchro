@@ -14,7 +14,7 @@ jobs:
       run: |
         $url = "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
         (New-Object System.Net.WebClient).DownloadFile($url, "$Env:HOME\qt-installer.exe")
-        (New-Object System.Net.WebClient).DownloadFile("https://pastebin.com/raw/9pBxuDvv", "$Env:HOME/qt-silent-install.qs")
+        (New-Object System.Net.WebClient).DownloadFile("https://pastebin.com/raw/DC51C4hq", "$Env:HOME/qt-silent-install.qs")
         dir $Env:HOME
         Start-Process -FilePath "$Env:HOME/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=$Env:HOME/qt-silent-install.qs")
         dir "C:\Qt\"
