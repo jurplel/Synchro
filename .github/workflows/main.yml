@@ -10,16 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
-    - name: Download Qt 
-      run: |
-        $url = "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
-        (New-Object System.Net.WebClient).DownloadFile($url, "$Env:HOME\qt-installer.exe")
-        (New-Object System.Net.WebClient).DownloadFile("https://paste.ee/r/QAidf/0", "$Env:HOME/qt-silent-install.qs")
-        Start-Process -FilePath "$Env:HOME/qt-installer.exe" -Wait -NoNewWindow -ArgumentList @("--verbose", "--script=$Env:HOME/qt-silent-install.qs")
-        dir $Env:HOME
-      shell: pwsh
-      env:
-        QT_DROPBOX_URL: ${{ secrets.qtdropboxurl }}
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v1
     
     - name: Download mpv dev archive
       run: |
@@ -75,8 +67,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v1
+      
     - name: Install Homebrew packages
-      run: brew install qt pkg-config mpv
+      run: brew install pkg-config mpv
         
     - name: Clone and build libsynchro
       run: |
@@ -87,7 +82,6 @@ jobs:
    
     - name: Build Synchro
       run: |
-        export Qt5_DIR=$(brew --prefix qt)/lib/cmake/Qt5
         cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=999
         make
         mkdir bin
@@ -96,16 +90,15 @@ jobs:
     
     - name: Add Qt Labs Platform plugin (QTBUG-74997)
       run: |
-        cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+        cp -r $(Qt5_Dir)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
         cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
-        qtvers=$(echo $(brew info --json=v1 qt | jq .[].versions.stable) | sed -e 's/^"//' -e 's/"$//')
         install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
-        install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+        install_name_tool -change $(Qt5_Dir)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
  
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
