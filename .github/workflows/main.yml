@@ -22,13 +22,13 @@ jobs:
         
         $oldfile = Get-Content mpv\x86_64\libmpv.def
         Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
-      shell: pwsh
 
     - name: Generate mpv libraries
       run: |
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cd mpv\x86_64
         lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+      shell: cmd
       
     - name: Setup Rust environment
       uses: raftario/setup-rust-action@v1.0.0
@@ -52,6 +52,7 @@ jobs:
         (robocopy %Qt5_DIR%\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
         (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
         (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      shell: cmd
     
     - name: Publish .exe with libraries as build artifact
       uses: actions/upload-artifact@v1
