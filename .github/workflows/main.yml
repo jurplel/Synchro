@@ -31,15 +31,13 @@ jobs:
       shell: cmd
       
     - name: Setup Rust environment
-      uses: raftario/setup-rust-action@v1.0.0
-      with:
-        rust-channel: nightly
+      uses: raftario/setup-rust-action@v1
         
     - name: Clone and build libsynchro
       run: |
         git clone https://github.com/jurplel/libsynchro.git
         cd libsynchro\capi
-        cargo +nightly build --release
+        cargo build --release
       
     - name: Build Synchro and copy libraries to build folder
       run: |
@@ -73,13 +71,15 @@ jobs:
       
     - name: Install Homebrew packages
       run: brew update && brew install pkg-config mpv
+      
+    - name: Setup Rust environment
+      uses: raftario/setup-rust-action@v1
         
     - name: Clone and build libsynchro
       run: |
-        curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
         git clone https://github.com/jurplel/libsynchro.git
         cd libsynchro/capi
-        $HOME/.cargo/bin/cargo +nightly build --release
+        cargo build --release
    
     - name: Build Synchro
       run: |
