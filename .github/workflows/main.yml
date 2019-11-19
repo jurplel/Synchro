@@ -52,10 +52,13 @@ jobs:
         (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
       shell: cmd
     
+    - name: Get fake build number from commit count
+      run: export COMMIT_NUMBER="$(git rev-list --count HEAD)"
+ 
     - name: Publish .exe with libraries as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-win64-b$(Build.BuildId)
+        name: Synchro-Nightly-win64-r$(COMMIT_NUMBER)
         path: Release
         
         
@@ -101,8 +104,11 @@ jobs:
         install_name_tool -change $Qt5_Dir/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
         install_name_tool -change $Qt5_Dir/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
  
+    - name: Get fake build number from commit count
+      run: export COMMIT_NUMBER="$(git rev-list --count HEAD)"
+ 
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-macOS-b$(Build.BuildId)
+        name: Synchro-Nightly-macOS-r$(COMMIT_NUMBER)
         path: bin
