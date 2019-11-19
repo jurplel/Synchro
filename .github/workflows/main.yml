@@ -87,7 +87,7 @@ jobs:
         make
         mkdir bin
         cp -r Synchro.app bin/
-        $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
+        $(Qt5_Dir)/bin/macdeployqt bin/Synchro.app -qmldir=$(Qt5_Dir)/qml/
     
     - name: Add Qt Labs Platform plugin (QTBUG-74997)
       run: |
