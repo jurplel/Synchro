@@ -87,19 +87,19 @@ jobs:
         make
         mkdir bin
         cp -r Synchro.app bin/
-        $(Qt5_Dir)/bin/macdeployqt bin/Synchro.app -qmldir=$(Qt5_Dir)/qml/
+        macdeployqt bin/Synchro.app -qmldir=$Qt5_Dir/qml/
     
     - name: Add Qt Labs Platform plugin (QTBUG-74997)
       run: |
-        cp -r $(Qt5_Dir)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+        cp -r $Qt5_Dir/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
         cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
         install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
-        install_name_tool -change $(Qt5_Dir)/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
  
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
