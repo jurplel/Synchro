@@ -53,12 +53,12 @@ jobs:
       shell: cmd
     
     - name: Get fake build number from commit count
-      run: export COMMIT_NUMBER="$(git rev-list --count HEAD)"
+      run: set COMMIT_NUMBER="$(git rev-list --count HEAD)"
  
     - name: Publish .exe with libraries as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-win64-r$(COMMIT_NUMBER)
+        name: Synchro-Nightly-win64-r${{COMMIT_NUMBER}}
         path: Release
         
         
@@ -110,5 +110,5 @@ jobs:
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-macOS-r$(COMMIT_NUMBER)
+        name: Synchro-Nightly-macOS-r${{COMMIT_NUMBER}}
         path: bin
