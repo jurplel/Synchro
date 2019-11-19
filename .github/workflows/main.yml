@@ -53,12 +53,13 @@ jobs:
       shell: cmd
     
     - name: Get fake build number from commit count
-      run: set COMMIT_NUMBER="$(git rev-list --count HEAD)"
+      id: commit_num_step
+      run: echo ::set-output name=commit_num::$(git rev-list --count HEAD)
  
     - name: Publish .exe with libraries as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-win64-r${{COMMIT_NUMBER}}
+        name: Synchro-Nightly-win64-r${{steps.vars.commit_num_step.commit_num}}
         path: Release
         
         
@@ -105,10 +106,11 @@ jobs:
         install_name_tool -change $Qt5_Dir/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
  
     - name: Get fake build number from commit count
-      run: export COMMIT_NUMBER="$(git rev-list --count HEAD)"
+      id: commit_num_step
+      run: echo ::set-output name=commit_num::$(git rev-list --count HEAD)
  
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-macOS-r${{COMMIT_NUMBER}}
+        name: Synchro-Nightly-macOS-r${{steps.vars.commit_num_step.commit_num}}
         path: bin
