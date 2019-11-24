@@ -53,16 +53,16 @@ jobs:
       shell: cmd
     
     - name: Get fake build number from commit count
-      id: build_num_step
+      id: commit_num_step
       run: |
-        GITHUB_CHECK_SUITE_ID=`curl -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -H 'Accept: application/vnd.github.antiope-preview+json' -s https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/check-suites?app_id=15368 | jq -r '.check_suites[0].id'`
-        echo ::set-output name=build_num::$GITHUB_CHECK_SUITE_ID
+        COMMIT_NUM=$(git rev-list --count HEAD)
+        echo ::set-output name=commit_num::$COMMIT_NUM
       shell: bash
  
     - name: Publish .exe with libraries as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-win64-r${{steps.vars.build_num_step.build_num}}
+        name: Synchro-Nightly-win64-r${{steps.vars.commit_num_step.commit_num}}
         path: Release
         
         
@@ -109,13 +109,13 @@ jobs:
         install_name_tool -change $Qt5_Dir/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
  
     - name: Get fake build number from commit count
-      id: build_num_step
+      id: commit_num_step
       run: |
-        GITHUB_CHECK_SUITE_ID=`curl -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -H 'Accept: application/vnd.github.antiope-preview+json' -s https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/check-suites?app_id=15368 | jq -r '.check_suites[0].id'`
-        echo ::set-output name=build_num::$GITHUB_CHECK_SUITE_ID
+        COMMIT_NUM=$(git rev-list --count HEAD)
+        echo ::set-output name=commit_num::$COMMIT_NUM
  
     - name: Publish .app as build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: Synchro-Nightly-macOS-r${{steps.vars.build_num_step.build_num}}
+        name: Synchro-Nightly-macOS-b${{steps.vars.commit_num_step.commit_num}}
         path: bin
