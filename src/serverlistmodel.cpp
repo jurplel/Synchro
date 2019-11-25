@@ -42,7 +42,7 @@ QHash<int, QByteArray> ServerListModel::roleNames() const {
 void ServerListModel::refresh()
 {
     serverList.clear();
-    serverList.append(QList({"Local Server", "0.0.0.0:32019"}));
+    serverList.append(QStringList({"Local Server", "0.0.0.0:32019"}));
 
     QString retrievedServers = qPrintable(synchro_get_server_list(""));
     QStringList retrievedServerList = retrievedServers.split(";");
@@ -50,6 +50,6 @@ void ServerListModel::refresh()
     foreach (auto serverString, retrievedServerList) {
         QStringList serverFields = serverString.split(",");
 
-        serverList.append(QList({serverFields[0], serverFields[1]}));
+        serverList.append(QStringList({serverFields[0], serverFields[1]}));
     }
 }
