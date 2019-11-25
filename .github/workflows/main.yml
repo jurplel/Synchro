@@ -15,10 +15,12 @@ jobs:
       run: |
         COMMIT_NUM=$(git rev-list --count HEAD)
         echo ::set-output name=commit_num2::$COMMIT_NUM
+      shell: bash
         
     - name: Get fake build number from commit count
       run: |
         echo ${{steps.vars.commit_num_step2.commit_num2}}
+      shell: bash
         
     - name: Install Qt
       uses: jurplel/install-qt-action@v1
