@@ -13,7 +13,7 @@ jobs:
     - name: Get fake build number from commit count
       id: commit_num_step2
       run: |
-        COMMIT_NUM=$(git rev-list --count HEAD)
+        COMMIT_NUM="$(git rev-list --count HEAD)"
         echo ::set-output name=commit_num2::$COMMIT_NUM
       shell: bash
         
