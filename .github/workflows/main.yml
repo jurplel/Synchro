@@ -9,17 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    
-    - name: Get fake build number from commit count
-      id: commie
-      run: |
-        echo "::set-output name=action_fruit::strawberry"
-      shell: bash
-        
-    - name: Get fake build number from commit count
-      run: |
-        echo ${{ steps.commie.outputs.action_fruit }}
-      shell: bash
         
     - name: Install Qt
       uses: jurplel/install-qt-action@v1
