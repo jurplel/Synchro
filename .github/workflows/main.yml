@@ -10,6 +10,16 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     
+    - name: Get fake build number from commit count
+      id: commit_num_step2
+      run: |
+        COMMIT_NUM=$(git rev-list --count HEAD)
+        echo ::set-output name=commit_num2::$COMMIT_NUM
+        
+    - name: Get fake build number from commit count
+      run: |
+        echo ${{steps.vars.commit_num_step2.commit_num2}}
+        
     - name: Install Qt
       uses: jurplel/install-qt-action@v1
     
