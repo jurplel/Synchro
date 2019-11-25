@@ -11,14 +11,14 @@ jobs:
     - uses: actions/checkout@v1
     
     - name: Get fake build number from commit count
-      id: commit_num_step2
+      id: commie
       run: |
-        echo ::set-output name=commit_num2::"test"
+        echo "::set-output name=action_fruit::strawberry"
       shell: bash
         
     - name: Get fake build number from commit count
       run: |
-        echo ${{ steps.vars.commit_num_step2.outputs.commit_num2 }}
+        echo ${{ steps.vars.commie.outputs.action_fruit }}
       shell: bash
         
     - name: Install Qt
