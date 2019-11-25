@@ -12,7 +12,7 @@ jobs:
         
     - name: Install Qt
       uses: jurplel/install-qt-action@v1
-    
+
     - name: Download mpv dev archive
       run: |
         $ProgressPreference = 'SilentlyContinue'
@@ -74,6 +74,8 @@ jobs:
     
     - name: Install Qt
       uses: jurplel/install-qt-action@v1
+      with:
+        version: '5.14.0'
       
     - name: Install Homebrew packages
       run: brew update && brew install pkg-config mpv
