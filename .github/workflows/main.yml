@@ -80,6 +80,9 @@ jobs:
     - name: Install Homebrew packages
       run: brew update && brew install pkg-config mpv
       
+    - name: Switch Xcode version to 11.0
+      run: sudo xcode-select -s /Applications/Xcode_11.app/Contents/Developer
+      
     - name: Setup Rust environment
       uses: raftario/setup-rust-action@v1
         
