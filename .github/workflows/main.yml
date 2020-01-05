@@ -1,0 +1,127 @@
+name: Master
+
+on: [push]
+      
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        lfs: true
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v1
+
+    - name: Download mpv dev archive
+      run: |
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
+        
+        & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
+        
+        $oldfile = Get-Content mpv\x86_64\libmpv.def
+        Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
+
+    - name: Generate mpv libraries
+      run: |
+        call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cd mpv\x86_64
+        lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+      shell: cmd
+       
+    - name: Setup Rust environment
+      uses: raftario/setup-rust-action@v1
+        
+    - name: Clone and build libsynchro
+      run: |
+        git clone https://github.com/jurplel/libsynchro.git
+        cd libsynchro\capi
+        cargo build --release
+      
+    - name: Build Synchro and copy libraries to build folder
+      run: |
+        call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=999
+        msbuild Synchro.sln /p:Configuration=Release /m
+        
+        windeployqt Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
+        (robocopy %Qt5_DIR%\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+        (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+        (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+      shell: cmd
+    
+    - name: Get fake build number from commit count
+      id: commit_num_step
+      run: |
+        echo ::set-output name=commit_num::$(git rev-list --count HEAD)
+      shell: bash
+ 
+    - name: Publish .exe with libraries as build artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Synchro-Nightly-win64-b${{ steps.commit_num_step.outputs.commit_num }}
+        path: Release
+        
+        
+  macos:
+    name: macOS
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        lfs: true
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v1
+      with:
+        version: '5.14.0'
+      
+    - name: Install Homebrew packages
+      run: brew install pkg-config mpv
+      
+    - name: Switch Xcode version to 11.0
+      run: sudo xcode-select -s /Applications/Xcode_11.app/Contents/Developer
+      
+    - name: Setup Rust environment
+      uses: raftario/setup-rust-action@v1
+        
+    - name: Clone and build libsynchro
+      run: |
+        git clone https://github.com/jurplel/libsynchro.git
+        cd libsynchro/capi
+        cargo build --release
+   
+    - name: Build Synchro
+      run: |
+        cmake --config Release . -DNIGHTLY=true -DBUILD_NUMBER=999
+        make
+        mkdir bin
+        cp -r Synchro.app bin/
+        macdeployqt bin/Synchro.app -qmldir=$Qt5_Dir/qml/
+    
+    - name: Add Qt Labs Platform plugin (QTBUG-74997)
+      run: |
+        cp -r $Qt5_Dir/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
+        cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
+        install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
+        install_name_tool -change $Qt5_Dir/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
+ 
+    - name: Get fake build number from commit count
+      id: commit_num_step
+      run: |
+        echo ::set-output name=commit_num::$(git rev-list --count HEAD)
+ 
+    - name: Publish .app as build artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Synchro-Nightly-macOS-b${{ steps.commit_num_step.outputs.commit_num }}
+        path: bin
