@@ -44,7 +44,6 @@ jobs:
     - name: Build Synchro and copy libraries to build folder
       run: |
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        set Qt5_DIR=%HOME%\Qt\msvc2017_64
         cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=999
         msbuild Synchro.sln /p:Configuration=Release /m
         
