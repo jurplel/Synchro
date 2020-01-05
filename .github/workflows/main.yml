@@ -47,7 +47,7 @@ jobs:
         cmake --config Release . -A x64 -DNIGHTLY=true -DBUILD_NUMBER=999
         msbuild Synchro.sln /p:Configuration=Release /m
         
-        %Qt5_DIR%\windeployqt.exe Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
+        %Qt5_DIR%\bin\windeployqt.exe Release --no-compiler-runtime --qmldir %Qt5_DIR%\qml
         (robocopy %Qt5_DIR%\qml\Qt\labs\platform Release\Qt\labs\platform /E) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
         (robocopy mpv\x86_64\ Release\ mpv-1.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
         (robocopy libsynchro\capi\target\release\ Release\ synchro.dll) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
