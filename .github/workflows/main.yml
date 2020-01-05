@@ -29,7 +29,7 @@ jobs:
         cd mpv\x86_64
         lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
       shell: cmd
-      
+       
     - name: Setup Rust environment
       uses: raftario/setup-rust-action@v1
         
