@@ -192,7 +192,7 @@ void VideoObject::seekBy(const qreal seconds)
     qreal totalSeconds = getProperty("duration").toReal();
 
     qreal targetedPercentage = (targetedSeconds/totalSeconds)*100;
-    seek(targetedPercentage, false);
+    seek(targetedPercentage, false, true);
 }
 
 void VideoObject::pause(bool newPaused) {
