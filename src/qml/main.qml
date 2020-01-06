@@ -88,6 +88,10 @@ Window {
         id: synchronyPanel
     }
 
+    PreferencesPanel {
+        id: preferencesPanel
+    }
+
     Item {
         id: videoContainer
         anchors.fill: parent
@@ -237,6 +241,6 @@ Window {
     Settings {
         id: settings
         property url lastFolder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
-        property string lastName: ""
+        property string name: "Rusty Shackleford"
     }
 }

@@ -13,6 +13,7 @@
         <file>synchrostyle/MenuItem.qml</file>
         <file>synchrostyle/MenuSeparator.qml</file>
         <file>synchrocomponents/SynchronyPanel.qml</file>
+        <file>synchrocomponents/PreferencesPanel.qml</file>
         <file>synchroutil/Shortcuts.qml</file>
     </qresource>
 </RCC>

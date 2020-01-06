@@ -26,8 +26,7 @@ Item {
         {
             synchronyController.connectToServer(stringList[0], stringList[1]);
         }
-        // settings.lastName = nameField.text;
-        // synchronyController.sendCommand(4, [nameField.text]);
+        synchronyController.sendCommand(4, [settings.name]);
         stack.push(connectedScreen);
     }
 
