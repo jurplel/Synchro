@@ -47,6 +47,7 @@ void TrackHandler::updateTracks()
 
 QStringList TrackHandler::getAudioTrackList() {
     QStringList list;
+    list.append("None");
     foreach (auto track, trackList) {
         if (track.type == "audio")
             list.append(track.readable);
@@ -56,6 +57,7 @@ QStringList TrackHandler::getAudioTrackList() {
 
 QStringList TrackHandler::getSubTrackList() {
     QStringList list;
+    list.append("None");
     foreach (auto track, trackList) {
         if (track.type == "sub")
             list.append(track.readable);
@@ -65,6 +67,7 @@ QStringList TrackHandler::getSubTrackList() {
 
 QStringList TrackHandler::getVideoTrackList() {
     QStringList list;
+    list.append("None");
     foreach (auto track, trackList) {
         if (track.type == "video")
             list.append(track.readable);
