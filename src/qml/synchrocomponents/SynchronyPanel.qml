@@ -20,20 +20,21 @@ Item {
         anchors.fill: parent
     }
 
+    function connectToServer(ip) {
+        let stringList = ip.split(":");
+        if (stringList.length > 1)
+        {
+            synchronyController.connectToServer(stringList[0], stringList[1]);
+        }
+        // settings.lastName = nameField.text;
+        // synchronyController.sendCommand(4, [nameField.text]);
+        stack.push(connectedScreen);
+    }
+
     Component {
         id: connectScreen
 
         ColumnLayout {
-            function connectToServer(ip) {
-                let stringList = ip.split(":");
-                if (stringList.length > 1)
-                {
-                    synchronyController.connectToServer(stringList[0], stringList[1]);
-                }
-                // settings.lastName = nameField.text;
-                // synchronyController.sendCommand(4, [nameField.text]);
-                stack.push(connectedScreen);
-            }
 
             // Row {
             //     TextField {
@@ -49,9 +50,6 @@ Item {
             //     width: 200
             //     text: settings.lastName
             // }
-
-            Layout.fillHeight: true
-            Layout.fillWidth: true
 
 
             ListView {
@@ -116,10 +114,59 @@ Item {
                     }
                 }
             }
-            Button {
-                id: connectButton
-                text: "Connect"
-                onPressed: connectToServer(serverList.currentItem.text)
+            Row {
+                height: 40
+                Layout.fillWidth: true
+                Button {
+                    id: directConnectButton
+                    text: "Direct Connect"
+                    width: parent.width/2
+                    onPressed: stack.push(directConnectScreen)
+                }
+                Button {
+                    id: connectButton
+                    text: "Connect"
+                    width: parent.width/2
+                    onPressed: connectToServer(serverList.currentItem.ipAddress)
+                }
+            }
+        }
+    }
+    
+    Component {
+        id: directConnectScreen
+        Item {
+            ColumnLayout {
+                width: parent.width
+                anchors.bottom: parent.bottom
+
+                Text {
+                    color: "white"
+                    text: "Direct Connect"
+                    font.pointSize: 20
+                }
+
+                TextField {
+                    id: ipField
+                    Layout.fillWidth: true
+                    text: "0.0.0.0:32019"
+                }
+                Row {
+                    Layout.fillWidth: true
+                    Button {
+                        id: directConnectButton
+                        width: parent.width/2
+                        text: "Back"
+                        onPressed: stack.pop();
+                    }
+
+                    Button {
+                        id: connectButton
+                        width: parent.width/2
+                        text: "Connect"
+                        onPressed: connectToServer(ipField.text)
+                    }
+                }
             }
         }
     }
