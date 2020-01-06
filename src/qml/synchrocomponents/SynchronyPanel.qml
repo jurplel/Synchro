@@ -35,23 +35,6 @@ Item {
         id: connectScreen
 
         ColumnLayout {
-
-            // Row {
-            //     TextField {
-            //         id: ipField
-            //         width: 200
-            //         text: "35.227.80.175:32019"
-            //     }
-            // }
-
-
-            // TextField {
-            //     id: nameField
-            //     width: 200
-            //     text: settings.lastName
-            // }
-
-
             ListView {
                 id: serverList
 
@@ -174,11 +157,15 @@ Item {
     Component {
         id: connectedScreen
 
-        Item {
+        ColumnLayout {
             ListView {
                 id: listOfClients
-                anchors.fill: parent
+                
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
                 model: clientListModel
+
                 delegate: Item {
                     height: 20
                     width: parent.width
@@ -198,16 +185,18 @@ Item {
                     }
                 }
             }
-
-            Button {
-                text: "Disconnect btw"
-                anchors.top: parent.top
-                anchors.right: parent.right
-
-                onPressed: {
-                    stack.pop();
-                    synchronyController.disconnect();
-                    clientListModel = [];
+            
+            Row {
+                height: 40
+                Layout.fillWidth: true
+                Button {
+                    text: "Disconnect"
+                    width: parent.width
+                    onPressed: {
+                        stack.pop();
+                        synchronyController.disconnect();
+                        clientListModel = [];
+                    }
                 }
             }
         }
