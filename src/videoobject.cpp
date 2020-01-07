@@ -35,11 +35,6 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_set_wakeup_callback(mpvHandler, wakeup, this);
 
     mpv_observe_property(mpvHandler, 0, "percent-pos", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpvHandler, 0, "time-pos", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpvHandler, 0, "duration", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(mpvHandler, 0, "chapter-list", MPV_FORMAT_NODE);
-    mpv_observe_property(mpvHandler, 0, "track-list", MPV_FORMAT_NODE);
-    mpv_observe_property(mpvHandler, 0, "path", MPV_FORMAT_NODE);
 
 //    setProperty("terminal", true);
     setProperty("pause", true);
@@ -112,33 +107,34 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
 {
     switch (event->event_id)
     {
+    case MPV_EVENT_FILE_LOADED:
+    {
+        currentFileName = QString::fromUtf8(getProperty("filename").value<QByteArray>());
+        currentFileSize = getProperty("file-size").value<int>();
+
+        setDuration(getProperty("duration").value<double>());
+        setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
+
+        setChapterList(getProperty("chapter-list").value<QVariantList>());
+
+        TrackHandler trackHandler(mpvHandler, this);
+        trackHandler.updateTracks();
+        audioTrackList = trackHandler.getAudioTrackList();
+        subTrackList = trackHandler.getSubTrackList();
+        videoTrackList = trackHandler.getVideoTrackList();
+        emit trackListsUpdated();
+
+        emit fileChanged();
+
+        break;
+    }
     case MPV_EVENT_PROPERTY_CHANGE:
     {
         auto *prop = reinterpret_cast<mpv_event_property*>(event->data);
 
         if (strcmp(prop->name, "percent-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setPercentPos(*reinterpret_cast<double*>(prop->data));
-        } 
-        else if (strcmp(prop->name, "time-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setTimePosString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "time-pos")));
-        }
-        else if (strcmp(prop->name, "duration") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
-            setDuration(*reinterpret_cast<double*>(prop->data));
-            setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
-        }
-        else if (strcmp(prop->name, "chapter-list") == 0 && prop->format == MPV_FORMAT_NODE) {
-            setChapterList(getProperty("chapter-list").value<QVariantList>());
-        }
-        else if (strcmp(prop->name, "track-list") == 0 && prop->format == MPV_FORMAT_NODE) {
-            TrackHandler trackHandler(mpvHandler, this);
-            trackHandler.updateTracks();
-            audioTrackList = trackHandler.getAudioTrackList();
-            subTrackList = trackHandler.getSubTrackList();
-            videoTrackList = trackHandler.getVideoTrackList();
-            emit trackListsUpdated();
-        }
-        else if (strcmp(prop->name, "path") == 0 && prop->format == MPV_FORMAT_NODE) {
-            emit fileChanged();
         }
         break;
     }

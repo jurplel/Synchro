@@ -20,6 +20,8 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(qreal currentVolume READ getCurrentVolume WRITE setCurrentVolume NOTIFY currentVolumeChanged)
     Q_PROPERTY(QVariantList chapterList READ getChapterList NOTIFY chapterListChanged)
     Q_PROPERTY(QVariantList cachedList READ getCachedList NOTIFY chapterListChanged)
+    Q_PROPERTY(QString currentFileName READ getCurrentFileName NOTIFY currentFileNameChanged)
+    Q_PROPERTY(int currentFileSize READ getCurrentFileSize NOTIFY currentFileSizeChanged)
     Q_PROPERTY(QStringList audioTrackList READ getAudioTrackList)
     Q_PROPERTY(QStringList subTrackList READ getSubTrackList)
     Q_PROPERTY(QStringList videoTrackList READ getVideoTrackList)
@@ -60,6 +62,12 @@ public:
     QVariantList getCachedList() const { return cachedList; }
     void setCachedList(const QVariantList &value) { cachedList = value; emit cachedListChanged(); }
 
+    QString getCurrentFileName() const { return currentFileName; }
+    void setCurrentFileName(const QString &value) { currentFileName = value; emit currentFileNameChanged(); }
+
+    int getCurrentFileSize() const { return currentFileSize; }
+    void setCurrentFileSize(const int &value) { currentFileSize = value; emit currentFileSizeChanged(); }
+
     QStringList getAudioTrackList() const { return audioTrackList; }
     QStringList getSubTrackList() const { return subTrackList; }
     QStringList getVideoTrackList() const { return videoTrackList; }
@@ -78,6 +86,8 @@ signals:
     void durationChanged();
     void chapterListChanged();
     void cachedListChanged();
+    void currentFileNameChanged();
+    void currentFileSizeChanged();
 
     void trackListsUpdated();
 
@@ -136,6 +146,10 @@ private:
     QStringList audioTrackList;
     QStringList subTrackList;
     QStringList videoTrackList;
+
+    QString currentFileName;
+    int currentFileSize;
+
 
 };
 
