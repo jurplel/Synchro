@@ -30,10 +30,10 @@ jobs:
     displayName: 'Generate mpv libraries'
 
   - script: |
-      rustup toolchain install nightly
+      rustup toolchain install stable
       git clone https://github.com/jurplel/libsynchro.git
       cd libsynchro\capi
-      cargo +nightly build --release
+      cargo +stable build --release
     displayName: 'Clone and build libsynchro'
 
   - script: |
@@ -67,7 +67,7 @@ jobs:
     displayName: 'Install Homebrew packages'
 
   - script: |
-      curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain nightly
+      curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
     displayName: 'Install Rust'
 
