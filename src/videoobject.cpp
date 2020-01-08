@@ -110,7 +110,8 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
     case MPV_EVENT_FILE_LOADED:
     {
         currentFileName = QString::fromUtf8(getProperty("filename").value<QByteArray>());
-        currentFileSize = getProperty("file-size").value<int>();
+        currentFileSize = getProperty("stream-end").value<int>();
+        qDebug() << currentFileSize;
 
         setDuration(getProperty("duration").value<double>());
         setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
