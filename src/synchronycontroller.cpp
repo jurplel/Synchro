@@ -64,8 +64,15 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
         break;
     }
     case Synchro_Command::Tag::SetName: {
-        char* name = arguments.takeFirst().toString().toUtf8().data();
-        cmd.set_name.desired_name = name;
+        char* desired_name = arguments.takeFirst().toString().toUtf8().data();
+        cmd.set_name.desired_name = desired_name;
+        break;
+    }
+    case Synchro_Command::Tag::SetCurrentFile: {
+        cmd.set_current_file.file_size = arguments.takeFirst().toInt();
+        cmd.set_current_file.file_duration = arguments.takeFirst().toDouble();
+        char* file_name = arguments.takeFirst().toString().toUtf8().data();
+        cmd.set_current_file.file_name = file_name;
         break;
     }
     default: {
@@ -91,12 +98,16 @@ void SynchronyController::receiveCommand(Synchro_Command command)
     }
     case Synchro_Command::Tag::UpdateClientList: {
         qDebug() << QString::fromUtf8(command.update_client_list.client_list).split(",");
-        emit updateClientList(QString::fromUtf8(command.update_client_list.client_list).split(","));
+        emit updateClientList(QString::fromUtf8(command.update_client_list.client_list));
         synchro_char_free(command.update_client_list.client_list);
         break;
     }
     case Synchro_Command::Tag::SetName: {
         qDebug() << "SetName command received";
+        break;
+    }
+    case Synchro_Command::Tag::SetCurrentFile: {
+        qDebug() << "SetCurrentFile command received";
         break;
     }
     case Synchro_Command::Tag::Invalid: {

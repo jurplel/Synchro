@@ -41,6 +41,7 @@ QHash<int, QByteArray> ServerListModel::roleNames() const {
 
 void ServerListModel::refresh()
 {
+    beginResetModel();
     serverList.clear();
     // serverList.append(Server({"Local Server", "0.0.0.0:32019"}));
 
@@ -52,4 +53,5 @@ void ServerListModel::refresh()
 
         serverList.append(Server({serverFields[0], serverFields[1]}));
     }
+    endResetModel();
 }

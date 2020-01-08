@@ -6,12 +6,24 @@ import Synchro.Core 1.0
 import "../synchrostyle"
 
 Item {
-    property var clientListModel: []
-
     id: synchronyPanel
+
     anchors.right: parent.right
     height: parent.height
     width: parent.width/4
+
+
+    ClientListModel { 
+        id: clientListModel
+        onDataChanged: console.log("changed");
+    }
+
+    Connections {
+        target: synchronyController
+        onUpdateClientList: {
+            clientListModel.updateClientList(clientList);
+        }
+    }
 
 
     StackView {
@@ -67,7 +79,6 @@ Item {
                         onClicked: serverList.currentIndex = index
                         onDoubleClicked: connectToServer(parent.ipAddress)
                     }
-
                 }
 
                 header: Item {
@@ -166,12 +177,22 @@ Item {
                 model: clientListModel
 
                 delegate: Item {
-                    height: 20
+                    height: 32
                     width: parent.width
+
                     Text {
+                        id: nametext
                         color: "white"
-                        text: modelData
+                        font.pointSize: 12
+                        text: name
                     }
+
+                    // Text {
+                    //     id: iptext
+                    //     topPadding: 16
+                    //     color: "gray"
+                    //     text: ip
+                    // }
                 }
 
                 header: Item {
@@ -179,7 +200,7 @@ Item {
                     width: parent.width
                     Text {
                         color: "white"
-                        text: "Users: " + listOfClients.model.length
+                        text: "Users: " + listOfClients.count;
                         font.pointSize: 20
                     }
                 }
@@ -194,7 +215,6 @@ Item {
                     onPressed: {
                         stack.pop();
                         synchronyController.disconnect();
-                        clientListModel = [];
                     }
                 }
             }

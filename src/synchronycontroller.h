@@ -19,7 +19,7 @@ signals:
 
     void seek(double percentPos, bool useKeyframes);
 
-    void updateClientList(QStringList clientList);
+    void updateClientList(QString clientList);
 
 public slots:
     void disconnect();

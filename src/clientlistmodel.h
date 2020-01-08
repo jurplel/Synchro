@@ -1,44 +1,41 @@
-#ifndef SERVERLISTMODEL_H
-#define SERVERLISTMODEL_H
+#ifndef CLIENTLISTMODEL_H
+#define CLIENTLISTMODEL_H
 
 #include <QAbstractListModel>
 
-class Server
+class Client
 {
 public:
-    Server(QString newName, QString newIp): name(newName), ip(newIp) {}
+    Client(QString newName): name(newName) {}
 
     QString getName() const { return name; }
-    QString getIp() const { return ip; }
 
 private:
     QString name;
-    QString ip;
 };
 
-class ServerListModel : public QAbstractListModel
+class ClientListModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    enum ServerRoles {
+    enum ClientRoles {
         NameRole = Qt::UserRole + 1,
-        IpRole
     };
 
-    explicit ServerListModel(QObject *parent = nullptr);
+    explicit ClientListModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
 public slots:
-    void refresh();
+    void updateClientList(QString rawString);
 
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    QList<Server> serverList;
+    QList<Client> clientList;
 };
 
-#endif // SERVERLISTMODEL_H
+#endif // CLIENTLISTMODEL_H

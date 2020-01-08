@@ -38,6 +38,7 @@ set(SOURCES
     src/videoobject.cpp
     src/synchronycontroller.cpp
     src/serverlistmodel.cpp
+    src/clientlistmodel.cpp
     src/trackhandler.cpp
 )
 set(RESOURCES

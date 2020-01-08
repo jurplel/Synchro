@@ -41,9 +41,6 @@ Window {
             videoObject.seek(percentPos, useKeyframes)
             restartAutohideTimer()
         }
-        onUpdateClientList: {
-            synchronyPanel.clientListModel = clientList
-        }
     }
 
     property var allTrackMenuItems
