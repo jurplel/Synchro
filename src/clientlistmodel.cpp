@@ -1,6 +1,9 @@
 #include "clientlistmodel.h"
 #include "libsynchro.hpp"
 
+#include <QLocale>
+#include <QTime>
+
 #include <QDebug>
 
 ClientListModel::ClientListModel(QObject *parent) : QAbstractListModel(parent)
@@ -24,6 +27,15 @@ QVariant ClientListModel::data(const QModelIndex & index, int role) const {
     case NameRole: {
         return client.getName();
     }
+    case FileSizeRole: {
+        return client.getFileSize();
+    }
+    case FileDurationRole: {
+        return client.getFileDuration();
+    }
+    case FileNameRole: {
+        return client.getFileName();
+    }
     }
 
     return QVariant();
@@ -32,6 +44,9 @@ QVariant ClientListModel::data(const QModelIndex & index, int role) const {
 QHash<int, QByteArray> ClientListModel::roleNames() const {
     QHash<int, QByteArray> roles;
     roles[NameRole] = "name";
+    roles[FileSizeRole] = "fileSize";
+    roles[FileDurationRole] = "fileDuration";
+    roles[FileNameRole] = "fileName";
     return roles;
 }
 
@@ -40,12 +55,15 @@ void ClientListModel::updateClientList(QString rawString)
     beginResetModel();
     clientList.clear();
 
+    QLocale locale;
+
     QStringList retrievedClientList = rawString.split(",");
 
     foreach (auto clientString, retrievedClientList) {
-        // QStringList serverFields = serverString.split(",");
+        QStringList clientFields = clientString.split(";");
+        QTime time = QTime::fromMSecsSinceStartOfDay(clientFields[2].toDouble()*1000);
 
-        clientList.append(Client({clientString}));
+        clientList.append(Client(clientFields[0], locale.formattedDataSize(clientFields[1].toInt()), time.toString("H:mm:ss"), clientFields[3]));
     }
     endResetModel();
 }

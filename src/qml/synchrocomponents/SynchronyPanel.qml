@@ -39,7 +39,7 @@ Item {
             synchronyController.connectToServer(stringList[0], stringList[1]);
         }
         synchronyController.sendCommand(4, [settings.name]);
-        synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName])
+        synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName]);
         stack.push(connectedScreen);
     }
 
@@ -62,14 +62,12 @@ Item {
                     property var ipAddress: ip
 
                     Text {
-                        id: nametext
                         color: "white"
                         font.pointSize: 12
                         text: name
                     }
 
                     Text {
-                        id: iptext
                         topPadding: 16
                         color: "gray"
                         text: ip
@@ -177,23 +175,28 @@ Item {
 
                 model: clientListModel
 
-                delegate: Item {
-                    height: 32
+                delegate: Column {
                     width: parent.width
 
                     Text {
-                        id: nametext
+                        id: nameField
                         color: "white"
                         font.pointSize: 12
                         text: name
                     }
 
-                    // Text {
-                    //     id: iptext
-                    //     topPadding: 16
-                    //     color: "gray"
-                    //     text: ip
-                    // }
+                    Text {
+                        id: fileNameField
+                        width: parent.width
+                        color: "gray"
+                        text: fileName
+                        wrapMode: Text.Wrap
+                    }
+                    Text {
+                        width: parent.width
+                        color: "gray"
+                        text: fileSize + " | " + fileDuration
+                    }
                 }
 
                 header: Item {
