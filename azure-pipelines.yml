@@ -74,7 +74,7 @@ jobs:
   - script: |
       git clone https://github.com/jurplel/libsynchro.git
       cd libsynchro/capi
-      cargo +nightly build --release
+      cargo build --release
     displayName: 'Clone and build libsynchro'
 
   - script: |
