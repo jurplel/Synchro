@@ -55,7 +55,10 @@ Item {
                         id: nameField
                         width: 200
                         text: settings.name
-                        onEditingFinished: settings.name = nameField.text
+                        onEditingFinished: {
+                            settings.name = nameField.text;
+                            synchronyController.sendCommand(4, [nameField.text]);
+                        }
                     }
                 }
             }
