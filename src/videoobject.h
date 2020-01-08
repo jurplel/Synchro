@@ -148,9 +148,7 @@ private:
     QStringList videoTrackList;
 
     QString currentFileName;
-    int currentFileSize;
-
-
+    qlonglong currentFileSize;
 };
 
 #endif // VIDEOOBJECT_H

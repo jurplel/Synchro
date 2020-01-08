@@ -81,6 +81,10 @@ Window {
         onFileChanged: {
             synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName])
         }
+        onCurrentFileSizeChanged: {
+            console.log("Current file size changed")
+            synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName])
+        }
     }
 
 

@@ -23,6 +23,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     currentVolume = 100;
     percentPos = 0;
     duration = 0;
+    currentFileSize = 0;
 
     mpvHandler = mpv_create();
 
@@ -35,6 +36,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     mpv_set_wakeup_callback(mpvHandler, wakeup, this);
 
     mpv_observe_property(mpvHandler, 0, "percent-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(mpvHandler, 0, "file-size", MPV_FORMAT_INT64);
 
 //    setProperty("terminal", true);
     setProperty("pause", true);
@@ -109,9 +111,7 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
     {
     case MPV_EVENT_FILE_LOADED:
     {
-        currentFileName = QString::fromUtf8(getProperty("filename").value<QByteArray>());
-        currentFileSize = getProperty("stream-end").value<int>();
-        qDebug() << currentFileSize;
+        setCurrentFileName(QString::fromUtf8(getProperty("filename").value<QByteArray>()));
 
         setDuration(getProperty("duration").value<double>());
         setDurationString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "duration")));
@@ -136,6 +136,9 @@ void VideoObject::handleMpvEvent(const mpv_event *event)
         if (strcmp(prop->name, "percent-pos") == 0 && prop->format == MPV_FORMAT_DOUBLE) {
             setPercentPos(*reinterpret_cast<double*>(prop->data));
             setTimePosString(QString::fromUtf8(mpv_get_property_osd_string(mpvHandler, "time-pos")));
+        }
+        else if (strcmp(prop->name, "file-size") == 0 && prop->format == MPV_FORMAT_INT64) {
+            setCurrentFileSize(getProperty("file-size").value<qlonglong>());
         }
         break;
     }
