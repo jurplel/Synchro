@@ -78,6 +78,9 @@ Window {
             }
             window.allTrackMenuItems = allTrackMenuItems
         }
+        onFileChanged: {
+            synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName])
+        }
     }
 
 

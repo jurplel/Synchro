@@ -81,7 +81,7 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
     }
 
     synchro_connection_send(socket, cmd);
-    qDebug() << "send em";
+    qDebug() << "send em:" << cmdNum;
 }
 
 void SynchronyController::receiveCommand(Synchro_Command command)

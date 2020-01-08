@@ -39,6 +39,7 @@ Item {
             synchronyController.connectToServer(stringList[0], stringList[1]);
         }
         synchronyController.sendCommand(4, [settings.name]);
+        synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName])
         stack.push(connectedScreen);
     }
 
