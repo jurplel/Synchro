@@ -189,13 +189,14 @@ Item {
                         id: fileNameField
                         width: parent.width
                         color: "gray"
-                        text: fileName
+                        text: fileName === "" ? "No file loaded" : fileName
                         wrapMode: Text.Wrap
                     }
                     Text {
                         width: parent.width
                         color: "gray"
                         text: fileSize + " | " + fileDuration
+                        visible: fileDuration == "0:00:00" ? false : true
                     }
                 }
 
