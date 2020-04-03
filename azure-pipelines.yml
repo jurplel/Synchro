@@ -83,21 +83,8 @@ jobs:
       make
       mkdir bin
       cp -r Synchro.app bin/
-      $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=$(brew --prefix qt)/qml/
+      $(brew --prefix qt)/bin/macdeployqt bin/Synchro.app -qmldir=src/qml/
     displayName: 'Build Synchro'
-
-  - script: |
-      cp -r $(brew --prefix qt)/qml/Qt/labs/platform bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform
-      cd bin/Synchro.app/Contents/Resources/qml/Qt/labs/platform/
-      qtvers=$(echo $(brew info --json=v1 qt | jq .[].versions.stable) | sed -e 's/^"//' -e 's/"$//')
-      install_name_tool -id libqtlabsplatformplugin.dylib libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQuick.framework/Versions/5/QtQuick @rpath/QtQuick.framework/Versions/5/QtQuick libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets.framework/Versions/5/QtWidgets libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui.framework/Versions/5/QtGui libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtQml.framework/Versions/5/QtQml @rpath/QtQml.framework/Versions/5/QtQml libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork.framework/Versions/5/QtNetwork libqtlabsplatformplugin.dylib
-      install_name_tool -change /usr/local/Cellar/qt/$qtvers/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore.framework/Versions/5/QtCore libqtlabsplatformplugin.dylib
-    displayName: 'Add Qt Labs Platform plugin (QTBUG-74997)'
 
   - task: PublishBuildArtifacts@1
     inputs:
