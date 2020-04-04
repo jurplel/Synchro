@@ -7,14 +7,11 @@
 #include <QDebug>
 
 
-CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandler) : QQuickFramebufferObject::Renderer()
+CoreRenderer::CoreRenderer(VideoObject *newVideoObject, mpv_handle *newMpvHandle) : QQuickFramebufferObject::Renderer()
 {
     videoObject = newVideoObject;
-    mpvHandler = newMpvHandler;
+    mpvHandle = newMpvHandle;
     mpvRenderContext = nullptr;
-
-    paused = true;
-    seeking = false;
 }
 
 CoreRenderer::~CoreRenderer()
@@ -36,7 +33,7 @@ QOpenGLFramebufferObject* CoreRenderer::createFramebufferObject(const QSize &siz
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
 
-        if (mpv_render_context_create(&mpvRenderContext, mpvHandler, params) != 0)
+        if (mpv_render_context_create(&mpvRenderContext, mpvHandle, params) != 0)
             throw std::runtime_error("failed to initialize mpv GL context");
 
         mpv_render_context_set_update_callback(mpvRenderContext, onRedraw, videoObject);
@@ -69,15 +66,10 @@ void CoreRenderer::render()
     // other API details.
     mpv_render_context_render(mpvRenderContext, params);
 
-    if (seeking)
-        update();
-
     videoObject->window()->resetOpenGLState();
 }
 
 void CoreRenderer::synchronize(QQuickFramebufferObject *item)
 {
-    auto vidObj = reinterpret_cast<VideoObject*>(item);
-    paused = vidObj->getIsPaused();
-    seeking = vidObj->getSeeking();
+
 }

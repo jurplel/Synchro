@@ -1,6 +1,7 @@
 #include "synchronycontroller.h"
 
 #include <QtConcurrent/QtConcurrentRun>
+#include <QFutureWatcher>
 
 #include <QVariantList>
 
@@ -13,7 +14,7 @@ static void callback(void *ctx, Synchro_Command cmd) {
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
 {
-    socket = nullptr;
+    connection = nullptr;
 }
 
 SynchronyController::~SynchronyController() {
@@ -21,28 +22,36 @@ SynchronyController::~SynchronyController() {
 }
 
 void SynchronyController::disconnect() {
-    if (socket == nullptr)
+    if (connection == nullptr)
         return;
 
-    synchro_connection_free(socket);
-    socket = nullptr;
+    synchro_connection_free(connection);
+    connection = nullptr;
 }
 
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
-    if (socket != nullptr)
+    if (connection != nullptr)
         disconnect();
 
-    socket = synchro_connection_new(qPrintable(ip), port, callback, this);
-    if (socket == nullptr)
+    auto futureWatcher = new QFutureWatcher<SynchroConnection*>;
+    connect(futureWatcher, &QFutureWatcher<SynchroConnection*>::finished, [this, futureWatcher]{ connectionEstablished(futureWatcher->result()); });
+
+    futureWatcher->setFuture(QtConcurrent::run(synchro_connection_new, qPrintable(ip), port, &callback, this));
+}
+
+void SynchronyController::connectionEstablished(SynchroConnection *newConnection)
+{
+    if (newConnection == nullptr)
         return;
 
-    QtConcurrent::run(synchro_connection_run, socket);
+    connection = newConnection;
+    QtConcurrent::run(synchro_connection_run, connection);
 }
 
 void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
 {
-    if (socket == nullptr)
+    if (connection == nullptr)
         return;
 
     Synchro_Command cmd = Synchro_Command();
@@ -80,7 +89,7 @@ void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
     }
     }
 
-    synchro_connection_send(socket, cmd);
+    synchro_connection_send(connection, cmd);
     qDebug() << "send em:" << cmdNum;
 }
 

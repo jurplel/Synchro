@@ -20,11 +20,8 @@ public:
 
 private:
     VideoObject* videoObject;
-    mpv_handle *mpvHandler;
+    mpv_handle *mpvHandle;
     mpv_render_context *mpvRenderContext;
-
-    bool paused;
-    bool seeking;
 
 
     static void *get_proc_address_mpv(void *ctx, const char *name)

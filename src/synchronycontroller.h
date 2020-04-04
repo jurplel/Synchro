@@ -26,10 +26,12 @@ public slots:
 
     void connectToServer(QString ip, quint16 port);
 
+    void connectionEstablished(SynchroConnection *newConnection);
+
     void sendCommand(quint8 command, QVariantList arguments = QVariantList());
 
 private:
-    SynchroConnection *socket;
+    SynchroConnection *connection;
 };
 
 #endif // SYNCHRONYCONTROLLER_H
