@@ -7,13 +7,18 @@
 
 #include <QDebug>
 
-static void callback(Synchro_Event event, void *ctx) {
+static void event_callback(Synchro_Event event, void *ctx) {
     switch(event.tag) {
     case Synchro_Event::Tag::CommandReceived: {
         auto obj = reinterpret_cast<SynchronyController*>(ctx);
         obj->receiveCommand(event.command_received.command);
     }
     }
+}
+
+static void connect_callback(SynchroConnection *newConnection, void *ctx) {
+    auto obj = reinterpret_cast<SynchronyController*>(ctx);
+    obj->connectionEstablished(newConnection);
 }
 
 SynchronyController::SynchronyController(QObject *parent) : QObject(parent)
@@ -41,7 +46,7 @@ void SynchronyController::connectToServer(QString ip, quint16 port)
     auto futureWatcher = new QFutureWatcher<SynchroConnection*>;
     connect(futureWatcher, &QFutureWatcher<SynchroConnection*>::finished, [this, futureWatcher]{ connectionEstablished(futureWatcher->result()); });
 
-    futureWatcher->setFuture(QtConcurrent::run(synchro_connection_new, qPrintable(ip), port));
+    connectionEstablished(synchro_connection_new_blocking(qPrintable(ip), port));
 }
 
 void SynchronyController::connectionEstablished(SynchroConnection *newConnection)
@@ -50,8 +55,10 @@ void SynchronyController::connectionEstablished(SynchroConnection *newConnection
         return;
 
     connection = newConnection;
-    synchro_connection_set_callback(connection, &callback, this);
-    QtConcurrent::run(synchro_connection_run, connection);
+
+    // synchro_connection_set_callback(connection, &event_callback, this);
+    // synchro_connection_run(connection);
+
 }
 
 void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)
