@@ -8,10 +8,15 @@
 #include <QDebug>
 
 static void event_callback(Synchro_Event event, void *ctx) {
+    auto obj = reinterpret_cast<SynchronyController*>(ctx);
     switch(event.tag) {
     case Synchro_Event::Tag::CommandReceived: {
-        auto obj = reinterpret_cast<SynchronyController*>(ctx);
         obj->receiveCommand(event.command_received.command);
+        break;
+    }
+    case Synchro_Event::Tag::ConnectionClosed: {
+        obj->disconnected();
+        break;
     }
     }
 }
@@ -38,6 +43,10 @@ void SynchronyController::disconnect() {
     connection = nullptr;
 }
 
+void SynchronyController::disconnected() {
+    disconnect();
+}
+
 void SynchronyController::connectToServer(QString ip, quint16 port)
 {
     if (connection != nullptr)
@@ -56,9 +65,8 @@ void SynchronyController::connectionEstablished(SynchroConnection *newConnection
 
     connection = newConnection;
 
-    // synchro_connection_set_callback(connection, &event_callback, this);
-    // synchro_connection_run(connection);
-
+    synchro_connection_set_callback(connection, &event_callback, this);
+    synchro_connection_run(connection);
 }
 
 void SynchronyController::sendCommand(quint8 cmdNum, QVariantList arguments)

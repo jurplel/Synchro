@@ -12,6 +12,8 @@ public:
     explicit SynchronyController(QObject *parent = nullptr);
     ~SynchronyController() override;
 
+    void disconnected();
+
     void receiveCommand(Synchro_Command command);
 
 signals:
