@@ -23,6 +23,9 @@ static void event_callback(Synchro_Event event, void *ctx) {
 
 static void connect_callback(SynchroConnection *newConnection, void *ctx) {
     auto obj = reinterpret_cast<SynchronyController*>(ctx);
+    if (!newConnection)
+        qDebug() << "null";
+
     obj->connectionEstablished(newConnection);
 }
 
@@ -55,7 +58,8 @@ void SynchronyController::connectToServer(QString ip, quint16 port)
     auto futureWatcher = new QFutureWatcher<SynchroConnection*>;
     connect(futureWatcher, &QFutureWatcher<SynchroConnection*>::finished, [this, futureWatcher]{ connectionEstablished(futureWatcher->result()); });
 
-    connectionEstablished(synchro_connection_new_blocking(qPrintable(ip), port));
+    synchro_connection_new(qPrintable(ip), port, &connect_callback, this);
+//    connectionEstablished(synchro_connection_new_blocking(qPrintable(ip), port));
 }
 
 void SynchronyController::connectionEstablished(SynchroConnection *newConnection)
