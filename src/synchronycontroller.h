@@ -12,8 +12,6 @@ public:
     explicit SynchronyController(QObject *parent = nullptr);
     ~SynchronyController() override;
 
-    void disconnected();
-
     void receiveCommand(Synchro_Command command);
 
 signals:
@@ -22,6 +20,10 @@ signals:
     void seek(double percentPos, bool useKeyframes);
 
     void updateClientList(QString clientList);
+
+    void connected();
+
+    void disconnected();
 
 public slots:
     void disconnect();

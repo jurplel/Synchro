@@ -23,6 +23,13 @@ Item {
         onUpdateClientList: {
             clientListModel.updateClientList(clientList);
         }
+        onConnected: {
+            stack.push(connectedScreen);
+        }
+        onDisconnected: {
+            clientListModel.updateClientList("");
+            stack.pop();
+        }
     }
 
 
@@ -40,7 +47,6 @@ Item {
         }
         synchronyController.sendCommand(4, [settings.name]);
         synchronyController.sendCommand(5, [videoObject.currentFileSize, videoObject.duration, videoObject.currentFileName]);
-        stack.push(connectedScreen);
     }
 
     Component {

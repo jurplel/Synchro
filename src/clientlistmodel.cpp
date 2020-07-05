@@ -52,14 +52,18 @@ QHash<int, QByteArray> ClientListModel::roleNames() const {
 
 void ClientListModel::updateClientList(QString rawString)
 {
+
     beginResetModel();
     clientList.clear();
 
     QLocale locale;
 
     QStringList retrievedClientList = rawString.split(",");
+    foreach (auto clientString, retrievedClientList)
+    {
+        if (clientString.isEmpty())
+            continue;
 
-    foreach (auto clientString, retrievedClientList) {
         QStringList clientFields = clientString.split(";");
         QTime time = QTime::fromMSecsSinceStartOfDay(clientFields[2].toDouble()*1000);
 
