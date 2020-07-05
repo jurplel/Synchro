@@ -6,6 +6,12 @@ import QtGraphicalEffects 1.0
 
 T.Slider {
     property int radius: 6
+    property var gradient: Gradient {
+        GradientStop { position: 0.0; color: Style.accentColorLight }
+        GradientStop { position: 1.0; color: Style.accentColorDark }
+    }
+    property var backgroundColor: Style.middleColor
+
     id: control
 
     implicitWidth: Math.max(background ? background.implicitWidth : 0,
@@ -23,7 +29,7 @@ T.Slider {
         width: control.horizontal ? control.availableWidth : implicitWidth
         height: control.horizontal ? implicitHeight : control.availableHeight
         radius: parent.radius
-        color: Style.middleColor
+        color: control.backgroundColor
         scale: control.horizontal && control.mirrored ? -1 : 1
 
         Rectangle {
@@ -40,10 +46,7 @@ T.Slider {
             layer.effect: LinearGradient {
                 start: Qt.point(0, 0)
                 end: control.horizontal ? Qt.point(parent.width, 0) : Qt.point(0, parent.height)
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: Style.accentColorLight }
-                    GradientStop { position: 1.0; color: Style.accentColorDark }
-                }
+                gradient: control.gradient
             }
         }
     }

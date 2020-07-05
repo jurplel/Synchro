@@ -33,6 +33,20 @@ Item {
 
         Item {
             id: firstPage
+            Column {
+                padding: 10
+                Row {
+                    spacing: 10
+                    Switch {
+                        id: volumeBoostSwitch
+                        text: qsTr("Volume Boost")
+                        checked: settings.volumeBoost
+                        onToggled: {
+                            settings.volumeBoost = volumeBoostSwitch.checked;
+                        }
+                    }
+                }
+            }
         }
 
         Item {

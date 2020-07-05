@@ -25,6 +25,7 @@ class VideoObject : public QQuickFramebufferObject
     Q_PROPERTY(QStringList audioTrackList READ getAudioTrackList)
     Q_PROPERTY(QStringList subTrackList READ getSubTrackList)
     Q_PROPERTY(QStringList videoTrackList READ getVideoTrackList)
+    Q_PROPERTY(int maxVolume READ getMaxVolume WRITE setMaxVolume NOTIFY maxVolumeChanged)
 
 
 public:
@@ -75,6 +76,8 @@ public:
     bool getSeeking() const { return seeking; }
     void setSeeking(bool value) { seeking = value; }
 
+    int getMaxVolume() const { return maxVolume; }
+    void setMaxVolume(int value) { maxVolume = value; emit maxVolumeChanged(); }
 
 signals:
     void isPausedChanged();
@@ -88,6 +91,7 @@ signals:
     void cachedListChanged();
     void currentFileNameChanged();
     void currentFileSizeChanged();
+    void maxVolumeChanged();
 
     void trackListsUpdated();
 
@@ -149,6 +153,8 @@ private:
 
     QString currentFileName;
     qlonglong currentFileSize;
+
+    int maxVolume;
 };
 
 #endif // VIDEOOBJECT_H

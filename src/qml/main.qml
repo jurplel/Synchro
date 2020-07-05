@@ -133,9 +133,9 @@ Window {
             onDoubleClicked: if (window.visibility === 5) {window.showNormal()} else {window.showFullScreen()}
             onWheel: {
                 if (wheel.angleDelta.y > 0)
-                    videoObject.currentVolume += 10
+                    videoObject.currentVolume += 5
                 else
-                    videoObject.currentVolume -= 10
+                    videoObject.currentVolume -= 5
             }
         }
 
@@ -246,5 +246,14 @@ Window {
         id: settings
         property url lastFolder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.HomeLocation)
         property string name: "Rusty Shackleford"
+
+        property bool volumeBoost: false
+        onVolumeBoostChanged: {
+            var newMaxVolume = volumeBoost ? 200 : 100;
+            videoObject.maxVolume = newMaxVolume;
+            if (videoObject.currentVolume > 100) {
+                videoObject.currentVolume = 100;
+            }
+        }
     }
 }

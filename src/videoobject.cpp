@@ -24,6 +24,7 @@ VideoObject::VideoObject() : QQuickFramebufferObject()
     percentPos = 0;
     duration = 0;
     currentFileSize = 0;
+    maxVolume = 100;
 
     mpvHandler = mpv_create();
 
@@ -238,8 +239,8 @@ void VideoObject::setCurrentVolume(const qreal &value)
     qreal newValue = value;
     if (newValue < 0)
         newValue = 0;
-    else if (newValue > 100)
-        newValue = 100;
+    else if (newValue > maxVolume)
+        newValue = maxVolume;
 
     setMuted(false);
     command(QStringList() << "set" << "volume" << QString::number(newValue));

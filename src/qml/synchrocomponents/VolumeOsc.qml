@@ -118,6 +118,26 @@ Item {
         }
 
         Slider {
+            id: boostSlider
+            anchors.fill: parent
+            anchors.margins: 6
+            orientation: Qt.Vertical
+            to: 100
+            value: videoObject.muted ? 0 : oscVolume.storedValue-100
+            backgroundColor: "#00000000"
+            background.implicitWidth: 10
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Style.altAccentColorLight }
+                GradientStop { position: 1.0; color: Style.altAccentColorDark }
+            }
+//            onValueChanged: {
+//                volumeChanged()
+//                showOsc()
+//            }
+            onMoved: { videoObject.currentVolume = value+100}
+        }
+
+        Slider {
             id: volumeSlider
             anchors.fill: parent
             anchors.margins: 8
