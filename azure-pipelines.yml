@@ -15,18 +15,18 @@ jobs:
 
   - powershell: |
       $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest https://mpv.srsfckn.biz/mpv-dev-20181002.7z -OutFile mpv-dev-20181002.7z
+      Invoke-WebRequest https://sourceforge.net/projects/mpv-player-windows/files/libmpv/mpv-dev-x86_64-20200705-git-8fbc4b1.7z/download -OutFile mpv-dev.7z -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
       
-      & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev-20181002.7z -y -ompv
+      & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev.7z -y -ompv
 
-      $oldfile = Get-Content mpv\x86_64\libmpv.def
-      Set-Content mpv\x86_64\libmpv.def  -value "LIBRARY MPV-1`nEXPORTS`n", $oldfile
+      $oldfile = Get-Content mpv\mpv.def
+      Set-Content mpv\mpv.def  -value "LIBRARY MPV-1`n", $oldfile
     displayName: 'Download mpv dev archive'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cd mpv\x86_64
-      lib /def:libmpv.def /name:mpv-1.dll /out:libmpv.lib /MACHINE:X64
+      cd mpv\
+      lib /def:mpv.def /name:mpv-1.dll /out:mpv.lib /MACHINE:X64
     displayName: 'Generate mpv libraries'
 
   - script: |
@@ -58,7 +58,7 @@ jobs:
 
 - job: macOS
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.15'
   steps:
   - checkout: self
     lfs: true
