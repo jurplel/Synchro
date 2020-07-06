@@ -25,7 +25,7 @@ ENDIF()
 
 project("Synchro" VERSION ${VERSION} LANGUAGES CXX)
 set(COMPANY "Interverse")
-set(COPYRIGHT "Copyright © 2019 jurplel")
+set(COPYRIGHT "Copyright © 2020 jurplel")
 set(IDENTIFIER "com.interverse.Synchro")
 
 setup_meta_files(META_FILES)
@@ -54,7 +54,7 @@ qtquick_compiler_add_resources(RESOURCES ${RESOURCES})
 
 # Link libmpv
 if (WIN32)
-    find_library(MPV_LIBRARIES NAMES libmpv.dll.lib libmpv.lib mpv.lib PATHS ${CMAKE_CURRENT_SOURCE_DIR}/mpv/x86_64/)
+    find_library(MPV_LIBRARIES NAMES libmpv.dll.lib libmpv.lib mpv.lib PATHS ${CMAKE_CURRENT_SOURCE_DIR}/mpv/)
     find_path(MPV_INCLUDE_DIRS NAMES mpv/client.h mpv/render.h mpv/render_gl.h PATHS ${CMAKE_CURRENT_SOURCE_DIR}/mpv/include/)
 elseif (UNIX)
     find_package(PkgConfig REQUIRED)

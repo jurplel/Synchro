@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include <mpv/client.h>
-#include <mpv/qthelper.hpp>
+#include "qthelper.hpp"
 
 class TrackHandler : public QObject
 {

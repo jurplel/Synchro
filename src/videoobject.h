@@ -1,11 +1,11 @@
-﻿#ifndef VIDEOOBJECT_H
+#ifndef VIDEOOBJECT_H
 #define VIDEOOBJECT_H
 
 #include <QtQuick/QQuickFramebufferObject>
 
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
-#include <mpv/qthelper.hpp>
+#include "qthelper.hpp"
 
 class VideoObject : public QQuickFramebufferObject
 {
