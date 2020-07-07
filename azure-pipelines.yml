@@ -18,15 +18,15 @@ jobs:
       Invoke-WebRequest https://sourceforge.net/projects/mpv-player-windows/files/libmpv/mpv-dev-x86_64-20200705-git-8fbc4b1.7z/download -OutFile mpv-dev.7z -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox
       
       & "$env:ProgramFiles\7-Zip\7z.exe" x mpv-dev.7z -y -ompv
-
-      $oldfile = Get-Content mpv\mpv.def
-      Set-Content mpv\mpv.def  -value "LIBRARY MPV-1`n", $oldfile
     displayName: 'Download mpv dev archive'
 
   - script: |
       call "%programfiles(x86)%\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cd mpv\
       lib /def:mpv.def /name:mpv-1.dll /out:mpv.lib /MACHINE:X64
+      cd include
+      mkdir mpv
+      move * mpv\
     displayName: 'Generate mpv libraries'
 
   - script: |
