@@ -100,6 +100,7 @@ Item {
                         width: fourthPage.width
                         height: fourthPage.height
                         text: confHandler.getConf()
+                        selectByMouse: true
                         onEditingFinished: {
                             confHandler.saveMpvConf(confEditor.textDocument);
     //                            settings.conf = nameField.text;
