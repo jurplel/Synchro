@@ -40,6 +40,7 @@ set(SOURCES
     src/serverlistmodel.cpp
     src/clientlistmodel.cpp
     src/trackhandler.cpp
+    src/confhandler.cpp
 )
 set(RESOURCES
     src/qml/qml.qrc

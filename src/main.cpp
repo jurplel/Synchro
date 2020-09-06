@@ -10,6 +10,7 @@
 #include "synchronycontroller.h"
 #include "serverlistmodel.h"
 #include "clientlistmodel.h"
+#include "confhandler.h"
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SynchronyController>("Synchro.Core", 1, 0, "SynchronyController");
     qmlRegisterType<ServerListModel>("Synchro.Core", 1, 0, "ServerListModel");
     qmlRegisterType<ClientListModel>("Synchro.Core", 1, 0, "ClientListModel");
+    qmlRegisterType<ConfHandler>("Synchro.Core", 1, 0, "ConfHandler");
 
     //disable vsync for perfect resizing
 //    QSurfaceFormat fmt;

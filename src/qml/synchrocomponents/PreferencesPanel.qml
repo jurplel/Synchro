@@ -23,6 +23,9 @@ Item {
         TabButton {
             text: "Synchrony"
         }
+        TabButton {
+            text: "mpv.conf"
+        }
     }
     SwipeView {
         id: swipe
@@ -73,6 +76,55 @@ Item {
                             settings.name = nameField.text;
                             synchronyController.sendCommand(4, [nameField.text]);
                         }
+                    }
+                }
+            }
+        }
+        Item {
+            id: fourthPage
+
+            ConfHandler {
+                id: confHandler
+            }
+            ColumnLayout {
+                width: parent.width
+                anchors.bottom: parent.bottom
+                anchors.top: parent.top
+
+                ScrollView {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    TextEdit {
+                        id: confEditor
+                        width: fourthPage.width
+                        height: fourthPage.height
+                        text: confHandler.getConf()
+                        onEditingFinished: {
+                            confHandler.saveMpvConf(confEditor.textDocument);
+    //                            settings.conf = nameField.text;
+                        }
+                        color: "#FFFFFF"
+
+                        Component.onCompleted: confHandler.setSyntaxHighlighter(confEditor.textDocument);
+                    }
+                }
+                Row {
+                    Layout.fillWidth: true
+                    Button {
+                        id: refereshButton
+                        width: parent.width/2
+                        text: "Refresh"
+                        onPressed: {
+                            confHandler.readMpvConf();
+                            confEditor.text = confHandler.getConf();
+                        }
+                    }
+
+                    Button {
+                        id: connectButton
+                        width: parent.width/2
+                        text: "Apply"
+                        onPressed: confEditor.editingFinished();
                     }
                 }
             }

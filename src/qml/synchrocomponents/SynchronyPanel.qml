@@ -15,7 +15,6 @@ Item {
 
     ClientListModel { 
         id: clientListModel
-        onDataChanged: console.log("changed");
     }
 
     Connections {
