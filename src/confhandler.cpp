@@ -7,6 +7,7 @@
 ConfHandler::ConfHandler(QObject *parent) : QObject(parent)
 {
     highlighter = nullptr;
+    vidObj = nullptr;
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), "mpv");
     confLocation = settings.fileName().replace("ini", "conf");
@@ -28,6 +29,8 @@ void ConfHandler::saveMpvConf(QQuickTextDocument *document)
     file.remove();
     file.open(QIODevice::ReadWrite);
     file.write(text.toUtf8());
+    file.close();
+    readMpvConf();
 }
 
 bool ConfHandler::readMpvConf()
@@ -40,11 +43,11 @@ bool ConfHandler::readMpvConf()
         file.write(defaultConf.toUtf8());
         file.close();
     }
-    file.open(QIODevice::ReadOnly);
+    file.open(QIODevice::ReadWrite);
     if (!file.isOpen())
         return false;
 
-    mpvConfMap.clear();
+    mpvConfHash.clear();
 
     QTextStream stream(&file);
     conf = stream.readAll();
@@ -52,19 +55,35 @@ bool ConfHandler::readMpvConf()
 
     while (!stream.atEnd()) {
         QString line = stream.readLine();
-        qDebug() << line;
         if (line.startsWith("#"))
             continue;
 
-        QStringList fields = line.split("=");
-        // if there is not exactly one equals sign in the line, this is an error
-        if (fields.length() != 2)
-            return false;
-
-        mpvConfMap.insert(fields.at(0), fields.at(1));
+        mpvConfHash.insert(line.section('=', 0, 0), line.section('=', 1));
     }
+    stream.seek(0);
+    updateProperties();
     emit readConf();
     return true;
+}
+
+void ConfHandler::updateProperties()
+{
+    if (!vidObj)
+        return;
+
+    const auto &keys = mpvConfHash.keys();
+    for (const auto &key : keys)
+    {
+        auto value = mpvConfHash.value(key);
+        vidObj->setProperty(key, value);
+        qDebug() << key << "set to:" << value;
+    }
+}
+
+void ConfHandler::setVidObj(VideoObject *value)
+{
+    vidObj = value;
+    updateProperties();
 }
 
 ConfSyntaxHighlighter::ConfSyntaxHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
@@ -77,7 +96,7 @@ void ConfSyntaxHighlighter::highlightBlock(const QString &text)
     QTextCharFormat keyFormat;
     keyFormat.setForeground(QColor("#0ba9db"));
 
-    QRegularExpression key("(.*)=");
+    QRegularExpression key("(.*?)=(.*)");
     QRegularExpressionMatchIterator i1 = key.globalMatch(text);
     while (i1.hasNext())
     {

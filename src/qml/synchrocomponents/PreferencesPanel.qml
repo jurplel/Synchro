@@ -85,6 +85,7 @@ Item {
 
             ConfHandler {
                 id: confHandler
+                vidObj: videoObject
             }
             ColumnLayout {
                 width: parent.width
@@ -111,7 +112,7 @@ Item {
                 Row {
                     Layout.fillWidth: true
                     Button {
-                        id: refereshButton
+                        id: refreshButton
                         width: parent.width/2
                         text: "Refresh"
                         onPressed: {
@@ -121,7 +122,7 @@ Item {
                     }
 
                     Button {
-                        id: connectButton
+                        id: applyButton
                         width: parent.width/2
                         text: "Apply"
                         onPressed: confEditor.editingFinished();
