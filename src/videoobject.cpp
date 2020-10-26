@@ -193,7 +193,24 @@ void VideoObject::seekBy(const qreal seconds)
     seek(targetedPercentage, false, true);
 }
 
-void VideoObject::pause(bool newPaused) {
+void VideoObject::subSeek(const int offset)
+{
+    QStringList cmd = QStringList() << "sub-seek" << QString::number(offset);
+
+    command(cmd);
+
+    emit seeked(percentPos, false, true);
+
+    seeking = true;
+    if (!seekTimer->isActive())
+     {
+        seekTimer->start();
+        update();
+    }
+}
+
+void VideoObject::pause(bool newPaused)
+{
     setIsPaused(newPaused);
     emit paused();
 }

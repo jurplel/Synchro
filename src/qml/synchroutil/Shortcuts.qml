@@ -10,6 +10,14 @@ Item {
         onActivated: videoObject.seekBy(5)
     }
     Shortcut {
+        sequence: "Ctrl+Left"
+        onActivated: videoObject.subSeek(-1)
+    }
+    Shortcut {
+        sequence: "Ctrl+Right"
+        onActivated: videoObject.subSeek(1)
+    }
+    Shortcut {
         sequence: "Space"
         onActivated: videoObject.pause(!videoObject.isPaused)
     }

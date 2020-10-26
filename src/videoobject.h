@@ -114,6 +114,8 @@ public slots:
 
     void seekBy(const qreal seconds);
 
+    void subSeek(const int offset);
+
     void pause(bool newPaused);
 
     void command(const QVariant &args);
