@@ -163,8 +163,7 @@ QVariant VideoObject::getProperty(const QString name)
 
 void VideoObject::seek(const qreal newPos, const bool useKeyframes, const bool synchronize)
 {
-    if (synchronize)
-        emit seeked(newPos, useKeyframes);
+    emit seeked(newPos, useKeyframes, synchronize);
 
     QStringList command = QStringList() << "seek" << QString::number(newPos);
     //keyframes are used when dragging, and exact used when clicking

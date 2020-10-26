@@ -33,13 +33,15 @@ Window {
 
     Connections {
         target: synchronyController
-        onPause: {2
+        onPause: {
             videoObject.isPaused = paused
             videoObject.seek(percentPos, false)
         }
         onSeek: {
             videoObject.seek(percentPos, useKeyframes)
-            restartAutohideTimer()
+        }
+        onConnected: {
+            videoObject.pause(true)
         }
     }
 
@@ -51,7 +53,12 @@ Window {
         onPaused: {
             synchronyController.sendCommand(1, [videoObject.isPaused, videoObject.percentPos])
         }
-        onSeeked: synchronyController.sendCommand(2, [percentPos, dragged])
+        onSeeked: {
+            if (synchronize)
+                synchronyController.sendCommand(2, [percentPos, dragged])
+
+            restartAutohideTimerSeek();
+        }
         onTrackListsUpdated: {
             if (window.allTrackMenuItems) {
                 window.allTrackMenuItems.forEach(function(item) {
@@ -208,6 +215,13 @@ Window {
 
     function restartAutohideTimer() {
         osc.state = ""
+        autohideTimer.restart()
+    }
+
+    function restartAutohideTimerSeek() {
+        if (osc.state == "hidden")
+            osc.state = "seek"
+
         autohideTimer.restart()
     }
 

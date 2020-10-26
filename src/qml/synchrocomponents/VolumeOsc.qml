@@ -61,11 +61,11 @@ Item {
         }
         PropertyChanges {
             target: seekSlider
-            anchors.rightMargin: oscVolume.width
+            anchors.rightMargin: (oscPanel.state == "") ? oscVolume.width : 0
         }
         PropertyChanges {
             target: shadow
-            anchors.rightMargin: oscVolume.width
+            anchors.rightMargin: (oscPanel.state == "") ? oscVolume.width : 0
         }
     }
 

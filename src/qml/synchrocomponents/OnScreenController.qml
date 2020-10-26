@@ -87,23 +87,51 @@ Item {
             sourceRect: Qt.rect(parent.x, parent.y, parent.width, parent.height)
         }
 
-        states: State {
-            name: "hidden"
-            PropertyChanges {
-                target: oscPanel
-                anchors.bottomMargin: -height-shadow.height*2
-                enabled: false
+        states: [
+            State {
+                name: "hidden"
+                PropertyChanges {
+                    target: oscPanel
+                    anchors.bottomMargin: -height-shadow.height*2
+                    enabled: false
+                }
+            },
+            State {
+                name: "seek"
+                PropertyChanges {
+                    target: oscPanel
+                    anchors.bottomMargin: seekSlider.height-(height+shadow.height*2)
+                    enabled: false
+                }
             }
-        }
+        ]
 
         transitions: [
+            Transition {
+                to: "seek"
+                NumberAnimation {
+                    target: oscPanel
+                    properties: "anchors.bottomMargin"
+                    duration: 125
+                    easing.type: Easing.InQuad
+                }
+            },
+            Transition {
+                from: "seek"
+                NumberAnimation {
+                    target: oscPanel
+                    properties: "anchors.bottomMargin"
+                    duration: 125
+                    easing.type: Easing.outQuad
+                }
+            },
             Transition {
                 to: ""
                 NumberAnimation {
                     target: oscPanel
                     properties: "anchors.bottomMargin"
-                    duration: 450
-                    easing.type: Easing.OutExpo
+                    duration: 250
+                    easing.type: Easing.OutQuart
                 }
             },
             Transition {
@@ -111,8 +139,8 @@ Item {
                 NumberAnimation {
                     target: oscPanel
                     properties: "anchors.bottomMargin"
-                    duration: 450
-                    easing.type: Easing.InExpo
+                    duration: 250
+                    easing.type: Easing.InQuart
                 }
             }
         ]

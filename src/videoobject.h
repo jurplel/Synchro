@@ -97,7 +97,7 @@ signals:
 
     void fileChanged();
 
-    void seeked(qreal percentPos, bool dragged);
+    void seeked(qreal percentPos, bool dragged, bool synchronize = true);
     void paused();
 
 
