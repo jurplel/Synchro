@@ -202,7 +202,7 @@ void VideoObject::pause(bool newPaused) {
 void VideoObject::loadFile(const QString &fileName)
 {
     command(QStringList() << "loadfile" << fileName);
-    seek(0, false);
+    seek(0, false, true);
 }
 
 void VideoObject::back()
