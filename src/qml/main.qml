@@ -224,7 +224,6 @@ Window {
             osc.state = "seek"
 
         autohideTimer.restart()
-        secondaryMouseArea.cursorShape = Qt.ArrowCursor
     }
 
     Timer {
