@@ -216,6 +216,7 @@ Window {
     function restartAutohideTimer() {
         osc.state = ""
         autohideTimer.restart()
+        secondaryMouseArea.cursorShape = Qt.ArrowCursor
     }
 
     function restartAutohideTimerSeek() {
@@ -223,6 +224,7 @@ Window {
             osc.state = "seek"
 
         autohideTimer.restart()
+        secondaryMouseArea.cursorShape = Qt.ArrowCursor
     }
 
     Timer {
@@ -231,7 +233,10 @@ Window {
 
         onTriggered: {
             if ((!secondaryMouseArea.containsMouse || secondaryMouseArea.mouseY < videoContainer.height-57) && !videoObject.isPaused)
+            {
                 osc.state = "hidden"
+                secondaryMouseArea.cursorShape = Qt.BlankCursor
+            }
         }
     }
 
