@@ -1,4 +1,2 @@
 # Synchro
-Video player with network synchronized playback
-
-Early work in progress
+Experimental video player with network synchronized playback
